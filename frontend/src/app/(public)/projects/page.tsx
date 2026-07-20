@@ -53,8 +53,8 @@ export default function ProjectsPage() {
     fetchProjects();
   }, []);
 
-  const activeProject = projectsList[activeIndex];
-  const slides = projectsList.map(p => ({
+  const activeProject: any = projectsList[activeIndex];
+  const slides = projectsList.map((p: any) => ({
     image: { src: p.thumbnailImage || p.image || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800' },
     title: p.title
   }));
