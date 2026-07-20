@@ -12,7 +12,13 @@ import java.time.LocalDateTime;
 @SpringBootApplication
 public class BackendApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BackendApplication.class, args);
+        try {
+            SpringApplication.run(BackendApplication.class, args);
+        } catch (Throwable e) {
+            System.err.println("!!! FATAL STARTUP EXCEPTION !!!");
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     @Bean
