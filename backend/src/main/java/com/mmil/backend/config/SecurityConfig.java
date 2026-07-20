@@ -63,7 +63,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/recruitment/active", "/api/v1/recruitment/*").permitAll()
-                .requestMatchers("/api/v1/auth/**", "/api/v1/public/**", "/health").permitAll()
+                .requestMatchers("/api/v1/auth/**", "/api/v1/public/**", "/health", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
