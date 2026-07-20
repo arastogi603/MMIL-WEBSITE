@@ -36,7 +36,7 @@ export const FadeIn = ({
 
   return (
     <motion.div
-      variants={baseVariants}
+      variants={baseVariants as any}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-10%" }}
@@ -58,7 +58,7 @@ export const FadeInStaggerItem = ({ children, className = "" }: { children: Reac
   };
 
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <motion.div variants={itemVariants as any} className={className}>
       {children}
     </motion.div>
   );
