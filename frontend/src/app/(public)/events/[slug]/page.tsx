@@ -8,6 +8,7 @@ import Link from "next/link";
 import { eventsApi } from "@/lib/api/events";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { apiClient } from "@/lib/api/client";
+import Image from "next/image";
 
 // Maps event type to its specific cover photo
 function getEventImage(type?: string): string {
@@ -166,7 +167,7 @@ export default function EventDetailsPage() {
       
       {/* Immersive Glassmorphic Banner */}
       <div className="absolute top-0 left-0 w-full h-[500px] z-0 overflow-hidden">
-        <img src={getEventImage(event.type)} alt={event.title} className="absolute inset-0 w-full h-full object-cover opacity-40 blur-xl scale-110" />
+        <Image src={getEventImage(event.type)} alt={event.title} fill className="object-cover opacity-40 blur-xl scale-110" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-[#faf7f3]/80 to-[#faf7f3]" />
       </div>
       
@@ -176,7 +177,7 @@ export default function EventDetailsPage() {
           <span>Back to Events</span>
         </Link>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/70 backdrop-blur-3xl rounded-[3rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white p-8 md:p-12 relative overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/70 backdrop-blur-md md:backdrop-blur-3xl rounded-[3rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white p-8 md:p-12 relative overflow-hidden">
           
           {/* Subtle light effect inside the card */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-50" />
@@ -265,7 +266,7 @@ export default function EventDetailsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white/90 backdrop-blur-3xl border border-white rounded-[2.5rem] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"
+              className="relative w-full max-w-lg bg-white/90 backdrop-blur-md md:backdrop-blur-3xl border border-white rounded-[2.5rem] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"
             >
               <button onClick={() => setIsTeamModalOpen(false)} className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-500 transition-colors">
                 <X className="w-4 h-4" />

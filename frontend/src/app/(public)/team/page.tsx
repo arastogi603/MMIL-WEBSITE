@@ -82,7 +82,7 @@ export default function TeamPage() {
                     
                     {/* Inner Claymorphic Avatar Container */}
                     <div className="w-24 h-24 rounded-full bg-[#faf7f3] mb-6 overflow-hidden p-2 shadow-[inset_6px_6px_12px_#e3ded8,inset_-6px_-6px_12px_#ffffff] group-hover:shadow-[6px_6px_12px_#e3ded8,-6px_-6px_12px_#ffffff] transition-shadow duration-300">
-                      <img src={member.avatar} alt={member.name} className="w-full h-full object-cover rounded-full" />
+                      <Image src={member.avatar} alt={member.name} width={96} height={96} className="w-full h-full object-cover rounded-full" />
                     </div>
                     
                     <h3 className="text-lg font-bold text-[#111] mb-1 group-hover:text-[#eb4d6d] transition-colors">{member.name}</h3>

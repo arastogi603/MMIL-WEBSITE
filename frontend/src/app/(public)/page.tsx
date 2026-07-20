@@ -10,6 +10,7 @@ import { ScrollImageSequence } from "@/components/animations/ScrollImageSequence
 import { useAuthStore } from "@/lib/store/auth.store";
 import { useEffect, useState, useLayoutEffect } from "react";
 import { recruitmentApi } from "@/lib/api/recruitment";
+import Image from "next/image";
 
 // Suppress useLayoutEffect warning on server
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -122,7 +123,7 @@ export default function Home() {
                 transition={{ delay: 0.2 }}
                 className="mb-8"
               >
-                <img src="/logo.png" alt="MMIL" className="w-16 h-16 mx-auto mb-4 drop-shadow-xl brightness-200" />
+                <Image src="/logo.png" alt="MMIL" width={64} height={64} className="w-16 h-16 mx-auto mb-4 drop-shadow-xl brightness-200" />
                 <h2 className="text-white font-black tracking-widest text-lg uppercase mb-2">MMIL</h2>
                 <p className="text-white/60 text-sm font-medium tracking-wide">Experience loading...</p>
               </motion.div>
@@ -214,7 +215,7 @@ export default function Home() {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.8, type: "spring", bounce: 0.2 }}
-        className="relative z-20 w-full bg-white/20 backdrop-blur-3xl border-t border-white/40 shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[4rem] pt-16 px-6 pb-24 mt-[10vh]"
+        className="relative z-20 w-full bg-white/20 backdrop-blur-md md:backdrop-blur-3xl border-t border-white/40 shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[4rem] pt-16 px-6 pb-24 mt-[10vh]"
       >
         {/* Subtle pull tab at the top of the sliding page */}
         <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-black/20 rounded-full" />
@@ -277,9 +278,9 @@ export default function Home() {
       </motion.section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 md:px-12 border-t border-black/10 flex flex-col md:flex-row items-center justify-between text-sm bg-white/40 backdrop-blur-xl z-20 relative">
+      <footer className="py-8 px-6 md:px-12 border-t border-black/10 flex flex-col md:flex-row items-center justify-between text-sm bg-white/40 backdrop-blur-md md:backdrop-blur-xl z-20 relative">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="MMIL Logo" className="w-9 h-9 rounded object-contain" />
+          <Image src="/logo.png" alt="MMIL Logo" width={36} height={36} className="w-9 h-9 rounded object-contain" />
           <span className="text-sm font-black tracking-tight text-[#111] uppercase leading-tight">MMIL</span>
         </div>
         

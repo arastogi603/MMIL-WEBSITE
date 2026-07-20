@@ -7,6 +7,7 @@ import {
     useRef,
     type CSSProperties,
 } from "react"
+import Image from "next/image"
 const useIsStaticRenderer = () => false
 
 interface Slide {
@@ -277,15 +278,12 @@ export default function Smooth3DSlideshow(props: Smooth3DSlideshowProps) {
                             aria-hidden={!visible}
                         >
                             {src ? (
-                                <img
+                                <Image
                                     src={src}
                                     alt={slide.image?.alt || slide.title || ""}
                                     draggable={false}
+                                    fill
                                     style={{
-                                        position: "absolute",
-                                        inset: 0,
-                                        width: "100%",
-                                        height: "100%",
                                         objectFit: "cover",
                                         display: "block",
                                         userSelect: "none",

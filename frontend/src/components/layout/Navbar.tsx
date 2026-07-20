@@ -7,6 +7,7 @@ import { useAuthStore } from "@/lib/store/auth.store";
 import { isCoreTeam } from "@/lib/roles";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -53,7 +54,7 @@ export function Navbar() {
         {/* Spatial UI: Layered depth shadows behind the navbar */}
         <div className="absolute inset-0 rounded-full bg-white/10 blur-xl scale-[1.05] pointer-events-none" />
 
-        <div className="relative bg-white/70 backdrop-blur-3xl rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08),0_12px_48px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)] border border-white/60 px-4 md:px-6 py-2 overflow-hidden">
+        <div className="relative bg-white/70 backdrop-blur-md md:backdrop-blur-3xl rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08),0_12px_48px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)] border border-white/60 px-4 md:px-6 py-2 overflow-hidden">
           {/* Top highlight edge — spatial light reflection */}
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent" />
           {/* Bottom subtle shadow edge */}
@@ -61,7 +62,7 @@ export function Navbar() {
           
           <div className="flex items-center justify-between relative z-10">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/logo.png" alt="MMIL Logo" className="w-8 h-8 md:w-9 md:h-9 rounded object-contain" />
+              <Image src="/logo.png" alt="MMIL Logo" width={36} height={36} className="w-8 h-8 md:w-9 md:h-9 rounded object-contain" />
               <span className="text-sm font-black tracking-tight text-[#111] uppercase leading-tight">MMIL</span>
             </Link>
 
@@ -155,7 +156,7 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="fixed inset-x-4 top-24 z-40 lg:hidden"
           >
-            <div className="bg-white/90 backdrop-blur-3xl rounded-[2rem] p-6 shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)] border border-white">
+            <div className="bg-white/90 backdrop-blur-md md:backdrop-blur-3xl rounded-[2rem] p-6 shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)] border border-white">
               <div className="flex flex-col gap-2 mb-6">
                 <Link href="/" onClick={closeMobileMenu} className={`px-5 py-4 text-sm font-black tracking-[0.05em] uppercase rounded-2xl transition-all ${pathname === '/' ? 'bg-black/5 text-[#111]' : 'text-neutral-700 hover:bg-black/5'}`}>
                   Home

@@ -5,6 +5,7 @@ import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { Calendar, Clock, MapPin, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { eventsApi } from "@/lib/api/events";
+import Image from "next/image";
 
 // Maps event type to its specific cover photo
 function getEventImage(type?: string): string {
@@ -171,7 +172,7 @@ export default function EventsPage() {
                 className="col-span-1 md:col-span-2 row-span-2 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all cursor-pointer"
               >
                 <Link href={`/events/${events[0].slug}`} className="absolute inset-0 z-20" />
-                <img src={getEventImage(events[0].type)} alt={events[0].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src={getEventImage(events[0].type)} alt={events[0].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 
                 <div className="absolute inset-0 p-10 flex flex-col justify-end">
@@ -198,7 +199,7 @@ export default function EventsPage() {
                   className="flex-1 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-center p-8 text-center hover:shadow-xl transition-all cursor-pointer"
                 >
                   <Link href={`/events/${events[1].slug}`} className="absolute inset-0 z-20" />
-                  <img src={getEventImage(events[1].type)} alt={events[1].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={getEventImage(events[1].type)} alt={events[1].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-black/40" />
                   <h3 className="text-2xl font-black text-white uppercase tracking-tight relative z-10">{events[1].title}</h3>
                 </motion.div>
@@ -211,7 +212,7 @@ export default function EventsPage() {
                   className="flex-1 relative rounded-[3rem] bg-[#111] overflow-hidden group shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-center p-8 text-center hover:shadow-xl transition-all cursor-pointer"
                 >
                   <Link href={`/events/${events[2].slug}`} className="absolute inset-0 z-20" />
-                  <img src={getEventImage(events[2].type)} alt={events[2].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={getEventImage(events[2].type)} alt={events[2].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-black/40" />
                   <h3 className="text-2xl font-black text-white uppercase tracking-tight relative z-10">{events[2].title}</h3>
                 </motion.div>
@@ -227,7 +228,7 @@ export default function EventsPage() {
                 className="col-span-1 row-span-2 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 flex flex-col justify-between hover:shadow-xl transition-all cursor-pointer"
               >
                 <Link href={`/events/${events[3].slug}`} className="absolute inset-0 z-20" />
-                <img src={getEventImage(events[3].type)} alt={events[3].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src={getEventImage(events[3].type)} alt={events[3].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-sm border border-white relative z-10">
                   <span className="text-xl">✨</span>
