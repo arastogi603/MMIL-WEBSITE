@@ -2,9 +2,9 @@ spring:
   application:
     name: mmil-backend
   datasource:
-    url: 
-    username: 
-    password: 
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -30,8 +30,8 @@ spring:
           writetimeout: 5000
 
 server:
-  port: 
+  port: ${PORT:8080}
 
 jwt:
-  secret: 
+  secret: ${JWT_SECRET}
   expiration: 86400000 # 24 hours

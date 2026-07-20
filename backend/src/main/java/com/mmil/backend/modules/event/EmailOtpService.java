@@ -31,9 +31,11 @@ public class EmailOtpService {
             message.setText("Hello,\n\nYour OTP for team registration is: " + otp + "\n\nThis code will expire soon.");
             
             mailSender.send(message);
+            System.out.println("EMAIL SENT SUCCESSFULLY TO: " + toEmail);
         } catch (Exception e) {
             System.out.println("=================================================");
             System.out.println("FAILED TO SEND EMAIL. IS GMAIL CONFIGURED IN PROPERTIES?");
+            System.out.println("ERROR: " + e.getMessage());
             System.out.println("MOCK SENDING EMAIL TO: " + toEmail);
             System.out.println("OTP: " + otp);
             System.out.println("=================================================");
