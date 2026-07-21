@@ -80,7 +80,6 @@ export default function SubmitProjectPage() {
   }
 
   return (
-  return (
     <div className="min-h-screen bg-transparent pt-32 pb-20 font-['Outfit'] text-[var(--text-primary)] relative overflow-hidden">
       <ProjectPageBackground />
       <div className="max-w-3xl mx-auto px-6 relative z-10">
