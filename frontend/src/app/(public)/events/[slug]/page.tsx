@@ -151,8 +151,8 @@ export default function EventDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf7f3] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-black/20 border-t-black rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[var(--border)] border-t-[var(--text-primary)] rounded-full animate-spin" />
       </div>
     );
   }
@@ -163,7 +163,7 @@ export default function EventDetailsPage() {
   const isFull = seatsLeft <= 0;
 
   return (
-    <main className="min-h-screen bg-[#faf7f3] text-[#111] pt-32 pb-24 relative overflow-hidden font-['Outfit']">
+    <main className="min-h-screen bg-transparent text-[var(--text-primary)] pt-32 pb-24 relative overflow-hidden font-['Outfit']">
       
       {/* Immersive Glassmorphic Banner */}
       <div className="absolute top-0 left-0 w-full h-[500px] z-0 overflow-hidden">
@@ -172,7 +172,7 @@ export default function EventDetailsPage() {
       </div>
       
       <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <Link href="/events" className="flex items-center gap-2 text-neutral-500 hover:text-[#111] font-semibold transition-colors mb-8 w-fit bg-white/50 backdrop-blur-md px-4 py-2 rounded-full border border-black/5 shadow-sm">
+        <Link href="/events" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors mb-8 w-fit bg-[var(--background)]/50 backdrop-blur-md px-4 py-2 rounded-full border border-[var(--border)] shadow-sm">
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Events</span>
         </Link>
@@ -191,7 +191,7 @@ export default function EventDetailsPage() {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter text-[#111] leading-[0.95]">
+          <h1 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter text-[var(--text-primary)] leading-[0.95]">
             {event.title}
           </h1>
           
@@ -206,14 +206,14 @@ export default function EventDetailsPage() {
               <div key={i} className="flex flex-col bg-neutral-50/50 border border-black/5 rounded-2xl p-4 shadow-[inset_0_2px_4px_rgba(255,255,255,1)]">
                 <item.icon className="w-6 h-6 text-neutral-400 mb-3" />
                 <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-1">{item.label}</span>
-                <span className="text-sm font-black text-[#111]">{item.value}</span>
+                <span className="text-sm font-black text-[var(--text-primary)]">{item.value}</span>
               </div>
             ))}
           </div>
 
           <div className="mb-12">
-            <h2 className="text-xl font-black uppercase tracking-tight mb-4 text-[#111]">About the Event</h2>
-            <p className="text-neutral-600 leading-relaxed text-lg font-medium">{event.description}</p>
+            <h2 className="text-xl font-black uppercase tracking-tight mb-4 text-[var(--text-primary)]">About the Event</h2>
+            <p className="text-[var(--text-secondary)] leading-relaxed text-lg font-medium">{event.description}</p>
           </div>
 
           {error && !isTeamModalOpen && (
@@ -231,7 +231,7 @@ export default function EventDetailsPage() {
                   ALREADY REGISTERED
                 </div>
                 {hasTeam && (
-                  <Link href={`/events/${slug}/team`} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#111] hover:bg-black text-white font-black transition-all shadow-[0_4px_20px_rgba(0,0,0,0.15)] text-center transform hover:scale-[1.02]">
+                  <Link href={`/events/${slug}/team`} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black transition-all shadow-md text-center transform hover:scale-[1.02]">
                     TEAM DASHBOARD
                   </Link>
                 )}
@@ -240,7 +240,7 @@ export default function EventDetailsPage() {
               <button 
                 onClick={handleRegisterClick}
                 disabled={isFull || isRegistering}
-                className="w-full px-10 py-5 rounded-2xl bg-[#111] hover:bg-black text-white font-black tracking-tight text-xl transition-all disabled:opacity-50 shadow-[0_8px_30px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.2)] transform hover:scale-[1.01] active:scale-95"
+                className="w-full px-10 py-5 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black tracking-tight text-xl transition-all disabled:opacity-50 shadow-md transform hover:scale-[1.01] active:scale-95"
               >
                 {isRegistering ? "PROCESSING..." : isFull ? "EVENT FULL" : "REGISTER NOW"}
               </button>
@@ -273,17 +273,15 @@ export default function EventDetailsPage() {
               </button>
 
               {teamFlow === 'selection' && (
-                <div className="text-center py-6">
-                  <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-6 shadow-[inset_0_2px_4px_rgba(255,255,255,1)]">
-                    <Users className="w-8 h-8 text-blue-500" />
-                  </div>
-                  <h2 className="text-3xl font-black mb-3 text-[#111] tracking-tight">TEAM EVENT</h2>
-                  <p className="text-neutral-500 mb-8 font-medium">How would you like to participate?</p>
+                <div className="p-8">
+                  <h2 className="text-3xl font-black mb-3 text-[var(--text-primary)] tracking-tight">TEAM EVENT</h2>
+                  <p className="text-[var(--text-secondary)] font-medium mb-8">This event requires participation in a team. You can either create a new team or join an existing one using a code.</p>
+                  
                   <div className="flex flex-col gap-4">
-                    <button onClick={() => setTeamFlow('leader')} className="w-full py-4 rounded-2xl bg-[#111] hover:bg-black text-white font-black tracking-wide transition-all shadow-[0_4px_20px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.2)]">
-                      CREATE A TEAM
+                    <button onClick={() => setTeamFlow('leader')} className="w-full py-4 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black tracking-wide transition-all shadow-md">
+                      CREATE A NEW TEAM
                     </button>
-                    <button onClick={() => setTeamFlow('member')} className="w-full py-4 rounded-2xl bg-neutral-100 hover:bg-neutral-200 text-[#111] font-black tracking-wide transition-colors border border-white shadow-[inset_0_2px_4px_rgba(255,255,255,1)]">
+                    <button onClick={() => setTeamFlow('member')} className="w-full py-4 rounded-2xl bg-[var(--background)] hover:bg-[var(--border)] text-[var(--text-primary)] font-black tracking-wide transition-colors border border-[var(--border)] shadow-sm">
                       JOIN EXISTING TEAM
                     </button>
                   </div>

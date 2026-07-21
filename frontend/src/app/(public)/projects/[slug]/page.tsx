@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, GitBranch, Globe, User, Calendar } from "lucide-react";
 import { projectsApi } from "@/lib/api/projects";
+import { ProjectPageBackground } from "@/components/layout/ProjectPageBackground";
 
 // Tech logo mapping — uses devicon CDN for real logos
 const TECH_ICONS: Record<string, string> = {
@@ -90,19 +91,21 @@ export default function ProjectDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf7f3] flex items-center justify-center font-['Outfit']">
-        <div className="w-12 h-12 border-4 border-black/20 border-t-black rounded-full animate-spin" />
+      <div className="min-h-screen bg-transparent flex items-center justify-center font-['Outfit']">
+        <ProjectPageBackground />
+        <div className="w-12 h-12 border-4 border-[var(--border)] border-t-[var(--text-primary)] rounded-full animate-spin relative z-10" />
       </div>
     );
   }
 
   if (error || !project) {
     return (
-      <div className="min-h-screen bg-[#faf7f3] flex items-center justify-center font-['Outfit'] text-[#111]">
-        <div className="text-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center font-['Outfit'] text-[var(--text-primary)]">
+        <ProjectPageBackground />
+        <div className="text-center relative z-10">
           <h1 className="text-4xl font-black mb-4">Project Not Found</h1>
-          <p className="text-neutral-500 mb-8">{error || "The requested project could not be found."}</p>
-          <Link href="/projects" className="px-6 py-3 rounded-xl bg-[#111] text-white font-bold text-sm hover:bg-black transition-all">
+          <p className="text-[var(--text-secondary)] mb-8">{error || "The requested project could not be found."}</p>
+          <Link href="/projects" className="px-6 py-3 rounded-xl bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-80 transition-all">
             ← Back to Projects
           </Link>
         </div>
@@ -113,11 +116,12 @@ export default function ProjectDetailPage() {
   const fallbackImage = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200";
 
   return (
-    <main className="min-h-screen bg-[#faf7f3] text-[#111] font-['Outfit'] pt-32 pb-24">
-      <div className="max-w-5xl mx-auto px-6">
+    <main className="min-h-screen bg-transparent text-[var(--text-primary)] font-['Outfit'] pt-32 pb-24 relative overflow-hidden">
+      <ProjectPageBackground />
+      <div className="max-w-5xl mx-auto px-6 relative z-10">
         {/* Back Button */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-          <Link href="/projects" className="inline-flex items-center gap-2 text-neutral-500 hover:text-[#111] font-bold text-sm mb-10 transition-colors group">
+          <Link href="/projects" className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-sm mb-10 transition-colors group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Projects
           </Link>
@@ -155,7 +159,7 @@ export default function ProjectDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-neutral-500 font-medium leading-relaxed text-lg mb-10"
+              className="text-[var(--text-secondary)] font-medium leading-relaxed text-lg mb-10"
             >
               {project.description}
             </motion.p>
@@ -180,11 +184,11 @@ export default function ProjectDetailPage() {
                         {icon ? (
                           <img src={icon} alt={tech} className="w-6 h-6 group-hover:scale-110 transition-transform" />
                         ) : (
-                          <div className="w-6 h-6 rounded-md bg-neutral-200 flex items-center justify-center text-xs font-black text-neutral-500">
+                          <div className="w-6 h-6 rounded-md bg-[var(--border)] flex items-center justify-center text-xs font-black text-[var(--text-secondary)]">
                             {tech.charAt(0).toUpperCase()}
                           </div>
                         )}
-                        <span className="font-bold text-sm text-neutral-700">{tech}</span>
+                        <span className="font-bold text-sm text-[var(--text-primary)]">{tech}</span>
                       </div>
                     );
                   })}
@@ -209,7 +213,7 @@ export default function ProjectDetailPage() {
                     href={project.repositoryUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#111] text-white font-bold text-sm hover:bg-black transition-all group w-full"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-80 transition-all group w-full"
                   >
                     <GitBranch className="w-5 h-5" />
                     <span className="flex-1">GitHub Repository</span>
@@ -221,7 +225,7 @@ export default function ProjectDetailPage() {
                     href={project.liveDemoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-black/10 text-[#111] font-bold text-sm hover:bg-neutral-50 transition-all group shadow-inner w-full"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] font-bold text-sm hover:bg-[var(--border)] transition-all group shadow-inner w-full"
                   >
                     <Globe className="w-5 h-5" />
                     <span className="flex-1">Live Demo</span>
@@ -234,16 +238,15 @@ export default function ProjectDetailPage() {
               </div>
             </div>
 
-            {/* Made By Card */}
             <div className="bg-white/60 backdrop-blur-2xl rounded-[2rem] border border-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04),inset_0_2px_5px_rgba(255,255,255,0.8)]">
-              <h3 className="text-sm font-black text-neutral-400 uppercase tracking-wider mb-5">Made By</h3>
+              <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Made By</h3>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center border border-black/5 shadow-inner">
-                  <User className="w-6 h-6 text-neutral-400" />
+                <div className="w-12 h-12 rounded-full bg-[var(--border)] flex items-center justify-center shadow-inner">
+                  <User className="w-6 h-6 text-[var(--text-secondary)]" />
                 </div>
                 <div>
-                  <p className="font-black text-[#111]">{project.submittedByName || "MMIL Member"}</p>
-                  <p className="text-xs text-neutral-400 font-medium">Community Contributor</p>
+                  <p className="font-black text-[var(--text-primary)]">{project.submittedByName || "MMIL Member"}</p>
+                  <p className="text-xs text-[var(--text-secondary)] font-medium">Community Contributor</p>
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ import { projectsApi } from '@/lib/api/projects';
 import Smooth3DSlideshow from '@/components/Coverflow';
 import { useAuthStore } from '@/lib/store/auth.store';
 import { isCoreTeam } from "@/lib/roles";
+import { ProjectPageBackground } from "@/components/layout/ProjectPageBackground";
 
 // Mock Projects
 const mockProjects = [
@@ -60,13 +61,14 @@ export default function ProjectsPage() {
   }));
 
   return (
-    <main className="min-h-screen text-[#111] bg-[#faf7f3] relative font-['Outfit'] pt-40 pb-24 overflow-hidden">
+    <main className="min-h-screen text-[var(--text-primary)] relative font-['Outfit'] pt-40 overflow-hidden">
+      <ProjectPageBackground />
       
       <div className="relative z-10 pt-16 pb-24 px-4 sm:px-6 max-w-7xl mx-auto flex flex-col items-center">
         <div className="text-center mb-10 relative w-full">
           {isAuthenticated && user && isCoreTeam(user.role) && (
             <div className="absolute right-0 top-0">
-              <Link href="/projects/submit" className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111] text-white font-bold text-sm transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] hover:bg-black hover:scale-105 active:scale-95">
+              <Link href="/projects/submit" className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15)] hover:bg-gray-100 hover:scale-105 active:scale-95">
                 <Plus className="w-4 h-4" />
                 <span>Submit Project</span>
               </Link>
@@ -75,21 +77,29 @@ export default function ProjectsPage() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[3.5rem] sm:text-[4rem] md:text-[6rem] font-black tracking-tight leading-none text-[#111] mb-4"
+            className="text-[3.5rem] sm:text-[4rem] md:text-[6rem] font-black tracking-tight leading-none text-[var(--text-primary)] font-['Bebas_Neue'] mb-4 tracking-[0.03em]"
+          >
+            MMIL<br/>
+            <span className="text-[2rem] sm:text-[3rem] md:text-[70px] text-[var(--text-secondary)] font-['Bebas_Neue'] leading-tight block mt-4">PRESENTS</span>
+          </motion.h1>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[2.5rem] font-black tracking-tight leading-none text-[var(--text-primary)] mt-12 mb-4"
           >
             OUR PROJECTS
-          </motion.h1>
+          </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-neutral-500 font-medium max-w-2xl mx-auto mb-6 px-4"
+            className="text-[var(--text-secondary)] font-medium max-w-2xl mx-auto mb-6 px-4"
           >
             Explore the innovative solutions built by our community. Swipe or click to navigate.
           </motion.p>
           {isAuthenticated && user && isCoreTeam(user.role) && (
-            <div className="flex justify-center md:hidden">
-              <Link href="/projects/submit" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111] text-white font-bold text-sm transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] hover:bg-black active:scale-95">
+            <div className="flex justify-center md:hidden mt-6">
+              <Link href="/projects/submit" className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm transition-all shadow-lg hover:bg-gray-100 active:scale-95">
                 <Plus className="w-4 h-4" />
                 <span>Submit Project</span>
               </Link>
@@ -101,7 +111,7 @@ export default function ProjectsPage() {
         <div className="relative w-full max-w-[100vw] sm:max-w-6xl h-[450px] md:h-[550px]">
           {isLoading ? (
             <div className="w-full h-full flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-black/20 border-t-black rounded-full animate-spin" />
+              <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
             </div>
           ) : (
             <Smooth3DSlideshow 
@@ -127,26 +137,24 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.3 }}
                 className="flex flex-col items-center px-4"
               >
-                <h2 className="text-4xl font-black text-[#111] tracking-tight mb-4">{activeProject.title}</h2>
-                <p className="text-neutral-500 font-medium leading-relaxed mb-8 max-w-xl">
+                <h2 className="text-4xl font-black text-[var(--text-primary)] tracking-tight mb-4">{activeProject.title}</h2>
+                <p className="text-[var(--text-secondary)] font-medium leading-relaxed mb-8 max-w-xl">
                   {activeProject.description}
                 </p>
 
-                {/* Tech Stack Pills */}
                 <div className="flex flex-wrap justify-center gap-3 mb-10">
                   {(activeProject.technologies || activeProject.tech || []).map((tech: string, i: number) => (
-                    <span key={i} className="px-4 py-1.5 bg-neutral-100 rounded-full text-neutral-600 text-xs font-black uppercase tracking-wider border border-black/5">
+                    <span key={i} className="px-4 py-1.5 bg-[var(--background)] rounded-full text-[var(--text-primary)] text-xs font-black uppercase tracking-wider border border-[var(--border)] shadow-sm">
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                {/* Action Button */}
                 <Link href={`/projects/${activeProject.slug || activeProject.id}`} passHref>
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex items-center gap-2 px-10 py-4 rounded-2xl bg-[#111] text-white font-black tracking-wide text-sm transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] hover:bg-black hover:shadow-[0_8px_25px_rgba(0,0,0,0.2)]"
+                    className="flex items-center gap-2 px-10 py-4 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide text-sm transition-all shadow-lg hover:shadow-xl"
                   >
                     <span>VIEW DETAILS</span>
                     <ExternalLink className="w-4 h-4" />
@@ -157,6 +165,7 @@ export default function ProjectsPage() {
           </div>
         )}
       </div>
+
     </main>
   );
 }

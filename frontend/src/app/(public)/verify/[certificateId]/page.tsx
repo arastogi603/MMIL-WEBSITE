@@ -44,21 +44,21 @@ export default function CertificateVerificationPage() {
   }, [certificateId]);
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-6 relative font-['Outfit']">
+    <main className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] flex flex-col items-center justify-center p-6 relative font-['Outfit']">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <Link href="/" className="absolute top-10 left-10 font-bold text-xl tracking-tight text-white z-10">
+      <Link href="/" className="absolute top-10 left-10 font-bold text-xl tracking-tight text-[var(--text-primary)] z-10">
         MMIL.
       </Link>
 
       <div className="max-w-2xl w-full relative z-10">
         <div className="text-center mb-10">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-20 h-20 bg-white/5 border border-white/10 rounded-full mx-auto flex items-center justify-center mb-6">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-20 h-20 bg-[var(--background)]/5 border border-[var(--border)] rounded-full mx-auto flex items-center justify-center mb-6">
             <Search className="w-10 h-10 text-blue-400" />
           </motion.div>
           <h1 className="text-4xl font-bold mb-4">Certificate Verification</h1>
-          <p className="text-slate-400">Verifying credential ID: <span className="text-white font-mono">{certificateId}</span></p>
+          <p className="text-[var(--text-secondary)]">Verifying credential ID: <span className="text-[var(--text-primary)] font-mono">{certificateId}</span></p>
         </div>
 
         {isLoading ? (
@@ -68,9 +68,9 @@ export default function CertificateVerificationPage() {
         ) : isError ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glassmorphism p-10 rounded-3xl border border-red-500/30 text-center">
             <XCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-white mb-2">Invalid Certificate</h2>
-            <p className="text-slate-400 mb-8">We could not find a certificate matching this ID in our records. Please check the ID and try again.</p>
-            <Link href="/" className="px-8 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors font-semibold">
+            <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Invalid Certificate</h2>
+            <p className="text-[var(--text-secondary)] mb-8">We could not find a certificate matching this ID in our records. Please check the ID and try again.</p>
+            <Link href="/" className="px-8 py-3 rounded-xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] transition-colors font-semibold">
               Return Home
             </Link>
           </motion.div>
@@ -80,27 +80,27 @@ export default function CertificateVerificationPage() {
             
             <div className="flex flex-col items-center text-center mb-8">
               <CheckCircle className="w-16 h-16 text-green-400 mb-6" />
-              <h2 className="text-3xl font-bold text-white mb-2">Verified Credential</h2>
-              <p className="text-green-400 font-semibold bg-green-500/10 px-4 py-1 rounded-full border border-green-500/20">Official Document</p>
+              <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Verified Credential</h2>
+              <p className="text-green-500 font-semibold bg-green-500/10 px-4 py-1 rounded-full border border-green-500/20">Official Document</p>
             </div>
 
-            <div className="space-y-6 bg-[#0a0a0a]/50 p-6 rounded-2xl border border-white/5">
+            <div className="space-y-6 bg-[var(--background)]/50 p-6 rounded-2xl border border-[var(--border)]">
               <div>
-                <p className="text-slate-500 text-sm font-medium mb-1">Award Type</p>
-                <p className="text-xl font-bold text-white">{certificate.certificateType}</p>
+                <p className="text-[var(--text-secondary)] text-sm font-medium mb-1">Award Type</p>
+                <p className="text-xl font-bold text-[var(--text-primary)]">{certificate.certificateType}</p>
               </div>
               <div>
-                <p className="text-slate-500 text-sm font-medium mb-1">Description</p>
-                <p className="text-white text-lg">{certificate.issueDescription}</p>
+                <p className="text-[var(--text-secondary)] text-sm font-medium mb-1">Description</p>
+                <p className="text-[var(--text-primary)] text-lg">{certificate.issueDescription}</p>
               </div>
-              <div className="flex justify-between border-t border-white/10 pt-6">
+              <div className="flex justify-between border-t border-[var(--border)] pt-6">
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">Date of Issue</p>
-                  <p className="text-white font-medium">{new Date(certificate.issuedAt).toLocaleDateString()}</p>
+                  <p className="text-[var(--text-secondary)] text-sm font-medium mb-1">Date of Issue</p>
+                  <p className="text-[var(--text-primary)] font-medium">{new Date(certificate.issuedAt).toLocaleDateString()}</p>
                 </div>
                 <div>
-                  <p className="text-slate-500 text-sm font-medium mb-1">Credential ID</p>
-                  <p className="text-white font-mono bg-white/5 px-2 py-1 rounded border border-white/10">{certificate.id}</p>
+                  <p className="text-[var(--text-secondary)] text-sm font-medium mb-1">Credential ID</p>
+                  <p className="text-[var(--text-primary)] font-mono bg-[var(--background)]/5 px-2 py-1 rounded border border-[var(--border)]">{certificate.id}</p>
                 </div>
               </div>
             </div>

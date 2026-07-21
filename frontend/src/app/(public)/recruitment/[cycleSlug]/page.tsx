@@ -6,10 +6,10 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 const domains = [
-  { id: 'web', name: 'Web Development', icon: '🌐', desc: 'Build scalable frontends and robust backends.' },
-  { id: 'ai', name: 'Artificial Intelligence', icon: '🤖', desc: 'Train models and build intelligent systems.' },
-  { id: 'design', name: 'UI/UX Design', icon: '✨', desc: 'Craft beautiful and intuitive user experiences.' },
-  { id: 'app', name: 'App Development', icon: '📱', desc: 'Create seamless mobile applications for iOS & Android.' },
+  { id: 'web-dev', name: 'Web Dev', icon: '🌐', desc: 'Build scalable frontends and robust backends.' },
+  { id: 'programming', name: 'Programming', icon: '💻', desc: 'Deep dive into data structures, algorithms, and core logic.' },
+  { id: 'ui-ux', name: 'UI/UX', icon: '✨', desc: 'Craft beautiful and intuitive user experiences.' },
+  { id: 'ai-ml', name: 'AI/ML', icon: '🤖', desc: 'Train models and build intelligent systems.' },
 ];
 
 export default function DomainSelectionPage() {

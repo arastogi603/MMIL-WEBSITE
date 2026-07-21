@@ -35,7 +35,7 @@ public class EventService {
 
     public Event getEventBySlug(String slug) {
         return eventRepository.findBySlug(slug)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Event not found"));
     }
 
     public Event createEvent(CreateEventDto dto) {

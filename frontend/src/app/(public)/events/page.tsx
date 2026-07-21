@@ -146,13 +146,13 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen text-[#111] bg-[#faf7f3] pt-40 pb-24 relative overflow-hidden font-['Outfit']">
+    <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-40 pb-24 relative overflow-hidden font-['Outfit']">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col items-center text-center mb-16">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[4rem] sm:text-[6rem] md:text-[8rem] font-black tracking-tighter leading-none mb-4 text-[#111]"
+            className="text-[4rem] sm:text-[6rem] md:text-[8rem] font-black tracking-tighter leading-none mb-4 text-[var(--text-primary)]"
           >
             OUR EVENTS
           </motion.h1>
