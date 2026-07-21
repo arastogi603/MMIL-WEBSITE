@@ -26,6 +26,7 @@ export function Navbar() {
   const pathname = usePathname();
   const { isAuthenticated, user, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme } = useTheme();
 
   // Don't show navbar in admin, portal, or auth
   if (pathname.startsWith("/admin") || pathname.startsWith("/portal") || pathname === "/login" || pathname === "/register") {
@@ -39,8 +40,6 @@ export function Navbar() {
     if (href.includes("#")) return pathname === href.split("#")[0];
     return pathname.startsWith(href);
   };
-
-  const { theme } = useTheme();
 
   return (
     <>

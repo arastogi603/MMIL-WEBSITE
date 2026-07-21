@@ -24,7 +24,7 @@ export function BackgroundShapes() {
    ════════════════════════════════════════════════ */
 function LightBackground() {
   return (
-    <div className="background-shapes">
+    <div className="background-shapes hidden md:block">
       {/* Scattered soft rounded-rect blocks matching Figma light mode */}
       <div className="bg-shape" style={{ top: "5%", left: "3%", width: 180, height: 140, transform: "rotate(8deg)" }} />
       <div className="bg-shape" style={{ top: "12%", left: "18%", width: 120, height: 100, transform: "rotate(-5deg)" }} />
@@ -54,6 +54,7 @@ function LightBackground() {
 function DarkBackground() {
   return (
     <div
+      className="hidden md:block"
       style={{
         position: "fixed",
         inset: 0,

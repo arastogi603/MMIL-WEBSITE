@@ -862,6 +862,10 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .card-grid-gallery {
+    grid-template-columns: 1fr;
+  }
+
   .hero-section {
     padding-top: 80px;
   }
