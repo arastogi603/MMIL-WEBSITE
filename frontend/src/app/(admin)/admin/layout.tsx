@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FolderKanban, Calendar, UserPlus, Settings, LogOut, Code, Shield, Home, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, FolderKanban, Calendar, UserPlus, Settings, LogOut, Code, Shield, Home, Menu, X, GraduationCap, BookOpen } from "lucide-react";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,6 +44,8 @@ export default function AdminLayout({
     { name: "Project Reviews", href: "/admin/projects", icon: FolderKanban },
     { name: "Event Management", href: "/admin/events", icon: Calendar },
     { name: "Recruitment", href: "/admin/recruitment", icon: UserPlus },
+    { name: "Alumni", href: "/admin/alumni", icon: GraduationCap },
+    { name: "Resources", href: "/admin/resources", icon: BookOpen },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 

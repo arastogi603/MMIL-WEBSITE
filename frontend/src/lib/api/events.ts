@@ -2,8 +2,13 @@ import { apiClient } from './client';
 
 export const eventsApi = {
   getPublishedEvents: async () => {
-    const response = await apiClient.get('/events');
-    return response.data;
+    try {
+      const response = await apiClient.get('/events');
+      return response.data;
+    } catch (e) {
+      console.warn("Could not fetch events, using fallback");
+      return [];
+    }
   },
   getEventBySlug: async (slug: string) => {
     const response = await apiClient.get(`/events/${slug}`);

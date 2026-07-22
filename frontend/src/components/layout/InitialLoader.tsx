@@ -60,7 +60,7 @@ export function InitialLoader() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-white text-xl font-light tracking-[0.2em] animate-pulse cursor-pointer p-8"
+                className="text-white text-xl font-light tracking-[0.2em] animate-pulse cursor-pointer p-8 text-center"
               >
                 CLICK ANYWHERE TO ENTER
               </motion.div>
