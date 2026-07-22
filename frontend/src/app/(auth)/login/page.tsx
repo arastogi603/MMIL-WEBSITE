@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Code, ArrowRight } from "lucide-react";
+import { Code, ArrowRight, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { apiClient } from "@/lib/api/client";
@@ -67,11 +67,9 @@ export default function LoginPage() {
       
       {/* Left Panel: Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 xl:px-32 relative z-10">
-        <Link href="/" className="absolute top-10 left-10 flex items-center gap-3 text-xl font-bold tracking-tight">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-            <Code className="w-4 h-4 text-white" />
-          </div>
-          MMIL
+        <Link href="/" className="absolute top-6 left-6 sm:top-10 sm:left-10 flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors group bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 backdrop-blur-md z-50">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Home
         </Link>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>

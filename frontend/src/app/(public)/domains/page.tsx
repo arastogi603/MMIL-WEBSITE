@@ -89,7 +89,7 @@ export default function DomainsPage() {
   };
 
   return (
-    <main className="min-h-screen text-[var(--text-primary)] bg-[var(--background)] pt-32 pb-24 relative overflow-hidden font-['Outfit']">
+    <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-32 pb-24 relative overflow-hidden font-['Outfit']">
       {/* Background gradients */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />

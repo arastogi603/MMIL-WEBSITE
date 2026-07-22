@@ -177,7 +177,7 @@ export default function EventDetailsPage() {
           <span>Back to Events</span>
         </Link>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white/70 backdrop-blur-md md:backdrop-blur-3xl rounded-[3rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white p-8 md:p-12 relative overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[var(--card-bg)] backdrop-blur-md md:backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-[var(--card-border)] p-6 sm:p-8 md:p-12 relative overflow-hidden">
           
           {/* Subtle light effect inside the card */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-50" />
@@ -191,7 +191,7 @@ export default function EventDetailsPage() {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter text-[var(--text-primary)] leading-[0.95]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black mb-8 md:mb-10 tracking-tighter text-[var(--text-primary)] leading-[0.95]">
             {event.title}
           </h1>
           
@@ -203,9 +203,9 @@ export default function EventDetailsPage() {
               { icon: MapPin, label: "Location", value: event.location || 'TBA' },
               { icon: Users, label: "Capacity", value: event.capacity }
             ].map((item, i) => (
-              <div key={i} className="flex flex-col bg-neutral-50/50 border border-black/5 rounded-2xl p-4 shadow-[inset_0_2px_4px_rgba(255,255,255,1)]">
-                <item.icon className="w-6 h-6 text-neutral-400 mb-3" />
-                <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-1">{item.label}</span>
+              <div key={i} className="flex flex-col bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-4 shadow-sm">
+                <item.icon className="w-6 h-6 text-[var(--text-secondary)] mb-3" />
+                <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">{item.label}</span>
                 <span className="text-sm font-black text-[var(--text-primary)]">{item.value}</span>
               </div>
             ))}
@@ -247,7 +247,7 @@ export default function EventDetailsPage() {
             )}
             
             {!isAuthenticated && !isRegistered && (
-              <p className="text-sm font-bold text-neutral-400 text-center uppercase tracking-wider">Login required to register</p>
+              <p className="text-sm font-bold text-[var(--text-secondary)] text-center uppercase tracking-wider">Login required to register</p>
             )}
           </div>
         </motion.div>
@@ -266,9 +266,9 @@ export default function EventDetailsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-white/90 backdrop-blur-md md:backdrop-blur-3xl border border-white rounded-[2.5rem] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"
+              className="relative w-full max-w-lg bg-[var(--card-bg)] backdrop-blur-md md:backdrop-blur-3xl border border-[var(--card-border)] rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.1)]"
             >
-              <button onClick={() => setIsTeamModalOpen(false)} className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-500 transition-colors">
+              <button onClick={() => setIsTeamModalOpen(false)} className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--background)] hover:bg-[var(--border)] text-[var(--text-secondary)] transition-colors">
                 <X className="w-4 h-4" />
               </button>
 
@@ -290,41 +290,41 @@ export default function EventDetailsPage() {
 
               {teamFlow === 'leader' && leaderStep === 1 && (
                 <form onSubmit={handleSendOtp} className="space-y-4 py-2">
-                  <h2 className="text-3xl font-black mb-6 text-[#111] tracking-tight">Create Team</h2>
+                  <h2 className="text-3xl font-black mb-6 text-[var(--text-primary)] tracking-tight">Create Team</h2>
                   {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-bold rounded-xl">{error}</div>}
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Team Name</label>
-                      <input required type="text" value={teamForm.name} onChange={e => setTeamForm({...teamForm, name: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <input required type="text" value={teamForm.name} onChange={e => setTeamForm({...teamForm, name: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Phone (+code)</label>
-                      <input required type="tel" placeholder="+1234567890" value={teamForm.phone} onChange={e => setTeamForm({...teamForm, phone: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Phone (+code)</label>
+                      <input required type="tel" placeholder="+1234567890" value={teamForm.phone} onChange={e => setTeamForm({...teamForm, phone: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
                   
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Email Address</label>
-                    <input required type="email" value={teamForm.email} onChange={e => setTeamForm({...teamForm, email: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Email Address</label>
+                    <input required type="email" value={teamForm.email} onChange={e => setTeamForm({...teamForm, email: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">College Name</label>
-                    <input required type="text" value={teamForm.collegeName} onChange={e => setTeamForm({...teamForm, collegeName: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">College Name</label>
+                    <input required type="text" value={teamForm.collegeName} onChange={e => setTeamForm({...teamForm, collegeName: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">District</label>
-                      <input required type="text" value={teamForm.district} onChange={e => setTeamForm({...teamForm, district: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">District</label>
+                      <input required type="text" value={teamForm.district} onChange={e => setTeamForm({...teamForm, district: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">State</label>
-                      <input required type="text" value={teamForm.state} onChange={e => setTeamForm({...teamForm, state: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">State</label>
+                      <input required type="text" value={teamForm.state} onChange={e => setTeamForm({...teamForm, state: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
 
-                  <button type="submit" disabled={isRegistering} className="w-full py-4 mt-6 rounded-2xl bg-[#111] text-white font-black tracking-wide hover:bg-black transition-all disabled:opacity-50 shadow-[0_4px_20px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.2)]">
+                  <button type="submit" disabled={isRegistering} className="w-full py-4 mt-6 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide hover:opacity-90 transition-all disabled:opacity-50">
                     {isRegistering ? "SENDING OTP..." : "SEND OTP"}
                   </button>
                 </form>
@@ -332,13 +332,13 @@ export default function EventDetailsPage() {
 
               {teamFlow === 'leader' && leaderStep === 2 && (
                 <form onSubmit={handleVerifyAndCreateTeam} className="space-y-4 py-8 text-center">
-                  <h2 className="text-3xl font-black mb-2 text-[#111] tracking-tight">Verify Email</h2>
-                  <p className="text-neutral-500 mb-8 font-medium">Enter the 6-digit OTP sent to your email.</p>
+                  <h2 className="text-3xl font-black mb-2 text-[var(--text-primary)] tracking-tight">Verify Email</h2>
+                  <p className="text-[var(--text-secondary)] mb-8 font-medium">Enter the 6-digit OTP sent to your email.</p>
                   {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-bold rounded-xl text-left">{error}</div>}
                   
-                  <input required type="text" maxLength={6} placeholder="000000" value={teamForm.otp} onChange={e => setTeamForm({...teamForm, otp: e.target.value})} className="w-2/3 mx-auto text-center tracking-[0.75em] font-mono text-3xl bg-neutral-50 border border-black/5 rounded-2xl py-4 px-4 text-[#111] focus:border-blue-500 outline-none block shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]" />
+                  <input required type="text" maxLength={6} placeholder="000000" value={teamForm.otp} onChange={e => setTeamForm({...teamForm, otp: e.target.value})} className="w-2/3 mx-auto text-center tracking-[0.75em] font-mono text-3xl bg-[var(--background)] border border-[var(--card-border)] rounded-2xl py-4 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none block" />
                   
-                  <button type="submit" disabled={isRegistering} className="w-full py-4 mt-8 rounded-2xl bg-[#111] text-white font-black tracking-wide hover:bg-black transition-all disabled:opacity-50 shadow-[0_4px_20px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.2)]">
+                  <button type="submit" disabled={isRegistering} className="w-full py-4 mt-8 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide hover:opacity-90 transition-all disabled:opacity-50">
                     {isRegistering ? "VERIFYING..." : "VERIFY & CREATE TEAM"}
                   </button>
                 </form>
@@ -349,14 +349,14 @@ export default function EventDetailsPage() {
                   <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[inset_0_2px_4px_rgba(255,255,255,1)]">
                     <CheckCircle className="w-10 h-10" />
                   </div>
-                  <h2 className="text-3xl font-black mb-3 text-[#111] tracking-tight">Team Created!</h2>
-                  <p className="text-neutral-500 mb-8 font-medium">Share this code with your teammates to let them join:</p>
+                  <h2 className="text-3xl font-black mb-3 text-[var(--text-primary)] tracking-tight">Team Created!</h2>
+                  <p className="text-[var(--text-secondary)] mb-8 font-medium">Share this code with your teammates to let them join:</p>
                   
-                  <div className="bg-neutral-50 border border-black/5 rounded-2xl p-6 mb-8 select-all cursor-pointer hover:border-blue-200 transition-colors shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                  <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 mb-8 select-all cursor-pointer hover:border-blue-200 transition-colors">
                     <span className="font-mono text-4xl font-black text-blue-600 tracking-widest">{joinCodeResult}</span>
                   </div>
 
-                  <button onClick={() => setIsTeamModalOpen(false)} className="w-full py-4 rounded-2xl bg-[#111] text-white font-black tracking-wide transition-all shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+                  <button onClick={() => setIsTeamModalOpen(false)} className="w-full py-4 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide transition-all">
                     DONE
                   </button>
                 </div>
@@ -364,38 +364,38 @@ export default function EventDetailsPage() {
 
               {teamFlow === 'member' && (
                 <form onSubmit={handleJoinTeam} className="space-y-4 py-2 text-left">
-                  <h2 className="text-3xl font-black mb-2 text-[#111] tracking-tight">Join Team</h2>
-                  <p className="text-neutral-500 mb-6 font-medium">Enter the team code and your details.</p>
+                  <h2 className="text-3xl font-black mb-2 text-[var(--text-primary)] tracking-tight">Join Team</h2>
+                  <p className="text-[var(--text-secondary)] mb-6 font-medium">Enter the team code and your details.</p>
                   {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-bold rounded-xl">{error}</div>}
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Join Code</label>
-                      <input required type="text" placeholder="MMIL-XXXXX" value={memberForm.joinCode} onChange={e => setMemberForm({...memberForm, joinCode: e.target.value.toUpperCase()})} className="w-full font-mono bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none uppercase shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-bold" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Join Code</label>
+                      <input required type="text" placeholder="MMIL-XXXXX" value={memberForm.joinCode} onChange={e => setMemberForm({...memberForm, joinCode: e.target.value.toUpperCase()})} className="w-full font-mono bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none uppercase font-bold" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Phone</label>
-                      <input required type="tel" value={memberForm.phone} onChange={e => setMemberForm({...memberForm, phone: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Phone</label>
+                      <input required type="tel" value={memberForm.phone} onChange={e => setMemberForm({...memberForm, phone: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
                   
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">College Name</label>
-                    <input required type="text" value={memberForm.collegeName} onChange={e => setMemberForm({...memberForm, collegeName: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                    <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">College Name</label>
+                    <input required type="text" value={memberForm.collegeName} onChange={e => setMemberForm({...memberForm, collegeName: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">District</label>
-                      <input required type="text" value={memberForm.district} onChange={e => setMemberForm({...memberForm, district: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">District</label>
+                      <input required type="text" value={memberForm.district} onChange={e => setMemberForm({...memberForm, district: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">State</label>
-                      <input required type="text" value={memberForm.state} onChange={e => setMemberForm({...memberForm, state: e.target.value})} className="w-full bg-neutral-50 border border-black/5 rounded-xl py-3 px-4 text-[#111] focus:border-blue-500 outline-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] font-medium" />
+                      <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">State</label>
+                      <input required type="text" value={memberForm.state} onChange={e => setMemberForm({...memberForm, state: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
                   
-                  <button type="submit" disabled={isRegistering} className="w-full py-4 mt-6 rounded-2xl bg-[#111] text-white font-black tracking-wide hover:bg-black transition-all disabled:opacity-50 shadow-[0_4px_20px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.2)]">
+                  <button type="submit" disabled={isRegistering} className="w-full py-4 mt-6 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide hover:opacity-90 transition-all disabled:opacity-50">
                     {isRegistering ? "JOINING..." : "JOIN TEAM"}
                   </button>
                 </form>

@@ -66,36 +66,38 @@ export default function AlumniPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.1 }}
-              className="group relative overflow-hidden rounded-[2rem] border border-[var(--card-border)] bg-[var(--card-bg)] backdrop-blur-xl p-6 shadow-sm hover:shadow-xl transition-all duration-300"
+              className="relative group overflow-hidden rounded-[2.5rem] bg-[var(--background)] border border-[var(--border)] shadow-md hover:shadow-xl transition-all duration-300"
             >
-              <div className="flex flex-col items-center text-center">
-                <div className="relative w-32 h-32 mb-6 rounded-full overflow-hidden border-4 border-[var(--background)] shadow-inner">
-                  {alum.imageUrl ? (
-                    <img src={alum.imageUrl} alt={alum.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <span className="text-4xl font-bold text-blue-500">{alum.name.charAt(0)}</span>
-                    </div>
-                  )}
-                </div>
-                
-                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-1">{alum.name}</h3>
-                
-                <div className="flex items-center justify-center gap-2 text-blue-500 font-medium text-sm mb-4">
-                  <Briefcase size={16} />
-                  <span>{alum.role} at {alum.company}</span>
-                </div>
-                
+              <div className="aspect-[4/5] relative bg-black/5 dark:bg-white/5">
+                {alum.imageUrl ? (
+                  <img src={alum.imageUrl} alt={alum.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-blue-100 dark:bg-blue-900/30">
+                    <span className="text-6xl font-bold text-blue-500">{alum.name.charAt(0)}</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80" />
+
+                {/* LinkedIn Button */}
                 {alum.linkedInUrl && (
-                  <a 
-                    href={alum.linkedInUrl} 
-                    target="_blank" 
+                  <a
+                    href={alum.linkedInUrl}
+                    target="_blank"
                     rel="noreferrer"
-                    className="mt-4 p-3 rounded-full bg-blue-600/10 text-blue-500 hover:bg-blue-600 hover:text-white transition-colors"
+                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-blue-600 transition-all shadow-sm z-10"
                   >
                     <LinkIcon size={20} />
                   </a>
                 )}
+
+                {/* Info */}
+                <div className="absolute bottom-0 left-0 w-full p-6 text-white z-10">
+                  <h3 className="text-2xl font-black mb-2">{alum.name}</h3>
+                  <div className="flex items-center gap-2 text-white/90 font-medium text-sm">
+                    <Briefcase size={16} className="text-blue-400" />
+                    <span className="tracking-wide">{alum.role} at <span className="font-bold text-white">{alum.company}</span></span>
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}

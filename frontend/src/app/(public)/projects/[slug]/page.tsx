@@ -132,7 +132,7 @@ export default function ProjectDetailPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="relative w-full h-[300px] md:h-[450px] rounded-[2.5rem] overflow-hidden mb-12 bg-neutral-200 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_2px_10px_rgba(255,255,255,0.8)] border border-white"
+          className="relative w-full h-[300px] md:h-[450px] rounded-3xl md:rounded-[2.5rem] overflow-hidden mb-8 md:mb-12 bg-[var(--shape-bg)] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[var(--card-border)]"
         >
           <img
             src={project.thumbnailImage || project.image || fallbackImage}
@@ -150,7 +150,7 @@ export default function ProjectDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-4xl md:text-5xl font-black tracking-tight mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-4 md:mb-6"
             >
               {project.title}
             </motion.h1>
@@ -159,7 +159,7 @@ export default function ProjectDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-[var(--text-secondary)] font-medium leading-relaxed text-lg mb-10"
+              className="text-[var(--text-secondary)] font-medium leading-relaxed text-base md:text-lg mb-8 md:mb-10"
             >
               {project.description}
             </motion.p>
@@ -172,14 +172,14 @@ export default function ProjectDetailPage() {
                 transition={{ delay: 0.4 }}
                 className="mb-10"
               >
-                <h3 className="text-sm font-black text-neutral-400 uppercase tracking-wider mb-5">Tech Stack</h3>
+                <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Tech Stack</h3>
                 <div className="flex flex-wrap gap-4">
                   {project.technologies.map((tech: string, i: number) => {
                     const icon = getTechIcon(tech);
                     return (
                       <div
                         key={i}
-                        className="flex items-center gap-3 px-5 py-3 bg-white/70 backdrop-blur-xl rounded-2xl border border-white shadow-[0_4px_15px_rgba(0,0,0,0.04),inset_0_1px_3px_rgba(255,255,255,1)] hover:bg-white hover:shadow-[0_8px_25px_rgba(0,0,0,0.06)] transition-all group"
+                        className="flex items-center gap-3 px-5 py-3 bg-[var(--card-bg)] backdrop-blur-xl rounded-2xl border border-[var(--card-border)] shadow-sm hover:bg-[var(--card-hover-bg)] hover:shadow-md transition-all group"
                       >
                         {icon ? (
                           <img src={icon} alt={tech} className="w-6 h-6 group-hover:scale-110 transition-transform" />
@@ -205,8 +205,8 @@ export default function ProjectDetailPage() {
             className="space-y-6"
           >
             {/* Links Card */}
-            <div className="bg-white/60 backdrop-blur-2xl rounded-[2rem] border border-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04),inset_0_2px_5px_rgba(255,255,255,0.8)]">
-              <h3 className="text-sm font-black text-neutral-400 uppercase tracking-wider mb-5">Links</h3>
+            <div className="bg-[var(--card-bg)] backdrop-blur-2xl rounded-[2rem] border border-[var(--card-border)] p-6 shadow-sm">
+              <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Links</h3>
               <div className="space-y-3">
                 {project.repositoryUrl && (
                   <a
@@ -233,12 +233,12 @@ export default function ProjectDetailPage() {
                   </a>
                 )}
                 {!project.repositoryUrl && !project.liveDemoUrl && (
-                  <p className="text-neutral-400 text-sm font-medium">No links available.</p>
+                  <p className="text-[var(--text-secondary)] text-sm font-medium">No links available.</p>
                 )}
               </div>
             </div>
 
-            <div className="bg-white/60 backdrop-blur-2xl rounded-[2rem] border border-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04),inset_0_2px_5px_rgba(255,255,255,0.8)]">
+            <div className="bg-[var(--card-bg)] backdrop-blur-2xl rounded-[2rem] border border-[var(--card-border)] p-6 shadow-sm">
               <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Made By</h3>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-[var(--border)] flex items-center justify-center shadow-inner">
@@ -252,11 +252,11 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* Date Card */}
-            <div className="bg-white/60 backdrop-blur-2xl rounded-[2rem] border border-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04),inset_0_2px_5px_rgba(255,255,255,0.8)]">
-              <h3 className="text-sm font-black text-neutral-400 uppercase tracking-wider mb-5">Submitted</h3>
+            <div className="bg-[var(--card-bg)] backdrop-blur-2xl rounded-[2rem] border border-[var(--card-border)] p-6 shadow-sm">
+              <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Submitted</h3>
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-neutral-400" />
-                <span className="font-bold text-neutral-600">
+                <Calendar className="w-5 h-5 text-[var(--text-secondary)]" />
+                <span className="font-bold text-[var(--text-primary)]">
                   {project.createdAt ? new Date(project.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "Unknown"}
                 </span>
               </div>
