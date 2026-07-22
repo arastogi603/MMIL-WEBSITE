@@ -64,8 +64,8 @@ export default function ProjectsPage() {
     <main className="min-h-screen text-[var(--text-primary)] relative font-['Outfit'] pt-40 overflow-hidden">
       <ProjectPageBackground />
       
-      <div className="relative z-10 pt-16 pb-24 px-4 sm:px-6 max-w-7xl mx-auto flex flex-col items-center">
-        <div className="text-center mb-10 relative w-full">
+      <div className="relative z-10 pt-4 pb-24 px-4 sm:px-6 max-w-7xl mx-auto flex flex-col items-center">
+        <div className="text-center mb-2 relative w-full">
           {isAuthenticated && user && isCoreTeam(user.role) && (
             <div className="absolute right-0 top-0">
               <Link href="/projects/submit" className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold text-sm transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15)] hover:bg-gray-100 hover:scale-105 active:scale-95">
@@ -77,18 +77,12 @@ export default function ProjectsPage() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-[3.5rem] sm:text-[4rem] md:text-[6rem] font-black tracking-tight leading-none text-[var(--text-primary)] font-['Bebas_Neue'] mb-4 tracking-[0.03em]"
-          >
-            MMIL<br/>
-            <span className="text-[2rem] sm:text-[3rem] md:text-[70px] text-[var(--text-secondary)] font-['Bebas_Neue'] leading-tight block mt-4">PRESENTS</span>
-          </motion.h1>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-[2.5rem] font-black tracking-tight leading-none text-[var(--text-primary)] mt-12 mb-4"
+            whileHover={{ scale: 1.05, textShadow: "0px 0px 8px rgb(255 255 255 / 0.3)" }}
+            transition={{ duration: 0.3 }}
+            className="text-[4rem] sm:text-[6rem] md:text-[8rem] lg:text-[9rem] font-black tracking-tight leading-none text-[var(--text-primary)] mb-2 font-['Bebas_Neue'] cursor-default"
           >
             OUR PROJECTS
-          </motion.h2>
+          </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +102,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* 3D Coverflow Slider from Custom Component */}
-        <div className="relative w-full max-w-[100vw] sm:max-w-6xl h-[450px] md:h-[550px]">
+        <div className="relative w-full max-w-[100vw] sm:max-w-6xl h-[400px] mt-12">
           {isLoading ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
@@ -127,7 +121,7 @@ export default function ProjectsPage() {
 
         {/* Active Project Details */}
         {!isLoading && activeProject && (
-          <div className="w-full max-w-3xl mx-auto mt-12 text-center h-[280px]">
+          <div className="w-full max-w-3xl mx-auto mt-16 text-center h-[280px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeProject.id}
@@ -165,7 +159,6 @@ export default function ProjectsPage() {
           </div>
         )}
       </div>
-
     </main>
   );
 }

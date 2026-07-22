@@ -33,7 +33,14 @@ const domains: DomainData[] = [
     label: "Programming",
     lead: { name: "Tanmay Kalra", role: "Programming Lead", avatar: "https://media.licdn.com/dms/image/v2/D5635AQESFxT8g3npeA/profile-framedphoto-shrink_800_800/B56ZdA80ANGsAk-/0/1749141373315?e=1785312000&v=beta&t=GcnpzhqtpQLNeZEFSblfZh4DJNLvkmPsaycoYMw68FU", linkedin: "https://www.linkedin.com/in/tanmay-kalra-09oct/" },
     students: [
-      { name: "Placeholder Name", role: "Programmer", avatar: "https://i.pravatar.cc/150?u=programming-student", linkedin: "#" }
+      { name: "Akshat Rastogi", role: "Programmer", avatar: "https://media.licdn.com/dms/image/v2/D5603AQGHyzr7S7o_XQ/profile-displayphoto-crop_800_800/B56ZkT.9D0HQAU-/0/1756976896081?e=1786579200&v=beta&t=_AY8oRu--oNUZBrkA_wWCYkRhfzOWERHEc-fH6gitOs", linkedin: "https://www.linkedin.com/in/-akshatrastogi/" },
+      { name: "Vansh Bhaskar", role: "Programmer", avatar: "https://drive.google.com/uc?export=view&id=1HdKkr7oydmReVpZB8_9beePEP2oX43ka", linkedin: "https://www.linkedin.com/in/vanshbhaskar/" },
+      { name: "Arunima Negi", role: "Programmer", avatar: "https://media.licdn.com/dms/image/v2/D5603AQHk8xAMkLoX6Q/profile-displayphoto-shrink_800_800/B56ZQxgkCJH0Ac-/0/1735997414525?e=1786579200&v=beta&t=YnWVlxUAEVmLmX7XyZeSiepE5Y0bbLcsPbYMq1k8cN8", linkedin: "https://www.linkedin.com/in/arunima-negi-90504429b/" },
+      { name: "K. Anushree", role: "Programmer", avatar: "https://media.licdn.com/dms/image/v2/D4E03AQGHQXpi0yR2Bg/profile-displayphoto-shrink_800_800/B4EZcFx5uKH0Ac-/0/1748148658313?e=1786579200&v=beta&t=kueb2YiIzYSZ8upDjHbJZahlNhjE43yrl4UYTmPxF3I", linkedin: "https://www.linkedin.com/in/theanushree25/" },
+      { name: "Aditya Kumar Gupta", role: "Programmer", avatar: "https://drive.google.com/uc?export=view&id=1WYkNYR7fAGegTi3I8mkPpNzPIIG9xdJ4", linkedin: "https://www.linkedin.com/in/aditya-kumar-gupta-245515297/" },
+      { name: "Sanskar Mittal", role: "Programmer", avatar: "https://drive.google.com/uc?export=view&id=1SSmiD2QlZ0Zt4baq2LxD4jX_a6dPJ7gK", linkedin: "https://www.linkedin.com/in/sanskarmittal/" },
+      { name: "Prashasti Jha", role: "Programmer", avatar: "https://drive.google.com/uc?export=view&id=1VHi80z8fJDApwnBbb7t_5a1F98DRZrJn", linkedin: "https://www.linkedin.com/in/prashasti-jha-391109381/" },
+      { name: "Aaryan Singh", role: "Programmer", avatar: "https://drive.google.com/uc?export=view&id=1go3rBmnxA0Upp89TfmtxSliSE-qgD-8m", linkedin: "https://www.linkedin.com/in/aaryansingh31/" },
     ],
   },
   {
@@ -41,7 +48,11 @@ const domains: DomainData[] = [
     label: "Web Development",
     lead: { name: "Disha Agrawal", role: "Web Dev Lead", avatar: "https://media.licdn.com/dms/image/v2/D5635AQEkSyHkUmXTSw/profile-framedphoto-shrink_800_800/B56Z0VRC_bJwAg-/0/1774178283808?e=1785312000&v=beta&t=pI0HI6feLSv6M8OPfv4usOXa31jef0C2wt1qIZzO-eg", linkedin: "https://www.linkedin.com/in/disha-agrawal-0438062a5/" },
     students: [
-      { name: "Placeholder Name", role: "Web Developer", avatar: "https://i.pravatar.cc/150?u=web-student", linkedin: "#" }
+      { name: "Abhishek Jaiswal", role: "Web Developer", avatar: "https://media.licdn.com/dms/image/v2/D5603AQH9OH2jrPDlfg/profile-displayphoto-crop_800_800/B56ZyMGA0yJQAM-/0/1771876913422?e=1786579200&v=beta&t=iCUqJoUDAt58UMkScnakQJvqYQHjOHikvCvQhJ0rN4A", linkedin: "https://www.linkedin.com/in/abhishek-jaiswal-110399338/" },
+      { name: "Thushar Rai", role: "Web Developer", avatar: "https://media.licdn.com/dms/image/v2/D4E03AQHCgVvwxGYlSQ/profile-displayphoto-crop_800_800/B4EZkLMw8CGwAI-/0/1756829521504?e=1786579200&v=beta&t=od5HdvJahMff8MbT4AKj8L8dFZzhqEs22haWXkDEvlE", linkedin: "https://www.linkedin.com/in/thushar-rai-a8aa9a375/" },
+      { name: "Nandini Mishra", role: "Web Developer", avatar: "https://media.licdn.com/dms/image/v2/D5603AQGzKnyCuA3V-Q/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1727012180946?e=1786579200&v=beta&t=CJTkR5BDprIilEeghIL368AyD-F2AhlEjbBaE4-vzKs", linkedin: "https://www.linkedin.com/in/nandini-mishra-4a5a3132a/" },
+      { name: "Ayushi Tiwari", role: "Web Developer", avatar: "https://media.licdn.com/dms/image/v2/D5603AQF9h99beGKKcg/profile-displayphoto-crop_800_800/B56Zzy9SpMJIAQ-/0/1773602682193?e=1786579200&v=beta&t=gbBKa-FRy4VArkjedeOMFnn60K6GZb3c4Gng4FIVmiM", linkedin: "https://www.linkedin.com/in/ayushi-tiwari-408a61302/" },
+      { name: "Akhil Mishra", role: "Web Developer", avatar: "https://media.licdn.com/dms/image/v2/D5603AQEFlb64aMvblA/profile-displayphoto-crop_800_800/B56Z9CxSqKGcAI-/0/1783531646775?e=1786579200&v=beta&t=tavhaGWLV5ZmDWi_zU4PJtEGm8KKL5-YTOpOy8MYVaQ", linkedin: "https://www.linkedin.com/in/akhil-mishra-95ba36312/" },
     ],
   },
   {
@@ -49,7 +60,10 @@ const domains: DomainData[] = [
     label: "Technical",
     lead: { name: "Vaishnav Gupta", role: "Technical Lead", avatar: "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785312000&v=beta&t=fibyE81Q5lfLA3xttPyyCXqzLipX02VbkeO1ZX2MinA", linkedin: "https://www.linkedin.com/in/vaishnavgupta/" },
     students: [
-      { name: "Placeholder Name", role: "Technical Member", avatar: "https://i.pravatar.cc/150?u=tech-student", linkedin: "#" }
+      { name: "Shivanshu Kushwaha", role: "Technical Member", avatar: "https://drive.google.com/uc?export=view&id=1P1PzDOag-xV34vRgnfrKVkG8FN7Ia_Td", linkedin: "https://www.linkedin.com/in/shivanshu-kushwaha-12572b345/" },
+      { name: "Rajat Kumar", role: "Technical Member", avatar: "https://media.licdn.com/dms/image/v2/D5635AQFVYMArh5ZYUA/profile-framedphoto-shrink_800_800/B56Z7q0_aUIQAY-/0/1782056220724?e=1785358800&v=beta&t=Rn4edCrF-0LmQoqTQxRicM5ZbmGLrelsIh_2A1xYu18", linkedin: "https://www.linkedin.com/in/rajat281/" },
+      { name: "Mahi Gupta", role: "Technical Member", avatar: "https://drive.google.com/uc?export=view&id=1w6V2va73iu2Ns8ya-WtQE4z_uMzuhHPU", linkedin: "https://www.linkedin.com/in/mahi-gupta-8623b4364/" },
+      { name: "Placeholder Name", role: "Technical Member", avatar: "https://i.pravatar.cc/150?u=tech-student", linkedin: "#" },
     ],
   },
   {
@@ -57,7 +71,10 @@ const domains: DomainData[] = [
     label: "Design",
     lead: { name: "Aarsh Upadhyay", role: "Design Lead", avatar: "https://media.licdn.com/dms/image/v2/D4D03AQFc7G8FNXP2Cw/profile-displayphoto-shrink_800_800/B4DZXWd3q2HwAc-/0/1743059910043?e=1786579200&v=beta&t=gngRgGef8mSj5cJYciKYSDny_u6J4jhxFIsfMCTwavs", linkedin: "https://www.linkedin.com/in/aarsh-upadhyay-66010a359/" },
     students: [
-      { name: "Placeholder Name", role: "Designer", avatar: "https://i.pravatar.cc/150?u=design-student", linkedin: "#" }
+      { name: "Arnav", role: "Designer", avatar: "https://drive.google.com/uc?export=view&id=1jAh7Y1YnUVf7n-q1TlEWft1e37Owp_5H", linkedin: "https://www.linkedin.com/in/arnav2k5/" },
+      { name: "Akshat Srivastava", role: "Designer", avatar: "https://drive.google.com/uc?export=view&id=1oDp5216NuGeljG1uet0hHaeBVpuOGlFo", linkedin: "https://www.linkedin.com/in/akshat-srivastava-522265407/" },
+      { name: "Ankita Singh", role: "Designer", avatar: "https://drive.google.com/uc?export=view&id=1Hru4uuqfaDU03i6Q-66AM8MDYtxOMxxf", linkedin: "https://www.linkedin.com/in/ankita-singh-566007385/" },
+      { name: "Placeholder Name", role: "Designer", avatar: "https://i.pravatar.cc/150?u=design-student", linkedin: "#" },
     ],
   },
 ];
