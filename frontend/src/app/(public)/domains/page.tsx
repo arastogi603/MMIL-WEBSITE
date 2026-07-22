@@ -41,7 +41,7 @@ const domainData = [
     lead: {
       name: "Vaishnav Gupta",
       role: "Technical Lead",
-      avatar: "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785315600&v=beta&t=I5B3G7r0K8P7Kk1Q9t1T1Q1T1Q1T1Q1T1Q1T1Q1T"
+      avatar: "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785315600&v=beta&t=tbREJf6SsoibLAXROIXT-4-rUzy-um3DxmY81clh9b8"
     }
   },
   {
@@ -53,7 +53,7 @@ const domainData = [
     lead: {
       name: "Aarsh Upadhyay",
       role: "Design Lead",
-      avatar: "https://media.licdn.com/dms/image/v2/D4D03AQFc7G8FNXP2Cw/profile-displayphoto-shrink_800_800/B4DZXWd3q2HwAc-/0/1743059910043?e=1785315600&v=beta&t=P9gL7H3tC2l6H1pA8q3n1n3n1n3n1n3n1n3n1n3"
+      avatar: "https://media.licdn.com/dms/image/v2/D4D03AQFc7G8FNXP2Cw/profile-displayphoto-shrink_800_800/B4DZXWd3q2HwAc-/0/1743059910043?e=1786579200&v=beta&t=gngRgGef8mSj5cJYciKYSDny_u6J4jhxFIsfMCTwavs"
     }
   }
 ];
