@@ -15,9 +15,9 @@ const domainData = [
     need: "In a world driven by data and automation, strong problem-solving skills and algorithmic thinking are the bedrock of software engineering.",
     societyHelp: "We conduct regular contests, peer-programming sessions, and deep dives into advanced data structures to sharpen your logic and competitive programming skills.",
     lead: {
-      name: "TBA",
+      name: "Tanmay kalra",
       role: "Programming Lead",
-      avatar: "https://i.pravatar.cc/150?u=programming"
+      avatar: "https://media.licdn.com/dms/image/v2/D5635AQESFxT8g3npeA/profile-framedphoto-shrink_800_800/B56ZdA80ANGsAk-/0/1749141373315?e=1785315600&v=beta&t=mkpwguPAwqxMAi7qdzyocxQ_8hK7njJ5wxaO6ccXBeo"
     }
   },
   {
@@ -27,9 +27,9 @@ const domainData = [
     need: "Every modern business and organization relies on scalable, robust, and fast web applications to reach their audience and deliver services globally.",
     societyHelp: "We provide hands-on experience building full-stack applications with modern frameworks (React, Next.js, Spring Boot) and deploying them to production.",
     lead: {
-      name: "Sarah Chen",
+      name: "Disha Agrawal",
       role: "Web Dev Lead",
-      avatar: "https://i.pravatar.cc/150?u=sarah"
+      avatar: "https://media.licdn.com/dms/image/v2/D5635AQEkSyHkUmXTSw/profile-framedphoto-shrink_800_800/B56Z0VRC_bJwAg-/0/1774178283808?e=1785315600&v=beta&t=CIe8dDQu7QMFDxJg9vyi37mfWwLyV2dEkWbvqvYJj64"
     }
   },
   {
@@ -39,9 +39,9 @@ const domainData = [
     need: "Understanding the deep foundations of systems, infrastructure, open-source tech, and cutting-edge paradigms is essential for creating performant backends.",
     societyHelp: "From foundational architecture to cloud pipelines and system design, we explore how to build resilient systems and deploy complex tech stacks.",
     lead: {
-      name: "David Kim",
+      name: "Vaishnav Gupta",
       role: "Technical Lead",
-      avatar: "https://i.pravatar.cc/150?u=david"
+      avatar: "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785315600&v=beta&t=I5B3G7r0K8P7Kk1Q9t1T1Q1T1Q1T1Q1T1Q1T1Q1T"
     }
   },
   {
@@ -51,9 +51,9 @@ const domainData = [
     need: "A powerful backend is useless if the user interface is confusing. Intuitive, accessible, and beautiful design is critical for product success.",
     societyHelp: "Learn wireframing, prototyping, user research, and design systems in Figma. We work closely with developers to bring designs to life.",
     lead: {
-      name: "Elena Martinez",
+      name: "Aarsh Upadhyay",
       role: "Design Lead",
-      avatar: "https://i.pravatar.cc/150?u=elena"
+      avatar: "https://media.licdn.com/dms/image/v2/D4D03AQFc7G8FNXP2Cw/profile-displayphoto-shrink_800_800/B4DZXWd3q2HwAc-/0/1743059910043?e=1785315600&v=beta&t=P9gL7H3tC2l6H1pA8q3n1n3n1n3n1n3n1n3n1n3"
     }
   }
 ];
@@ -96,16 +96,16 @@ export default function DomainsPage() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-bold mb-6"
           >
             Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Domains</span>
           </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-lg text-[var(--text-secondary)]"
           >
@@ -115,7 +115,7 @@ export default function DomainsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {domainData.map((domain, index) => (
-            <motion.div 
+            <motion.div
               key={domain.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ export default function DomainsPage() {
             >
               {/* Decorative top gradient line */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/0 to-emerald-500/0 group-hover:from-blue-500/50 group-hover:via-emerald-400 group-hover:to-blue-500/50 transition-all duration-500" />
-              
+
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <domain.icon className="w-7 h-7 text-emerald-400" />
@@ -154,7 +154,7 @@ export default function DomainsPage() {
                   </div>
                 </div>
 
-                <button 
+                <button
                   onClick={() => handleApplyClick(domain.id)}
                   disabled={isLoading}
                   className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-[var(--border)] transition-all flex items-center gap-2 font-medium w-full sm:w-auto justify-center disabled:opacity-50"
@@ -170,7 +170,7 @@ export default function DomainsPage() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50, x: "-50%" }}
           animate={{ opacity: 1, y: 0, x: "-50%" }}
           exit={{ opacity: 0, y: 50, x: "-50%" }}
