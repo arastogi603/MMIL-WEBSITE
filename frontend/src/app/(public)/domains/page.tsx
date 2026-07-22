@@ -22,7 +22,7 @@ const domainData = [
   },
   {
     id: "web-dev",
-    name: "Web Dev",
+    name: "Web Development",
     icon: Globe,
     need: "Every modern business and organization relies on scalable, robust, and fast web applications to reach their audience and deliver services globally.",
     societyHelp: "We provide hands-on experience building full-stack applications with modern frameworks (React, Next.js, Spring Boot) and deploying them to production.",
@@ -33,8 +33,20 @@ const domainData = [
     }
   },
   {
-    id: "ui-ux",
-    name: "UI/UX",
+    id: "technical",
+    name: "Technical",
+    icon: Cpu,
+    need: "Understanding the deep foundations of systems, infrastructure, open-source tech, and cutting-edge paradigms is essential for creating performant backends.",
+    societyHelp: "From foundational architecture to cloud pipelines and system design, we explore how to build resilient systems and deploy complex tech stacks.",
+    lead: {
+      name: "David Kim",
+      role: "Technical Lead",
+      avatar: "https://i.pravatar.cc/150?u=david"
+    }
+  },
+  {
+    id: "design",
+    name: "Design",
     icon: Layout,
     need: "A powerful backend is useless if the user interface is confusing. Intuitive, accessible, and beautiful design is critical for product success.",
     societyHelp: "Learn wireframing, prototyping, user research, and design systems in Figma. We work closely with developers to bring designs to life.",
@@ -42,18 +54,6 @@ const domainData = [
       name: "Elena Martinez",
       role: "Design Lead",
       avatar: "https://i.pravatar.cc/150?u=elena"
-    }
-  },
-  {
-    id: "ai-ml",
-    name: "AI/ML",
-    icon: Cpu,
-    need: "Artificial Intelligence is transforming every industry. Understanding how to train models and build intelligent systems is the most sought-after skill today.",
-    societyHelp: "From foundational mathematics to neural networks, we build practical ML pipelines, participate in hackathons, and explore generative AI.",
-    lead: {
-      name: "David Kim",
-      role: "AI Lead",
-      avatar: "https://i.pravatar.cc/150?u=david"
     }
   }
 ];
