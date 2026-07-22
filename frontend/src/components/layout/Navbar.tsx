@@ -43,7 +43,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className={`navbar ${theme === "dark" ? "navbar-glass" : ""}`}>
+      <nav className={`navbar ${theme === "dark" ? "navbar-glass" : ""}`.trim()}>
         <div className="navbar-inner">
           {/* Logo */}
           <Link href="/" className="navbar-logo">
@@ -56,7 +56,7 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`nav-pill ${isActive(item.href) ? "active" : ""}`}
+                className={`nav-pill ${isActive(item.href) ? "active" : ""}`.trim()}
               >
                 {item.label}
               </Link>
@@ -126,7 +126,7 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 onClick={closeMobileMenu}
-                className={`mobile-nav-pill ${isActive(item.href) ? "active" : ""}`}
+                className={`mobile-nav-pill ${isActive(item.href) ? "active" : ""}`.trim()}
               >
                 {item.label}
               </Link>

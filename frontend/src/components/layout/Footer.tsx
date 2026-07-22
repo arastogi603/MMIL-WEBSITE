@@ -8,7 +8,7 @@ export function Footer() {
   
   return (
     <footer 
-      className={`site-footer relative z-10 w-full mt-auto ${theme === "dark" ? "footer-dark" : ""}`} 
+      className={`site-footer relative z-10 w-full mt-auto ${theme === "dark" ? "footer-dark" : ""}`.trim()}
     >
       <div 
         className="footer-inner max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between p-6 gap-6 md:gap-4" 
