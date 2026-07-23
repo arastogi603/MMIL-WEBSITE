@@ -8,8 +8,17 @@ export function InitialLoader() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [isCarpetOpening, setIsCarpetOpening] = useState(false);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // SPEED CONTROL: Change this value to adjust the speed of the opening animation (original was 1)
+  // Lower values = faster animation, Higher values = slower animation
+  const ANIMATION_SPEED = 1;
+
+  // VIDEO SPEED: Change this value to adjust the playback speed of the background video
+  // 1 = normal speed, 1.5 = 50% faster, 2 = twice as fast
+  const VIDEO_PLAYBACK_SPEED = 1.5;
+
 
   useEffect(() => {
     // Only run on client
@@ -21,6 +30,7 @@ export function InitialLoader() {
 
   useEffect(() => {
     if (hasInteracted && videoRef.current) {
+      videoRef.current.playbackRate = VIDEO_PLAYBACK_SPEED;
       videoRef.current.play().catch(e => console.error("Video playback failed", e));
     }
   }, [hasInteracted]);
@@ -36,7 +46,7 @@ export function InitialLoader() {
     setTimeout(() => {
       setIsVideoFinished(true);
       sessionStorage.setItem("mmil_intro_played", "true");
-    }, 1200); // Wait for carpet animation to finish before removing from DOM
+    }, (ANIMATION_SPEED * 1000) + 200); // Wait for carpet animation to finish before removing from DOM
   };
 
   if (hasPlayedOnce || isVideoFinished) {
@@ -44,20 +54,20 @@ export function InitialLoader() {
   }
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-transparent overflow-hidden"
       onClick={handleInteraction}
     >
       <AnimatePresence>
         {!isCarpetOpening && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="absolute inset-0 z-30 flex flex-col items-center justify-center"
           >
             {!hasInteracted ? (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-white text-xl font-light tracking-[0.2em] animate-pulse cursor-pointer p-8 text-center"
@@ -74,7 +84,7 @@ export function InitialLoader() {
                   onEnded={handleVideoEnd}
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none gap-6">
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 1 }}
@@ -82,13 +92,13 @@ export function InitialLoader() {
                   >
                     Experience Loading
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, width: 0 }}
                     animate={{ opacity: 1, width: 192 }}
                     transition={{ delay: 1, duration: 1, ease: "easeInOut" }}
                     className="h-[1px] bg-white/20 relative overflow-hidden"
                   >
-                    <motion.div 
+                    <motion.div
                       animate={{ x: ["-100%", "200%"] }}
                       transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
                       className="absolute top-0 left-0 w-1/2 h-full bg-white/80"
@@ -106,14 +116,14 @@ export function InitialLoader() {
         className="absolute top-0 left-0 w-1/2 h-full bg-black z-20 pointer-events-none border-r border-white/10"
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "-100%" : 0 }}
-        transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
+        transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
-      
+
       <motion.div
         className="absolute top-0 right-0 w-1/2 h-full bg-black z-20 pointer-events-none border-l border-white/10"
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "100%" : 0 }}
-        transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
+        transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
     </div>
   );
