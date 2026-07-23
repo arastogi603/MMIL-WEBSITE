@@ -2,31 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, Menu, X, Home, Info, Layers, Calendar, GraduationCap, Briefcase, Users, Image as ImageIcon, Library, LogIn, UserPlus, LayoutDashboard, Sun, Moon } from "lucide-react";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { isCoreTeam } from "@/lib/roles";
 import { useState } from "react";
 import Image from "next/image";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import GooeyNav from "@/components/GooeyNav";
 import { useTheme } from "@/lib/theme/theme";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import OptionWheel from "@/components/OptionWheel";
 
 const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Domains", href: "/domains" },
-  { label: "Events", href: "/events" },
-  { label: "Alumni", href: "/alumni" },
-  { label: "Projects", href: "/projects" },
-  { label: "Teams", href: "/team" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Resources", href: "/resources" },
+  { label: "Home", href: "/", icon: Home },
+  { label: "About", href: "/about", icon: Info },
+  { label: "Domains", href: "/domains", icon: Layers },
+  { label: "Events", href: "/events", icon: Calendar },
+  { label: "Alumni", href: "/alumni", icon: GraduationCap },
+  { label: "Projects", href: "/projects", icon: Briefcase },
+  { label: "Teams", href: "/team", icon: Users },
+  { label: "Gallery", href: "/gallery", icon: ImageIcon },
+  { label: "Resources", href: "/resources", icon: Library },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const { isAuthenticated, user, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
   // Don't show navbar in admin, portal, or auth
   if (pathname.startsWith("/admin") || pathname.startsWith("/portal") || pathname === "/login" || pathname === "/register") {
@@ -41,9 +43,29 @@ export function Navbar() {
     return pathname.startsWith(href);
   };
 
+  const dynamicNavItems = [
+    ...navItems,
+    ...(isAuthenticated
+      ? [
+          ...(isCoreTeam(user?.role) ? [{ label: "Admin", href: "/admin/dashboard", icon: LayoutDashboard }] : []),
+          { label: "Sign Out", href: "#", icon: LogOut, onClick: (e: React.MouseEvent) => { e.preventDefault(); logout(); window.location.href = "/"; } }
+        ]
+      : [
+          { label: "Sign In", href: "/login", icon: LogIn },
+          { label: "Join Now", href: "/register", icon: UserPlus }
+        ]),
+    { 
+      label: theme === "dark" ? "Light Mode" : "Dark Mode", 
+      href: "#theme", 
+      icon: theme === "dark" ? Sun : Moon, 
+      onClick: (e: React.MouseEvent) => { e.preventDefault(); toggleTheme(); } 
+    }
+  ];
+
   return (
     <>
-      <nav className={`navbar ${theme === "dark" ? "navbar-glass" : ""}`.trim()}>
+      <header>
+        <div className="navbar">
         <div className="navbar-inner">
           {/* Logo */}
           <Link href="/" className="navbar-logo">
@@ -52,58 +74,25 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="navbar-links">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`nav-pill ${isActive(item.href) ? "active" : ""}`.trim()}
-              >
-                {item.label}
-              </Link>
-            ))}
+            <GooeyNav 
+               items={dynamicNavItems} 
+               initialActiveIndex={Math.max(0, dynamicNavItems.findIndex(item => isActive(item.href)))} 
+            />
           </div>
 
           {/* Actions */}
           <div className="navbar-actions">
-            <ThemeToggle />
             
-            {/* Desktop Auth */}
-            <div className="desktop-only" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              {isAuthenticated ? (
-                <>
-                  {isCoreTeam(user?.role) && (
-                    <Link href="/admin/dashboard" className="nav-auth-btn">
-                      Dashboard
-                    </Link>
-                  )}
-                  {user?.role === "student" && (
-                    <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-secondary)" }}>
-                      Hi, {user.name?.split(" ")[0] || "Member"}
-                    </span>
-                  )}
-                  <button
-                    onClick={() => {
-                      logout();
-                      window.location.href = "/";
-                    }}
-                    className="nav-auth-btn"
-                    title="Sign Out"
-                    style={{ cursor: "pointer" }}
-                  >
-                    <LogOut style={{ width: 14, height: 14 }} />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="nav-auth-btn">
-                    Sign In
-                  </Link>
-                  <Link href="/register" className="nav-auth-btn-filled">
-                    Join Now
-                  </Link>
-                </>
-              )}
+            <div className="mobile-only">
+              <ThemeToggle />
             </div>
+
+            {/* Desktop greeting for student */}
+            {isAuthenticated && user?.role === "student" && (
+              <span className="desktop-only" style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-secondary)", marginLeft: "8px" }}>
+                Hi, {user.name?.split(" ")[0] || "Member"}
+              </span>
+            )}
 
             {/* Mobile Hamburger */}
             <button
@@ -114,46 +103,48 @@ export function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
+      </div>
+    </header>
 
-      {/* Mobile Menu */}
+    {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <>
           <div className="mobile-menu-overlay" onClick={closeMobileMenu} />
-          <div className="mobile-menu">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMobileMenu}
-                className={`mobile-nav-pill ${isActive(item.href) ? "active" : ""}`.trim()}
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            <div className="mobile-menu-actions">
-              {isAuthenticated ? (
-                <>
-                  {isCoreTeam(user?.role) && (
-                    <Link href="/admin/dashboard" onClick={closeMobileMenu} className="nav-auth-btn-filled" style={{ textAlign: "center", padding: "0.75rem" }}>
-                      Admin Dashboard
-                    </Link>
-                  )}
-                  <span style={{ textAlign: "center", fontSize: "0.8rem", fontWeight: 600, color: "var(--text-secondary)" }}>
-                    Signed in as {user?.name || "Member"}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" onClick={closeMobileMenu} className="nav-auth-btn" style={{ textAlign: "center", padding: "0.75rem" }}>
-                    Sign In
-                  </Link>
-                  <Link href="/register" onClick={closeMobileMenu} className="nav-auth-btn-filled" style={{ textAlign: "center", padding: "0.75rem" }}>
-                    Join MMIL
-                  </Link>
-                </>
-              )}
+          <div className="mobile-menu" style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: 0, justifyContent: 'center', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '400px' }}>
+              <OptionWheel 
+                items={dynamicNavItems.map(item => ({
+                  label: item.label,
+                  icon: item.icon,
+                  href: item.href,
+                  onClick: (item as any).onClick
+                })) as any}
+                defaultSelected={Math.max(0, dynamicNavItems.findIndex(item => isActive(item.href)))}
+                activeColor="#ffffff"
+                textColor="rgba(255, 255, 255, 0.5)"
+                side="left"
+                fontSize={2.2}
+                spacing={1.8}
+                inset={40}
+                loop={true}
+                onChange={(idx: number) => {
+                  const item = dynamicNavItems[idx];
+                  if (!item) return;
+                  
+                  if ((window as any).wheelNavTimer) {
+                    clearTimeout((window as any).wheelNavTimer);
+                  }
+                  
+                  (window as any).wheelNavTimer = setTimeout(() => {
+                    closeMobileMenu();
+                    if ((item as any).onClick) {
+                      (item as any).onClick({ preventDefault: () => {} });
+                    } else if (item.href && item.href !== "#theme") {
+                      window.location.href = item.href;
+                    }
+                  }, 800);
+                }}
+              />
             </div>
           </div>
         </>

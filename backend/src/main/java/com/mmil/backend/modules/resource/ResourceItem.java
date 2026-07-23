@@ -1,5 +1,6 @@
 package com.mmil.backend.modules.resource;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mmil.backend.modules.user.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class ResourceItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folder_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ResourceFolder folder;
 
     @Column(nullable = false)
@@ -32,6 +34,7 @@ public class ResourceItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "published_by_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User publishedBy;
 
     @Column(nullable = false, updatable = false)

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Bebas_Neue } from "next/font/google";
+import { Inter, Josefin_Sans, Geist_Mono, Bebas_Neue, Caveat, Geist } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -15,6 +15,16 @@ const geistMono = Geist_Mono({
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas",
   weight: "400",
+  subsets: ["latin"],
+});
+
+const josefin = Josefin_Sans({
+  variable: "--font-josefin",
+  subsets: ["latin"],
+});
+
+const caveat = Caveat({
+  variable: "--font-script",
   subsets: ["latin"],
 });
 
@@ -32,6 +42,10 @@ import { Footer } from "@/components/layout/Footer";
 import { BackgroundShapes } from "@/components/layout/BackgroundShapes";
 import { InitialLoader } from "@/components/layout/InitialLoader";
 import { ThemeProvider } from "@/lib/theme/theme";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
 
 export default function RootLayout({
   children,
@@ -41,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", inter.variable, geistMono.variable, bebasNeue.variable, josefin.variable, caveat.variable, "font-sans", geist.variable)}
       suppressHydrationWarning
     >
       <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
