@@ -15,7 +15,7 @@ export function Footer() {
       >
         {/* Left: Logo (optional, mostly shown on standard layout) */}
         <div className="footer-logo flex items-center">
-          <Image src="/logo.png" alt="MMIL Logo" width={36} height={36} className="footer-logo-img" />
+          <Image src="/mmil-logo-new.png" alt="MMIL Logo" width={36} height={36} className="footer-logo-img" />
         </div>
 
         {/* Center: Tagline */}
