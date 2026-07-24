@@ -8,7 +8,7 @@ import { useTheme } from "@/lib/theme/theme";
  * arrangement — larger bottom blue glow, slightly different glass rects.
  * This is a fixed background that sits behind the page content.
  */
-export function ProjectPageBackground() {
+export function ProjectPageBackground({ isVisible = true }: { isVisible?: boolean }) {
   const { theme } = useTheme();
   const isLight = theme === "light";
 
@@ -21,8 +21,9 @@ export function ProjectPageBackground() {
         overflow: "hidden",
         pointerEvents: "none",
         background: isLight ? "var(--background)" : "#040E12",
-        opacity: isLight ? 0.3 : 1, // Fade out the intense dark gradients in light mode
-        transition: "background 0.3s ease, opacity 0.3s ease",
+        opacity: isVisible ? (isLight ? 0.3 : 1) : 0, // Fade out when not visible
+        transition: "opacity 0.6s ease-in-out",
+        willChange: "opacity",
       }}
     >
       {/* ── Polygon 5 — top-left blue glow ── */}
