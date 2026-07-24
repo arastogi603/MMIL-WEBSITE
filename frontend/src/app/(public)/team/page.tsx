@@ -60,10 +60,11 @@ const domains: DomainData[] = [
     label: "Technical",
     lead: { name: "Vaishnav Gupta", role: "Technical Lead", avatar: "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785312000&v=beta&t=fibyE81Q5lfLA3xttPyyCXqzLipX02VbkeO1ZX2MinA", linkedin: "https://www.linkedin.com/in/vaishnavgupta/" },
     students: [
+      { name: "Abhishek", role: "Technical Member", avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSs9bBvurUnow2rc2cuJHs7GL1_7VA3Q_QeQBC_X08Xg&s=10", linkedin: "https://www.linkedin.com/in/abhishekk1811/" },
       { name: "Shivanshu Kushwaha", role: "Technical Member", avatar: "https://drive.google.com/uc?export=view&id=1P1PzDOag-xV34vRgnfrKVkG8FN7Ia_Td", linkedin: "https://www.linkedin.com/in/shivanshu-kushwaha-12572b345/" },
       { name: "Rajat Kumar", role: "Technical Member", avatar: "https://media.licdn.com/dms/image/v2/D5635AQFVYMArh5ZYUA/profile-framedphoto-shrink_800_800/B56Z7q0_aUIQAY-/0/1782056220724?e=1785358800&v=beta&t=Rn4edCrF-0LmQoqTQxRicM5ZbmGLrelsIh_2A1xYu18", linkedin: "https://www.linkedin.com/in/rajat281/" },
       { name: "Mahi Gupta", role: "Technical Member", avatar: "https://drive.google.com/uc?export=view&id=1w6V2va73iu2Ns8ya-WtQE4z_uMzuhHPU", linkedin: "https://www.linkedin.com/in/mahi-gupta-8623b4364/" },
-      { name: "Placeholder Name", role: "Technical Member", avatar: "https://i.pravatar.cc/150?u=tech-student", linkedin: "#" },
+      
     ],
   },
   {
