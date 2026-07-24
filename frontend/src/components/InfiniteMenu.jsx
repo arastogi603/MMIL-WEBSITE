@@ -910,7 +910,10 @@ const defaultItems = [
   }
 ];
 
-export default function InfiniteMenu({ items = [], scale = 1.0 }) {
+/**
+ * @param {{ items?: any[]; scale?: number; onMovementChange?: (moving: boolean) => void }} props
+ */
+export default function InfiniteMenu({ items = [], scale = 1.0, onMovementChange }) {
   const canvasRef = useRef(null);
   const [activeItem, setActiveItem] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
@@ -924,12 +927,17 @@ export default function InfiniteMenu({ items = [], scale = 1.0 }) {
       setActiveItem(items[itemIndex]);
     };
 
+    const handleMovement = moving => {
+      setIsMoving(moving);
+      if (onMovementChange) onMovementChange(moving);
+    };
+
     if (canvas) {
       sketch = new InfiniteGridMenu(
         canvas,
         items.length ? items : defaultItems,
         handleActiveItem,
-        setIsMoving,
+        handleMovement,
         sk => sk.run(),
         scale
       );
