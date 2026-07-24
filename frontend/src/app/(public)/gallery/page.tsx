@@ -57,7 +57,7 @@ export default function GalleryPage() {
       <div style={{
         width: "100%",
         maxWidth: "1400px",
-        height: "clamp(400px, 70vh, 700px)",
+        height: "clamp(450px, 85vh, 900px)",
         position: "relative",
         borderRadius: "24px",
         overflow: "hidden",
@@ -76,7 +76,7 @@ export default function GalleryPage() {
           boxShadow: "0 10px 30px rgba(244, 235, 225, 0.15)"
         })
       }}>
-        <DomeGallery images={placeholders} grayscale={false} />
+        <DomeGallery images={placeholders} grayscale={false} segments={25} fit={0.65} />
       </div>
       
       <div style={{ height: "100px" }}></div>
