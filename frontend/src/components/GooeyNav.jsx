@@ -5,7 +5,7 @@ import './GooeyNav.css';
 const GooeyNav = ({
   items,
   animationTime = 600,
-  particleCount = 15,
+  particleCount = 18,
   particleDistances = [90, 10],
   particleR = 100,
   timeVariance = 300,
@@ -30,7 +30,7 @@ const GooeyNav = ({
       start: getXY(d[0], particleCount - i, particleCount),
       end: getXY(d[1] + noise(7), particleCount - i, particleCount),
       time: t,
-      scale: 1 + noise(0.2),
+      scale: 1.4 + noise(0.3), // Thicker particles!
       color: colors[Math.floor(Math.random() * colors.length)],
       rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10
     };
@@ -57,7 +57,7 @@ const GooeyNav = ({
         particle.style.setProperty('--end-y', `${p.end[1]}px`);
         particle.style.setProperty('--time', `${p.time}ms`);
         particle.style.setProperty('--scale', `${p.scale}`);
-        particle.style.setProperty('--color', `var(--color-${p.color}, white)`);
+        particle.style.setProperty('--color', `var(--nav-item-active-bg, black)`);
         particle.style.setProperty('--rotate', `${p.rotate}deg`);
 
         point.classList.add('point');
@@ -91,7 +91,8 @@ const GooeyNav = ({
     Object.assign(filterRef.current.style, styles);
   };
 
-  const handleClick = (e, index) => {
+  const handleClick = (e, index, item) => {
+    if (item && item.isAction) return; // Prevent action buttons from getting active state
     const liEl = e.currentTarget;
     if (activeIndex === index) return;
 
@@ -108,21 +109,36 @@ const GooeyNav = ({
     }
   };
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDown = (e, index, item) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
+      if (item && item.isAction) {
+        if (item.onClick) item.onClick(e);
+        return;
+      }
       const liEl = e.currentTarget.parentElement;
       if (liEl) {
-        handleClick({ currentTarget: liEl }, index);
+        handleClick({ currentTarget: liEl }, index, item);
       }
     }
   };
+
+  // Synced Active state (For Bento Grid)
+  useEffect(() => {
+    if (initialActiveIndex !== activeIndex) {
+      setActiveIndex(initialActiveIndex);
+    }
+  }, [initialActiveIndex]);
 
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;
     const activeLi = navRef.current.querySelectorAll('li')[activeIndex];
     if (activeLi) {
       updateEffectPosition(activeLi);
+      // Show Pill on Load
+      if (filterRef.current) {
+        filterRef.current.classList.add('active');
+      }
     }
 
     const resizeObserver = new ResizeObserver(() => {
@@ -142,14 +158,15 @@ const GooeyNav = ({
         <ul ref={navRef}>
           {items.map((item, index) => {
             const Icon = item.icon;
+            const isActiveClass = activeIndex === index && !item.isAction ? 'active' : '';
             return (
-              <li key={index} className={activeIndex === index ? 'active' : ''}>
+              <li key={index} className={isActiveClass}>
                 <Link href={item.href} onClick={e => {
-                  handleClick(e, index);
+                  handleClick(e, index, item);
                   if (item.onClick) item.onClick(e);
-                }} onKeyDown={e => handleKeyDown(e, index)}>
+                }} onKeyDown={e => handleKeyDown(e, index, item)}>
                   {Icon && <Icon className="w-5 h-5 shrink-0" />}
-                  <span className="gooey-label">{item.label}</span>
+                  {item.label && <span className="gooey-label">{item.label}</span>}
                 </Link>
               </li>
             );
@@ -160,8 +177,8 @@ const GooeyNav = ({
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <defs>
           <filter id="goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6.5" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -9" result="goo" />
             <feComposite in="SourceGraphic" in2="goo" operator="atop" />
           </filter>
         </defs>

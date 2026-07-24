@@ -55,9 +55,10 @@ export function Navbar() {
           { label: "Join Now", href: "/register", icon: UserPlus }
         ]),
     { 
-      label: theme === "dark" ? "Light Mode" : "Dark Mode", 
+      label: "", // Remove text label so it looks clean like before
       href: "#theme", 
       icon: theme === "dark" ? Sun : Moon, 
+      isAction: true, // This flag ensures GooeyNav doesn't assign the pill to this button!
       onClick: (e: React.MouseEvent) => { e.preventDefault(); toggleTheme(); } 
     }
   ];

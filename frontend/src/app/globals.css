@@ -15,6 +15,7 @@
 [data-theme="light"],
 :root {
   --background: #FFFFFF;
+  --page-bg-img: url('/bg-light.svg');
   --foreground: #111111;
   --text-primary: #111111;
   --text-secondary: #555555;
@@ -71,6 +72,7 @@
    ============================================ */
 [data-theme="dark"] {
   --background: #040E12;
+  --page-bg-img: url('/bg-dark.svg');
   --foreground: #ffffff;
   --text-primary: #ffffff;
   --text-secondary: #bbbbbb;
@@ -85,8 +87,8 @@
   --nav-border: rgba(255, 255, 255, 0.1);
   --nav-item-border: rgba(255, 255, 255, 0.25);
   --nav-item-text: #cccccc;
-  --nav-item-active-bg: #ffffff;
-  --nav-item-active-text: #111111;
+  --nav-item-active-bg: #111111;
+  --nav-item-active-text: #ffffff;
   --nav-item-hover-bg: rgba(255, 255, 255, 0.08);
 
   /* Background shapes */
@@ -141,10 +143,16 @@ body::-webkit-scrollbar {
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--page-bg-img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-inter), 'Outfit', 'Inter', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  transform: translateZ(0);
 }
 
 h1, h2, h3, h4, h5, h6 {
