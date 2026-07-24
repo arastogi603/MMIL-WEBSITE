@@ -78,7 +78,7 @@ export function InitialLoader() {
               <>
                 <video
                   ref={videoRef}
-                  src="/video.mp4"
+                  src="/animation.mp4"
                   className="w-full h-full object-cover opacity-60"
                   playsInline
                   onEnded={handleVideoEnd}
