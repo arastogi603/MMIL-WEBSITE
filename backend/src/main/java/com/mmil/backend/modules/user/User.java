@@ -73,18 +73,42 @@ public class User implements UserDetails {
     // UserDetails interface implementations
     private static final List<String> CLUB_ROLES = List.of(
         "president", "vice-president", "ctc", "co-ctc", "general-secretary",
-        "management-head", "design-head", "programming-head", "technical-head", "web-development-head"
+        "management-head", "design-head", "programming-head", "technical-head", "web-development-head",
+        "technical", "programming", "design", "web-development"
     );
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String roleStr = "ROLE_" + role.toUpperCase();
-        if (CLUB_ROLES.contains(role.toLowerCase())) {
+        String lowerRole = role.toLowerCase();
+        
+        // System Admin gets ultimate access
+        if (lowerRole.equals("system_admin") || lowerRole.equals("admin")) {
+            return List.of(
+                new SimpleGrantedAuthority(roleStr),
+                new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_CORE-TEAM")
+            );
+        }
+        
+        // President and CTC get Admin rights
+        if (lowerRole.equals("president") || lowerRole.equals("ctc")) {
+            return List.of(
+                new SimpleGrantedAuthority(roleStr),
+                new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_CORE-TEAM")
+            );
+        }
+        
+        // Other Club Roles get Core Team rights
+        if (CLUB_ROLES.contains(lowerRole)) {
             return List.of(
                 new SimpleGrantedAuthority(roleStr),
                 new SimpleGrantedAuthority("ROLE_CORE-TEAM")
             );
         }
+        
+        // Default student / no rights
         return List.of(new SimpleGrantedAuthority(roleStr));
     }
 

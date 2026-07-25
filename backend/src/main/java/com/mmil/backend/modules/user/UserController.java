@@ -32,13 +32,22 @@ public class UserController {
 
     @PutMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDto> updateUserRole(@PathVariable UUID id, @RequestBody UpdateRoleRequest request) {
+    public ResponseEntity<UserDto> updateUserRole(@PathVariable UUID id, @RequestBody UpdateRoleRequest request, Principal principal) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        User currentUser = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
         
         // Ensure you can't demote the master admin accidentally (safeguard)
         if (user.getEmail().equals("admin@mmil.com")) {
             throw new RuntimeException("Cannot change role of master admin");
+        }
+        
+        String targetRole = user.getRole().toLowerCase();
+        boolean isSystemAdmin = currentUser.getRole().equalsIgnoreCase("system_admin") || currentUser.getRole().equalsIgnoreCase("admin");
+        if ((targetRole.equals("president") || targetRole.equals("ctc")) && !isSystemAdmin) {
+            throw new RuntimeException("Only System Admin can modify President or CTC roles");
         }
 
         user.setRole(request.getRole());
@@ -48,11 +57,20 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteUser(@PathVariable UUID id, Principal principal) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User currentUser = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new RuntimeException("Current user not found"));
+        
         if (user.getEmail().equals("admin@mmil.com")) {
             throw new RuntimeException("Cannot delete master admin");
         }
+        
+        String targetRole = user.getRole().toLowerCase();
+        boolean isSystemAdmin = currentUser.getRole().equalsIgnoreCase("system_admin") || currentUser.getRole().equalsIgnoreCase("admin");
+        if ((targetRole.equals("president") || targetRole.equals("ctc")) && !isSystemAdmin) {
+            throw new RuntimeException("Only System Admin can delete President or CTC");
+        }
+        
         userRepository.delete(user);
         return ResponseEntity.ok().build();
     }

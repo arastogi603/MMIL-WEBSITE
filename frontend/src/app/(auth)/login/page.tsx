@@ -89,10 +89,10 @@ export default function LoginPage() {
         className="w-full max-w-md relative z-10 my-16 sm:my-0"
       >
         {/* Spatial UI / Liquid Glass Box */}
-        <div className="glassmorphism rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 border border-[var(--card-border)] bg-[var(--card-bg)] shadow-[0_12px_40px_var(--shadow-color),inset_0_1px_2px_rgba(255,255,255,0.1)] backdrop-blur-2xl relative overflow-hidden">
+        <div className="glassmorphism rounded-[2.5rem] p-6 sm:p-12 border border-[var(--card-border)] bg-[var(--card-bg)] shadow-[0_12px_40px_var(--shadow-color),inset_0_1px_2px_rgba(255,255,255,0.1)] backdrop-blur-2xl relative overflow-hidden">
           
           {/* Subtle gradient highlights for liquid glass feel */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--highlight-color)] to-transparent opacity-10 pointer-events-none rounded-3xl sm:rounded-[2.5rem]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--highlight-color)] to-transparent opacity-10 pointer-events-none rounded-[2.5rem]" />
           
           {/* Animated Orbs */}
           <motion.div 
@@ -140,7 +140,7 @@ export default function LoginPage() {
                 <motion.div variants={itemVariants}>
                   <div className="flex justify-between items-center mb-1.5 sm:mb-2 pl-1 pr-1">
                     <label className="block text-xs sm:text-sm font-semibold text-[var(--text-secondary)]">Password</label>
-                    <Link href="/reset-password" className="text-[11px] sm:text-xs text-blue-500 hover:text-blue-400 font-bold transition-colors">Forgot password?</Link>
+                    <Link href="/forgot-password" className="text-[11px] sm:text-xs text-blue-500 hover:text-blue-400 font-bold transition-colors">Forgot password?</Link>
                   </div>
                   <div className="relative">
                     <input 

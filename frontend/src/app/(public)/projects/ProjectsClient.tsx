@@ -7,8 +7,22 @@ import Image from "next/image";
 import InfiniteSlider from "@/components/ui/InfiniteSlider";
 import gsap from "gsap";
 import { useRouter } from "next/navigation";
+import { useTheme } from "@/lib/theme/theme";
+import { Code, Server, Smartphone, Globe, Cpu, Palette, Database, Hexagon } from "lucide-react";
 
 import Lenis from 'lenis';
+
+const getCategoryIcon = (category: string) => {
+  const cat = (category || '').toLowerCase();
+  if (cat.includes('web3') || cat.includes('blockchain') || cat.includes('crypto')) return <Hexagon size={18} />;
+  if (cat.includes('front') || cat.includes('ui') || cat.includes('design')) return <Palette size={18} />;
+  if (cat.includes('back') || cat.includes('api') || cat.includes('server')) return <Server size={18} />;
+  if (cat.includes('mobile') || cat.includes('app') || cat.includes('android') || cat.includes('ios')) return <Smartphone size={18} />;
+  if (cat.includes('data') || cat.includes('db')) return <Database size={18} />;
+  if (cat.includes('ai') || cat.includes('ml') || cat.includes('model')) return <Cpu size={18} />;
+  if (cat.includes('web') || cat.includes('site')) return <Globe size={18} />;
+  return <Code size={18} />;
+};
 
 const mapValue = (value: number, min: number, max: number, newMin: number, newMax: number) => {
   return (value - min) / (max - min) * (newMax - newMin) + newMin;
@@ -16,6 +30,7 @@ const mapValue = (value: number, min: number, max: number, newMin: number, newMa
 
 export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }) {
   const router = useRouter();
+  const { theme } = useTheme();
   const [posts, setPosts] = useState<any[]>(initialPosts);
   const [currentPost, setCurrentPost] = useState<any | null>(initialPosts[0] || null);
 
@@ -51,7 +66,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   ---------------------------------- */
   const handleViewMore = useCallback(
     (slug: string, imageUrl: string) => {
-      if (!projectRef.current || !descriptionRef.current || !sketchRef.current) return;
+      if (!projectRef.current || !sketchRef.current) return;
       isExitingRef.current = true;
       const img = new window.Image();
       img.onload = () => {
@@ -77,13 +92,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       images: infinitePosts,
       router: router,
       onHover: (slug: string | null) => {
-        const isCurrentPost = slug !== null && String(slug) === String(currentPostRef.current?.slug);
-        const hoverClass = styles['page__project--hovered'];
-        if (hoverClass) {
-          projectRef.current?.classList.toggle(hoverClass, isCurrentPost);
-        }
-        (document.getElementById("container") as HTMLElement).style.cursor = isCurrentPost ? 'none' : 'default';
-        gsap.to(followerRef.current, { opacity: isCurrentPost ? 1 : 0, duration: 0.3, ease: "power2.out" });
+        // We now rely purely on native DOM onMouseEnter/Leave for perfectly instant hover states!
       },
       onClick: (slug: string) => {
         const isCurrentPost = slug !== null && String(slug) === String(currentPostRef.current?.slug);
@@ -169,14 +178,13 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       introPlayedRef.current ||
       !containerEl ||
       !projectRef.current ||
-      !descriptionRef.current ||
       !currentPost
     ) return;
   
     introPlayedRef.current = true;
   
     gsap.set(containerEl, { y: "120vh", rotateX: -45, opacity: 0 });
-    gsap.set([descriptionRef.current, projectRef.current], { opacity: 0, y: 30 });
+    gsap.set(projectRef.current, { opacity: 0, y: 30 });
   
     gsap.to(containerEl, {
       y: "0vh",
@@ -186,11 +194,11 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       ease: "power3.inOut"
     });
 
-    gsap.to([descriptionRef.current, projectRef.current], { 
+    gsap.to(projectRef.current, { 
       opacity: 1, 
       y: 0, 
       duration: 1, 
-      stagger: 0.1,
+      ease: "power3.out",
       delay: 0.8
     });
   
@@ -239,7 +247,10 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       gsap.to(followerRef.current, { x: e.clientX, y: e.clientY, duration: 0.4, ease: "power2.out", overwrite: "auto" });
     };
     window.addEventListener("mousemove", onMouseMove);
-    return () => window.removeEventListener("mousemove", onMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      document.body.style.cursor = '';
+    };
   }, []);
 
   const handlePreload = useCallback((imageUrl: string) => {
@@ -251,12 +262,20 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
      Render
   ---------------------------------- */
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{ color: '#fff' }}>
       {/* Hero Text that scrolls away naturally */}
       <div className="absolute top-0 left-0 w-full h-[100vh] flex items-center justify-center z-50 pointer-events-none">
         <h1 
-          className="hero-title text-white drop-shadow-2xl"
-          style={{ WebkitTextStroke: '3px black' }}
+          className="hero-title drop-shadow-2xl"
+          style={{ 
+             color: '#fff',
+             WebkitTextFillColor: '#fff',
+             WebkitTextStroke: '0px',
+             fontFamily: "var(--font-josefin), sans-serif",
+             fontSize: "clamp(4rem, 15vw, 12rem)",
+             fontWeight: 900,
+             whiteSpace: "nowrap"
+          }}
         >
           OUR PROJECTS
         </h1>
@@ -294,15 +313,22 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
           </div>
           <div ref={overlayRef} className={styles.page__overlay} />
 
-          <div ref={descriptionRef} className={styles.page__description} data-anim="description">
-            <p>{currentPost.title} — {currentPost.basicInfo?.category || 'Tech'}</p>
-          </div>
-
           <div
             ref={projectRef}
             className={styles.page__project}
             data-anim="project"
-            onMouseEnter={() => handlePreload(currentPost.image)}
+            style={{ color: '#fff' }}
+            onMouseEnter={() => {
+              handlePreload(currentPost.image);
+              gsap.to(followerRef.current, { opacity: 1, duration: 0.3, ease: "power2.out" });
+              document.body.style.cursor = 'none';
+              projectRef.current?.classList.add(styles['page__project--hovered']);
+            }}
+            onMouseLeave={() => {
+              gsap.to(followerRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
+              document.body.style.cursor = '';
+              projectRef.current?.classList.remove(styles['page__project--hovered']);
+            }}
             onClick={() => handleViewMore(currentPost.slug, currentPost.image)}
           >
             <p className={`${styles.page__project__item} ${styles.page__project__title}`}>

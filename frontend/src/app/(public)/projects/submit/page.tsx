@@ -59,37 +59,37 @@ export default function SubmitProjectPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-transparent pt-32 pb-20 text-[var(--text-primary)] flex items-center justify-center font-['Outfit'] relative overflow-hidden">
+      <div className="min-h-screen bg-transparent pt-32 pb-20 flex items-center justify-center font-['Outfit'] relative overflow-hidden">
         <ProjectPageBackground />
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/70 backdrop-blur-xl p-12 rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.05)] text-center max-w-lg"
+          className="bg-white/70 backdrop-blur-xl p-12 rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.05)] text-center max-w-lg z-10 relative"
         >
           <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
             <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
-          <h2 className="text-3xl font-black mb-4">Project Submitted!</h2>
-          <p className="text-[var(--text-secondary)] font-medium mb-8">
+          <h2 className="text-3xl font-black mb-4 text-[#111]">Project Submitted!</h2>
+          <p className="text-neutral-500 font-medium mb-8">
             Your project has been successfully submitted and is pending review by the MMIL core team.
           </p>
-          <p className="text-sm font-bold text-[var(--text-secondary)]">Redirecting to projects page...</p>
+          <p className="text-sm font-bold text-neutral-400">Redirecting to projects page...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-transparent pt-32 pb-20 font-['Outfit'] text-[var(--text-primary)] relative overflow-hidden">
+    <div className="min-h-screen bg-transparent pt-32 pb-20 font-['Outfit'] relative overflow-hidden">
       <ProjectPageBackground />
       <div className="max-w-3xl mx-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Submit a Project</h1>
-          <p className="text-[var(--text-secondary)] font-medium text-lg mb-12">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-[#111]">Submit a Project</h1>
+          <p className="text-neutral-500 font-medium text-lg mb-12">
             Built something cool? Submit your project to be featured on the MMIL platform and share it with the community.
           </p>
 
-          <form onSubmit={handleSubmit} className="bg-white/60 backdrop-blur-2xl p-8 md:p-10 rounded-[2.5rem] border border-white shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05),inset_0_2px_5px_rgba(255,255,255,0.8)] space-y-6">
+          <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.05),inset_0_2px_4px_rgba(255,255,255,1)] space-y-6">
             {error && (
               <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 font-bold text-sm">
                 {error}
@@ -97,38 +97,38 @@ export default function SubmitProjectPage() {
             )}
 
             <div>
-              <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Project Title</label>
+              <label className="block text-sm font-bold text-neutral-500 mb-2">Project Title</label>
               <input 
                 type="text" 
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-2xl px-4 py-4 text-[var(--text-primary)] focus:bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-all font-medium placeholder:text-[var(--text-secondary)] shadow-inner"
+                className="w-full bg-[#faf7f3] border border-black/5 rounded-2xl px-4 py-4 text-[#111] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111]/20 transition-all font-medium placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
                 placeholder="e.g. MMIL Next.js Portfolio"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Description</label>
+              <label className="block text-sm font-bold text-neutral-500 mb-2">Description</label>
               <textarea 
                 required
                 rows={4}
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full bg-[var(--background)] border border-[var(--border)] rounded-2xl px-4 py-4 text-[var(--text-primary)] focus:bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-all resize-none font-medium placeholder:text-[var(--text-secondary)] shadow-inner"
+                className="w-full bg-[#faf7f3] border border-black/5 rounded-2xl px-4 py-4 text-[#111] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111]/20 transition-all resize-none font-medium placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
                 placeholder="Describe what your project does, what technologies you used, and what challenges you solved..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Thumbnail / Cover Image URL</label>
+              <label className="block text-sm font-bold text-neutral-500 mb-2">Thumbnail / Cover Image URL</label>
               <div className="relative group">
-                <Upload className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] group-focus-within:text-[var(--text-primary)] transition-colors" />
+                <Upload className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#111] transition-colors" />
                 <input 
                   type="url"
                   value={formData.thumbnailImage}
                   onChange={(e) => setFormData({...formData, thumbnailImage: e.target.value})}
-                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded-2xl pl-12 pr-4 py-4 text-[var(--text-primary)] focus:bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-all font-medium placeholder:text-[var(--text-secondary)] shadow-inner"
+                  className="w-full bg-[#faf7f3] border border-black/5 rounded-2xl pl-12 pr-4 py-4 text-[#111] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111]/20 transition-all font-medium placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
                   placeholder="https://example.com/image.jpg (Optional)"
                 />
               </div>
@@ -136,62 +136,65 @@ export default function SubmitProjectPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">GitHub Repository URL</label>
+                <label className="block text-sm font-bold text-neutral-500 mb-2">GitHub Repository URL</label>
                 <div className="relative group">
-                  <GitBranch className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] group-focus-within:text-[var(--text-primary)] transition-colors" />
+                  <GitBranch className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#111] transition-colors" />
                   <input 
                     type="url" 
                     required
                     value={formData.githubUrl}
                     onChange={(e) => setFormData({...formData, githubUrl: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-2xl pl-12 pr-4 py-4 text-[var(--text-primary)] focus:bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-all font-medium placeholder:text-[var(--text-secondary)] shadow-inner"
+                    className="w-full bg-[#faf7f3] border border-black/5 rounded-2xl pl-12 pr-4 py-4 text-[#111] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111]/20 transition-all font-medium placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
                     placeholder="https://github.com/..."
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Live Demo URL (Optional)</label>
+                <label className="block text-sm font-bold text-neutral-500 mb-2">Live Demo URL</label>
                 <div className="relative group">
-                  <Globe className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] group-focus-within:text-[var(--text-primary)] transition-colors" />
+                  <Globe className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#111] transition-colors" />
                   <input 
-                    type="url" 
+                    type="url"
                     value={formData.liveUrl}
                     onChange={(e) => setFormData({...formData, liveUrl: e.target.value})}
-                    className="w-full bg-[var(--background)] border border-[var(--border)] rounded-2xl pl-12 pr-4 py-4 text-[var(--text-primary)] focus:bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-all font-medium placeholder:text-[var(--text-secondary)] shadow-inner"
-                    placeholder="https://..."
+                    className="w-full bg-[#faf7f3] border border-black/5 rounded-2xl pl-12 pr-4 py-4 text-[#111] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111]/20 transition-all font-medium placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
+                    placeholder="https://... (Optional)"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-[var(--text-secondary)] mb-2">Tech Stack / Tags (Comma separated)</label>
+              <label className="block text-sm font-bold text-neutral-500 mb-2">Technologies Used</label>
               <div className="relative group">
-                <Code className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] group-focus-within:text-[var(--text-primary)] transition-colors" />
+                <Code className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#111] transition-colors" />
                 <input 
                   type="text" 
                   required
                   value={formData.tags}
                   onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                  className="w-full bg-[var(--background)] border border-[var(--border)] rounded-2xl pl-12 pr-4 py-4 text-[var(--text-primary)] focus:bg-[var(--background)] focus:outline-none focus:ring-2 focus:ring-[var(--border)] transition-all font-medium placeholder:text-[var(--text-secondary)] shadow-inner"
-                  placeholder="React, Next.js, Tailwind, Spring Boot"
+                  className="w-full bg-[#faf7f3] border border-black/5 rounded-2xl pl-12 pr-4 py-4 text-[#111] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111]/20 transition-all font-medium placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
+                  placeholder="React, Node.js, MongoDB (comma separated)"
                 />
               </div>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-4">
               <button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full py-5 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg border border-[var(--border)]"
+                className="w-full bg-[#111] text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 hover:bg-black/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(0,0,0,0.15)]"
               >
                 {isSubmitting ? (
-                  "Submitting..."
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Submitting...
+                  </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
-                    SUBMIT FOR REVIEW
+                    Submit Project
                   </>
                 )}
               </button>

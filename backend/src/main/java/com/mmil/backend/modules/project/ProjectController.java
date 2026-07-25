@@ -45,7 +45,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{slug}/status")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Project> updateStatus(
             @PathVariable String slug,
             @RequestParam String status) {

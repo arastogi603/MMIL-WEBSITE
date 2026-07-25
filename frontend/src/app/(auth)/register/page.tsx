@@ -78,9 +78,9 @@ export default function RegisterPage() {
         className="w-full max-w-lg relative z-10 my-16 sm:my-12"
       >
         {/* Spatial UI / Liquid Glass Box */}
-        <div className="glassmorphism rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-12 border border-[var(--card-border)] bg-[var(--card-bg)] shadow-[0_12px_40px_var(--shadow-color),inset_0_1px_2px_rgba(255,255,255,0.1)] backdrop-blur-2xl relative overflow-hidden">
+        <div className="glassmorphism rounded-[2.5rem] p-6 sm:p-12 border border-[var(--card-border)] bg-[var(--card-bg)] shadow-[0_12px_40px_var(--shadow-color),inset_0_1px_2px_rgba(255,255,255,0.1)] backdrop-blur-2xl relative overflow-hidden">
           
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--highlight-color)] to-transparent opacity-10 pointer-events-none rounded-3xl sm:rounded-[2.5rem]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--highlight-color)] to-transparent opacity-10 pointer-events-none rounded-[2.5rem]" />
           
           {/* Animated Orbs */}
           <motion.div 

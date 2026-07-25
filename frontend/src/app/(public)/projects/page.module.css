@@ -43,17 +43,6 @@
   -webkit-backface-visibility: hidden;
   will-change: backdrop-filter, -webkit-backdrop-filter;
 }
-.page__description {
-  position: fixed;
-  padding: 1rem;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  text-align: justify;
-  font-size: clamp(1rem, 1.5vw, 1.5rem);
-  line-height: 1.5;
-  opacity: 0;
-}
 .page__project {
   position: fixed;
   padding: 1rem;
@@ -66,7 +55,7 @@
   opacity: 0;
   pointer-events: auto;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1fr 1.5fr 3fr 1.5fr 1fr;
   align-items: center;
   backdrop-filter: blur(0px);
   border-top: 1px solid transparent;
@@ -93,6 +82,8 @@
 }
 .page__project__title {
   opacity: 1;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 700;
 }
 .page__project__link {
   display: flex;
@@ -116,6 +107,11 @@
   }
 }
 .page__project__year {
+  text-align: right;
+  grid-column: 4;
+}
+.page__project__index {
+  grid-column: 5;
   text-align: right;
 }
 @media (max-width: 768px) {

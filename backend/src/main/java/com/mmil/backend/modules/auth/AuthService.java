@@ -18,15 +18,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final AuthOtpService authOtpService;
 
     public AuthService(UserRepository userRepository, 
                        PasswordEncoder passwordEncoder, 
                        JwtService jwtService, 
-                       AuthenticationManager authenticationManager) {
+                       AuthenticationManager authenticationManager,
+                       AuthOtpService authOtpService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.authOtpService = authOtpService;
     }
 
     public AuthResponse signup(SignupRequest request) {
@@ -56,5 +59,29 @@ public class AuthService {
 
         String token = jwtService.generateToken(user);
         return new AuthResponse(token, user);
+    }
+
+    public void sendPasswordResetOtp(String email) {
+        if (!userRepository.existsByEmail(email)) {
+            throw new RuntimeException("No account found with that email");
+        }
+        authOtpService.sendPasswordResetOtp(email);
+    }
+
+    public void resetPassword(String email, String otp, String newPassword) {
+        if (!authOtpService.verifyOtp(email, otp)) {
+            throw new RuntimeException("Invalid or expired OTP");
+        }
+        
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

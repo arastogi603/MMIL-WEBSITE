@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Users, Search, RefreshCw, AlertCircle, CheckCircle, XCircle, FileText, ExternalLink, CalendarPlus, ShieldAlert, Power } from "lucide-react";
 import { recruitmentApi } from "@/lib/api/recruitment";
 import { useAuthStore } from "@/lib/store/auth.store";
+import { isAdminRights } from "@/lib/roles";
 
 export default function RecruitmentManagementPage() {
   const [applications, setApplications] = useState<any[]>([]);
@@ -13,6 +14,7 @@ export default function RecruitmentManagementPage() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = useAuthStore();
+  const isAdmin = isAdminRights(user?.role);
   const [isCreatingCycle, setIsCreatingCycle] = useState(false);
   const [newCycleForm, setNewCycleForm] = useState({ name: "", cycleSlug: "", description: "" });
 
@@ -115,12 +117,16 @@ export default function RecruitmentManagementPage() {
         <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)] overflow-hidden">
           <div className="p-5 md:p-6 border-b border-black/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <h2 className="text-lg font-black text-[#111]">Recruitment Cycles</h2>
-            <button 
-              onClick={() => setIsCreatingCycle(!isCreatingCycle)}
-              className="px-5 py-2.5 bg-[#111] hover:bg-black text-white font-bold rounded-xl flex items-center gap-2 transition-colors text-sm shadow-[0_4px_15px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] active:scale-95"
-            >
-              <CalendarPlus className="w-4 h-4" /> New Cycle
-            </button>
+            {isAdmin && (
+              <div className="flex gap-3 w-full sm:w-auto">
+                <button 
+                  onClick={() => setIsCreatingCycle(!isCreatingCycle)}
+                  className="px-5 py-2.5 bg-[#111] hover:bg-black text-white font-bold rounded-xl flex items-center gap-2 transition-colors text-sm shadow-[0_4px_15px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] active:scale-95"
+                >
+                  <CalendarPlus className="w-4 h-4" /> New Cycle
+                </button>
+              </div>
+            )}
           </div>
           
           {isCreatingCycle && (
@@ -149,14 +155,18 @@ export default function RecruitmentManagementPage() {
                   </span>
                 </div>
                 
-                {cycle.status !== 'active' ? (
-                  <button onClick={() => handleActivateCycle(cycle.cycleSlug)} className="w-full py-2.5 rounded-xl font-bold text-sm bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 transition-colors flex items-center justify-center gap-2">
-                    <Power className="w-4 h-4" /> Open Recruitment
-                  </button>
-                ) : (
-                  <button onClick={() => handleCloseCycle(cycle.cycleSlug)} className="w-full py-2.5 rounded-xl font-bold text-sm bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
-                    <ShieldAlert className="w-4 h-4" /> Close Recruitment
-                  </button>
+                {isAdmin && (
+                  <>
+                    {cycle.status !== 'active' ? (
+                      <button onClick={() => handleActivateCycle(cycle.cycleSlug)} className="w-full py-2.5 rounded-xl font-bold text-sm bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 transition-colors flex items-center justify-center gap-2">
+                        <Power className="w-4 h-4" /> Open Recruitment
+                      </button>
+                    ) : (
+                      <button onClick={() => handleCloseCycle(cycle.cycleSlug)} className="w-full py-2.5 rounded-xl font-bold text-sm bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                        <ShieldAlert className="w-4 h-4" /> Close Recruitment
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             ))}

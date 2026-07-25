@@ -52,13 +52,13 @@ public class EventController {
     }
 
     @PostMapping("/{slug}/publish")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Event> publishEvent(@PathVariable String slug) {
         return ResponseEntity.ok(eventService.publishEvent(slug));
     }
 
     @PostMapping("/{slug}/unpublish")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Event> unpublishEvent(@PathVariable String slug) {
         return ResponseEntity.ok(eventService.unpublishEvent(slug));
     }

@@ -6,6 +6,7 @@ import { Calendar, RefreshCw, AlertCircle, CheckCircle, Plus, X, MapPin, Users, 
 import { eventsApi } from "@/lib/api/events";
 import Link from "next/link";
 import { useAuthStore } from "@/lib/store/auth.store";
+import { isAdminRights } from "@/lib/roles";
 
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<any[]>([]);
@@ -15,6 +16,7 @@ export default function AdminEventsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingEventSlug, setEditingEventSlug] = useState<string | null>(null);
   const { user } = useAuthStore();
+  const isAdmin = isAdminRights(user?.role);
   
   const initialFormState = {
     title: "", type: "event", location: "", capacity: 100, 
@@ -188,12 +190,14 @@ export default function AdminEventsPage() {
                   >
                     <Type className="w-4 h-4" /> Edit Event
                   </button>
-                  <button 
-                    onClick={() => handlePublish(event.slug)}
-                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-emerald-50 to-emerald-100/50 text-emerald-600 border border-emerald-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(16,185,129,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(16,185,129,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle className="w-4 h-4" /> Publish
-                  </button>
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handlePublish(event.slug)}
+                      className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-emerald-50 to-emerald-100/50 text-emerald-600 border border-emerald-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(16,185,129,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(16,185,129,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="w-4 h-4" /> Publish
+                    </button>
+                  )}
                   <button 
                     onClick={() => handleDeleteDraft(event.slug)}
                     className="col-span-2 w-full py-3 rounded-2xl font-black text-sm text-neutral-500 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
@@ -254,12 +258,14 @@ export default function AdminEventsPage() {
                   >
                     <Type className="w-4 h-4" /> Edit Event
                   </button>
-                  <button 
-                    onClick={() => handleUnpublish(event.slug)}
-                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-red-50 to-red-100/50 text-red-600 border border-red-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(239,68,68,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-                  >
-                    <ShieldAlert className="w-4 h-4" /> Unpublish
-                  </button>
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handleUnpublish(event.slug)}
+                      className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-red-50 to-red-100/50 text-red-600 border border-red-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(239,68,68,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                    >
+                      <ShieldAlert className="w-4 h-4" /> Unpublish
+                    </button>
+                  )}
                 </div>
 
               </motion.div>

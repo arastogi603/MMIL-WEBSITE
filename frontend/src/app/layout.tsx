@@ -27,6 +27,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BackgroundShapes } from "@/components/layout/BackgroundShapes";
 import { InitialLoader } from "@/components/layout/InitialLoader";
 import { ThemeProvider } from "@/lib/theme/theme";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import { cn } from "@/lib/utils";
 
 export default function RootLayout({
@@ -45,11 +46,13 @@ export default function RootLayout({
         style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
       >
         <ThemeProvider>
-          <InitialLoader />
-          <BackgroundShapes />
-          <Navbar />
-          {children}
-          <Footer />
+          <AuthProvider>
+            <InitialLoader />
+            <BackgroundShapes />
+            <Navbar />
+            {children}
+            <Footer />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

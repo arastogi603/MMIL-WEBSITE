@@ -2,10 +2,49 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, Shield, Search, RefreshCw, AlertCircle, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { Users, Shield, Search, RefreshCw, AlertCircle, Trash2, CheckCircle, XCircle, ChevronDown } from "lucide-react";
 import { usersApi } from "@/lib/api/users";
 import { useAuthStore } from "@/lib/store/auth.store";
-import { CLUB_ROLES, isCoreTeam, formatRoleName } from "@/lib/roles";
+import { CLUB_ROLES, isCoreTeam, isAdminRights, formatRoleName } from "@/lib/roles";
+
+const GlassSelect = ({ value, onChange, options }: { value: string, onChange: (val: string) => void, options: {value: string, label: string}[] }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative inline-block text-left">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full min-w-[140px] px-4 py-2 rounded-xl bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_4px_12px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,0.8)] text-sm font-bold text-[#111] hover:bg-white/60 transition-all"
+      >
+        <span className="truncate">{options.find(o => o.value === value)?.label || "Select..."}</span>
+        <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <motion.div
+            initial={{ opacity: 0, y: 5, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 5, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 mt-2 w-48 right-0 md:left-0 origin-top-right md:origin-top-left rounded-2xl bg-white/70 backdrop-blur-2xl border border-white shadow-[0_8px_32px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(255,255,255,1)] py-2 max-h-64 overflow-y-auto"
+          >
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                className={`w-full text-left px-4 py-2 text-sm font-bold transition-colors ${value === opt.value ? 'bg-[#111] text-white' : 'text-neutral-600 hover:bg-white/50 hover:text-[#111]'}`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </motion.div>
+        </>
+      )}
+    </div>
+  );
+};
 
 export default function RolesManagementPage() {
   const [activeTab, setActiveTab] = useState<"directory" | "requests">("directory");
@@ -16,7 +55,7 @@ export default function RolesManagementPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user: currentUser } = useAuthStore();
 
-  const isAdmin = currentUser?.role === "admin";
+  const isAdmin = isAdminRights(currentUser?.role);
 
   const fetchUsers = async () => {
     setIsLoading(true);
@@ -207,11 +246,11 @@ export default function RolesManagementPage() {
                     <p className="text-xs text-neutral-400 truncate">{u.email}</p>
                   </div>
                   <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex-shrink-0 ${
-                    u.role === 'admin' ? 'bg-red-100 text-red-600 border-red-200' 
+                    isAdminRights(u.role) ? 'bg-red-100 text-red-600 border-red-200' 
                     : isCoreTeam(u.role) ? 'bg-purple-100 text-purple-600 border-purple-200'
                     : 'bg-blue-100 text-blue-600 border-blue-200'
                   }`}>
-                    {u.role === 'admin' || u.role === 'core-team' || u.role === 'student' ? u.role.toUpperCase() : formatRoleName(u.role).toUpperCase()}
+                    {formatRoleName(u.role).toUpperCase()}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -220,44 +259,22 @@ export default function RolesManagementPage() {
                       <AlertCircle className="w-3 h-3" /> Request Removal
                     </button>
                   )}
-                  {isAdmin && u.email !== 'admin@mmil.com' && u.role === 'student' && (
+                  {isAdmin && u.email !== 'admin@mmil.com' && (
                     <>
-                      <select 
-                        defaultValue=""
-                        onChange={(e) => { if(e.target.value) handleRoleChange(u.id, e.target.value); e.target.value = ""; }}
-                        className="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-bold border border-purple-200 outline-none cursor-pointer"
-                      >
-                        <option value="" disabled>Promote...</option>
-                        <option value="core-team">Core Team (Generic)</option>
-                        {CLUB_ROLES.map(r => <option key={r} value={r}>{formatRoleName(r)}</option>)}
-                        <option value="admin">Admin</option>
-                      </select>
-                      <button onClick={() => handleDeleteUser(u.id)} className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200" title="Delete">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <GlassSelect 
+                        value={u.role || 'student'}
+                        onChange={(val) => handleRoleChange(u.id, val)}
+                        options={[
+                          { value: 'student', label: 'Student' },
+                          ...CLUB_ROLES.map(r => ({ value: r, label: formatRoleName(r) }))
+                        ]}
+                      />
+                      {u.role === 'student' && (
+                        <button onClick={() => handleDeleteUser(u.id)} className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200" title="Delete">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </>
-                  )}
-                  {isAdmin && u.email !== 'admin@mmil.com' && isCoreTeam(u.role) && u.role !== 'admin' && (
-                    <>
-                      <select 
-                        defaultValue=""
-                        onChange={(e) => { if(e.target.value) handleRoleChange(u.id, e.target.value); e.target.value = ""; }}
-                        className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold border border-blue-200 outline-none cursor-pointer"
-                      >
-                        <option value="" disabled>Change Role...</option>
-                        <option value="core-team">Core Team (Generic)</option>
-                        {CLUB_ROLES.map(r => <option key={r} value={r}>{formatRoleName(r)}</option>)}
-                        <option value="admin">Admin</option>
-                      </select>
-                      <button onClick={() => handleRoleChange(u.id, 'student')} className="px-3 py-1.5 rounded-lg bg-neutral-100 text-neutral-500 text-xs font-bold hover:bg-neutral-200 transition-colors border border-black/5">
-                        Demote
-                      </button>
-                    </>
-                  )}
-                  {isAdmin && u.email !== 'admin@mmil.com' && u.role === 'admin' && (
-                    <button onClick={() => handleRoleChange(u.id, 'core-team')} className="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-bold hover:bg-red-100 transition-colors border border-red-200">
-                      Remove Admin
-                    </button>
                   )}
                 </div>
               </div>
@@ -265,7 +282,7 @@ export default function RolesManagementPage() {
           </div>
 
           {/* Desktop table */}
-          <div className="overflow-x-auto hidden md:block">
+          <div className="overflow-x-auto hidden md:block min-h-[400px] pb-48">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-black/5 bg-[#faf7f3]/50 text-neutral-400 text-sm">
@@ -308,11 +325,11 @@ export default function RolesManagementPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${
-                          u.role === 'admin' ? 'bg-red-100 text-red-600 border-red-200' 
+                          isAdminRights(u.role) ? 'bg-red-100 text-red-600 border-red-200' 
                           : isCoreTeam(u.role) ? 'bg-purple-100 text-purple-600 border-purple-200'
                           : 'bg-blue-100 text-blue-600 border-blue-200'
                         }`}>
-                          {u.role === 'admin' || u.role === 'core-team' || u.role === 'student' ? u.role.toUpperCase() : formatRoleName(u.role).toUpperCase()}
+                          {formatRoleName(u.role).toUpperCase()}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-neutral-400 font-medium">
@@ -334,66 +351,25 @@ export default function RolesManagementPage() {
                           {/* Admin Actions */}
                           {isAdmin && u.email !== 'admin@mmil.com' && (
                             <>
+                              <GlassSelect 
+                                value={u.role || 'student'}
+                                onChange={(val) => handleRoleChange(u.id, val)}
+                                options={[
+                                  { value: 'student', label: 'Student' },
+                                  ...CLUB_ROLES.map(r => ({ value: r, label: formatRoleName(r) }))
+                                ]}
+                              />
                               {u.role === 'student' && (
-                                <>
-                                  <select 
-                                    defaultValue=""
-                                    onChange={(e) => {
-                                      if(e.target.value) handleRoleChange(u.id, e.target.value);
-                                      e.target.value = "";
-                                    }}
-                                    className="px-3 py-1.5 rounded-lg bg-purple-50 text-purple-600 text-xs font-bold border border-purple-200 outline-none cursor-pointer hover:bg-purple-100 transition-colors"
-                                    title="Assign Role"
-                                  >
-                                    <option value="" disabled>Promote...</option>
-                                    <option value="core-team">Core Team (Generic)</option>
-                                    {CLUB_ROLES.map(r => <option key={r} value={r}>{formatRoleName(r)}</option>)}
-                                    <option value="admin">Admin</option>
-                                  </select>
-                                  <button 
-                                    onClick={() => handleDeleteUser(u.id)}
-                                    className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200"
-                                    title="Delete Account"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
-                                </>
-                              )}
-                              {isCoreTeam(u.role) && u.role !== 'admin' && (
-                                <>
-                                  <select 
-                                    defaultValue=""
-                                    onChange={(e) => {
-                                      if(e.target.value) handleRoleChange(u.id, e.target.value);
-                                      e.target.value = "";
-                                    }}
-                                    className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold border border-blue-200 outline-none cursor-pointer hover:bg-blue-100 transition-colors"
-                                    title="Change Role"
-                                  >
-                                    <option value="" disabled>Change Role...</option>
-                                    <option value="core-team">Core Team (Generic)</option>
-                                    {CLUB_ROLES.map(r => <option key={r} value={r}>{formatRoleName(r)}</option>)}
-                                    <option value="admin">Admin</option>
-                                  </select>
-                                  <button 
-                                    onClick={() => handleRoleChange(u.id, 'student')}
-                                    className="px-3 py-1.5 rounded-lg bg-neutral-100 text-neutral-500 text-xs font-bold hover:bg-neutral-200 transition-colors border border-black/5"
-                                  >
-                                    Demote
-                                  </button>
-                                </>
-                              )}
-                              {u.role === 'admin' && (
                                 <button 
-                                  onClick={() => handleRoleChange(u.id, 'core-team')}
-                                  className="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-bold hover:bg-red-100 transition-colors border border-red-200"
+                                  onClick={() => handleDeleteUser(u.id)}
+                                  className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200"
+                                  title="Delete Account"
                                 >
-                                  Remove Admin
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
                               )}
                             </>
                           )}
-
                         </div>
                       </td>
                     </motion.tr>

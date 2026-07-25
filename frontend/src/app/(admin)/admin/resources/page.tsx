@@ -2,20 +2,23 @@
 
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { motion, AnimatePresence } from "framer-motion";
 import { resourcesApi, ResourceFolder, ResourceItem } from "@/lib/api/resources";
-import { Plus, Trash, Folder as FolderIcon, Link as LinkIcon } from "lucide-react";
+import { Plus, Trash, Folder as FolderIcon, Link as LinkIcon, ExternalLink, Code, Search, ChevronRight, File, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { withRoleGuard } from "@/components/auth/RoleGuard";
 
-export default function AdminResourcesPage() {
+function AdminResourcesPage() {
   const [folders, setFolders] = useState<ResourceFolder[]>([]);
   const [items, setItems] = useState<ResourceItem[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { register: registerFolder, handleSubmit: handleFolderSubmit, reset: resetFolder } = useForm<ResourceFolder>();
-  const { register: registerItem, handleSubmit: handleItemSubmit, reset: resetItem } = useForm<ResourceItem>();
+  const { register: registerFolder, handleSubmit: handleFolderSubmit, reset: resetFolder, formState: { isSubmitting: isSubmittingFolder } } = useForm<ResourceFolder>();
+  const { register: registerItem, handleSubmit: handleItemSubmit, reset: resetItem, formState: { isSubmitting: isSubmittingItem } } = useForm<ResourceItem>();
 
   useEffect(() => {
     fetchFolders();
@@ -30,14 +33,28 @@ export default function AdminResourcesPage() {
   }, [selectedFolder]);
 
   const fetchFolders = async () => {
-    const data = await resourcesApi.getAllFolders();
-    setFolders(data);
+    setIsLoading(true);
+    try {
+      const data = await resourcesApi.getAllFolders();
+      setFolders(data);
+      if (data.length > 0 && !selectedFolder) {
+        setSelectedFolder(data[0].id);
+      }
+    } catch (e) {
+      toast.error("Failed to load folders");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const fetchItems = async (folderId: string) => {
-    setItems([]); // Clear previous items immediately
-    const data = await resourcesApi.getItemsByFolder(folderId);
-    setItems(data);
+    setItems([]); 
+    try {
+      const data = await resourcesApi.getItemsByFolder(folderId);
+      setItems(data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const onFolderSubmit = async (data: ResourceFolder) => {
@@ -55,7 +72,6 @@ export default function AdminResourcesPage() {
   const onItemSubmit = async (data: ResourceItem) => {
     if (!selectedFolder) return;
     try {
-      // Convert techStack string to array
       const payload = {
         ...data,
         techStack: (data.techStack as unknown as string).split(',').map(s => s.trim()).filter(Boolean)
@@ -70,8 +86,9 @@ export default function AdminResourcesPage() {
     }
   };
 
-  const deleteFolder = async (id: string) => {
-    if(!confirm("Delete folder and all contents?")) return;
+  const deleteFolder = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if(!confirm("Are you sure? This will delete the folder and ALL its contents!")) return;
     try {
       await resourcesApi.deleteFolder(id);
       toast.success("Folder deleted");
@@ -93,143 +110,233 @@ export default function AdminResourcesPage() {
     }
   };
 
-  return (
-    <div className="p-8 flex h-[calc(100vh-80px)] overflow-hidden gap-8">
-      {/* Sidebar: Folders */}
-      <div className="w-1/3 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 flex flex-col">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Folders</h2>
-          <button onClick={() => setIsFolderModalOpen(true)} className="p-2 bg-blue-600/10 text-blue-500 rounded-lg hover:bg-blue-600/20">
-            <Plus size={20} />
-          </button>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto space-y-2">
-          {folders.map(folder => (
-            <div 
-              key={folder.id} 
-              className={`flex items-center justify-between p-4 rounded-xl cursor-pointer transition-colors ${selectedFolder === folder.id ? 'bg-blue-600 text-white' : 'hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'}`}
-              onClick={() => setSelectedFolder(folder.id)}
-            >
-              <div className="flex items-center gap-3">
-                <FolderIcon size={20} className={selectedFolder === folder.id ? 'text-white' : 'text-blue-500'} />
-                <span className="font-medium">{folder.name}</span>
-              </div>
-              <button 
-                onClick={(e) => { e.stopPropagation(); deleteFolder(folder.id); }}
-                className={`p-1 rounded ${selectedFolder === folder.id ? 'hover:bg-white/20' : 'text-red-500 hover:bg-red-500/10'}`}
-              >
-                <Trash size={16} />
-              </button>
-            </div>
-          ))}
-          {folders.length === 0 && <div className="text-center text-gray-500 mt-10">No folders created yet.</div>}
-        </div>
-      </div>
+  const inputClass = "w-full bg-white/50 backdrop-blur-xl border border-black/10 rounded-xl py-3 px-4 text-[#111] focus:outline-none focus:border-[#111] focus:ring-1 focus:ring-[#111]/20 transition-all placeholder:text-neutral-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]";
 
-      {/* Main Content: Items */}
-      <div className="flex-1 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl p-6 flex flex-col">
-        {!selectedFolder ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-[var(--text-muted)]">
-            <FolderIcon size={48} className="mb-4 opacity-50" />
-            <p>Select a folder to view and manage resources</p>
+  return (
+    <div className="font-['Outfit'] relative flex flex-col h-[calc(100vh-80px)] min-h-[600px]">
+      {/* Background Gradients */}
+      <div className="absolute top-[-20%] left-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] right-[20%] w-[30%] h-[30%] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none z-0" />
+
+      <div className="flex flex-col md:flex-row h-full w-full gap-6 p-4 md:p-8 relative z-10 overflow-hidden">
+        
+        {/* Sidebar: Folders */}
+        <div className="w-full md:w-80 flex-shrink-0 bg-white/70 backdrop-blur-xl border border-white rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)] flex flex-col overflow-hidden">
+          <div className="p-5 md:p-6 border-b border-black/5 flex justify-between items-center bg-white/40">
+            <h2 className="text-xl font-black text-[#111] flex items-center gap-2">
+              <FolderIcon className="w-5 h-5 text-blue-500" /> Folders
+            </h2>
+            <button
+              onClick={() => setIsFolderModalOpen(true)}
+              className="p-2 bg-[#111] text-white rounded-xl hover:bg-black transition-colors shadow-md active:scale-95"
+            >
+              <Plus size={18} />
+            </button>
           </div>
-        ) : (
-          <>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Resources</h2>
-              <button onClick={() => setIsItemModalOpen(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition-colors">
-                <Plus size={18} /> Add Link
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-              {items.map(item => (
-                <div key={item.id} className="p-5 border border-[var(--card-border)] rounded-2xl bg-black/5 dark:bg-white/5 relative group">
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => deleteItem(item.id)} className="text-red-500 hover:bg-red-500/10 p-1.5 rounded-lg">
-                      <Trash size={16} />
-                    </button>
-                  </div>
-                  <div className="flex items-start gap-3 mb-2">
-                    <div className="p-2 bg-blue-500/20 text-blue-500 rounded-lg shrink-0">
-                      <LinkIcon size={18} />
+          
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {isLoading ? (
+              <div className="py-10 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-neutral-400" /></div>
+            ) : folders.length === 0 ? (
+              <div className="py-10 text-center text-neutral-400 text-sm font-medium">No folders created yet.</div>
+            ) : (
+              folders.map(folder => (
+                <div 
+                  key={folder.id}
+                  onClick={() => setSelectedFolder(folder.id)}
+                  className={`flex justify-between items-center p-4 rounded-2xl cursor-pointer transition-all border ${
+                    selectedFolder === folder.id 
+                    ? 'bg-blue-50 border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,1)]' 
+                    : 'bg-transparent border-transparent hover:bg-white/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)] ${selectedFolder === folder.id ? 'bg-blue-100' : 'bg-neutral-100'}`}>
+                      <FolderIcon size={16} className={selectedFolder === folder.id ? 'text-blue-600' : 'text-neutral-500'} />
                     </div>
                     <div>
-                      <h4 className="font-bold">{item.title}</h4>
-                      <p className="text-sm text-[var(--text-muted)] line-clamp-2">{item.description}</p>
+                      <h3 className={`font-bold text-sm ${selectedFolder === folder.id ? 'text-blue-900' : 'text-[#111]'}`}>
+                        {folder.name}
+                      </h3>
+                      <p className="text-xs text-neutral-500 font-medium">{folder.level}</p>
                     </div>
                   </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {item.techStack?.map(tech => (
-                      <span key={tech} className="px-2 py-1 text-xs bg-[var(--foreground)] text-[var(--background)] rounded-md font-medium">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <a href={item.url} target="_blank" rel="noreferrer" className="block mt-4 text-sm text-blue-500 hover:underline truncate">
-                    {item.url}
-                  </a>
+                  {selectedFolder === folder.id && (
+                    <button 
+                      onClick={(e) => deleteFolder(folder.id, e)}
+                      className="text-neutral-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      <Trash size={16} />
+                    </button>
+                  )}
                 </div>
-              ))}
-              {items.length === 0 && <div className="col-span-full text-center py-10 text-gray-500">Folder is empty. Add a resource link.</div>}
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Main Content: Items */}
+        <div className="flex-1 bg-white/70 backdrop-blur-xl border border-white rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)] flex flex-col overflow-hidden min-h-[400px]">
+          {selectedFolder ? (
+            <>
+              <div className="p-5 md:p-6 border-b border-black/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/40">
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-black text-[#111]">
+                    {folders.find(f => f.id === selectedFolder)?.name}
+                  </h1>
+                  <p className="text-sm text-neutral-500 font-medium flex items-center gap-1 mt-1">
+                    {folders.find(f => f.id === selectedFolder)?.level} <ChevronRight className="w-3 h-3" /> {items.length} items
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsItemModalOpen(true)}
+                  className="w-full sm:w-auto px-5 py-2.5 bg-[#111] hover:bg-black text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15)] active:scale-95"
+                >
+                  <Plus size={18} /> Add Resource
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  {items.length === 0 ? (
+                    <div className="col-span-full py-20 text-center">
+                      <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-black/5">
+                        <File className="w-8 h-8 text-neutral-400" />
+                      </div>
+                      <h3 className="text-xl font-black text-[#111]">Folder is empty</h3>
+                      <p className="text-neutral-500 font-medium mt-1">Add resources like links, docs, or tools here.</p>
+                    </div>
+                  ) : (
+                    items.map(item => (
+                      <div key={item.id} className="group bg-[#faf7f3] border border-black/5 p-5 md:p-6 rounded-2xl relative shadow-[inset_0_2px_4px_rgba(255,255,255,1)] transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.04)]">
+                        <button 
+                          onClick={() => deleteItem(item.id)} 
+                          className="absolute top-4 right-4 text-neutral-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-colors opacity-100 md:opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash size={18} />
+                        </button>
+                        
+                        <div className="flex gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 shadow-[inset_0_1px_2px_rgba(255,255,255,1)]">
+                            {item.type === 'link' ? <LinkIcon size={24} /> : <Code size={24} />}
+                          </div>
+                          <div>
+                            <h4 className="font-black text-lg text-[#111] pr-10">{item.title}</h4>
+                            <p className="text-sm text-neutral-600 font-medium mt-1 leading-relaxed">{item.description}</p>
+                            
+                            {item.techStack && item.techStack.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mt-4">
+                                {item.techStack.map(t => (
+                                  <span key={t} className="px-2.5 py-1 bg-white border border-black/5 rounded-lg text-xs font-bold text-neutral-600 shadow-sm">{t}</span>
+                                ))}
+                              </div>
+                            )}
+
+                            <a 
+                              href={item.url} 
+                              target="_blank" 
+                              rel="noreferrer" 
+                              className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                            >
+                              Open Resource <ExternalLink size={14} />
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col justify-center items-center p-8 text-center text-neutral-400">
+              <FolderIcon className="w-16 h-16 mb-4 opacity-20" />
+              <p className="text-xl font-black text-neutral-300">Select or create a folder</p>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Modals */}
-      {isFolderModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Create Folder</h2>
-            <form onSubmit={handleFolderSubmit(onFolderSubmit)} className="space-y-4">
-              <div>
-                <label className="block text-sm mb-1">Name</label>
-                <input {...registerFolder("name", { required: true })} className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg p-2" />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Description</label>
-                <textarea {...registerFolder("description")} className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg p-2" />
-              </div>
-              <div className="flex gap-4">
-                <button type="button" onClick={() => setIsFolderModalOpen(false)} className="flex-1 border border-[var(--card-border)] py-2 rounded-lg">Cancel</button>
-                <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded-lg">Create</button>
-              </div>
-            </form>
+      <AnimatePresence>
+        {isFolderModalOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white/90 backdrop-blur-2xl border border-white rounded-[2rem] p-6 md:p-8 w-full max-w-sm shadow-[0_20px_60px_rgba(0,0,0,0.2)]"
+            >
+              <h2 className="text-2xl font-black mb-6 text-[#111]">New Folder</h2>
+              <form onSubmit={handleFolderSubmit(onFolderSubmit)} className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Folder Name</label>
+                  <input {...registerFolder("name", { required: true })} className={inputClass} placeholder="e.g. Design Systems" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Level / Category</label>
+                  <select {...registerFolder("level", { required: true })} className={inputClass}>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  <button type="button" onClick={() => setIsFolderModalOpen(false)} className="px-5 py-2.5 rounded-xl font-bold text-neutral-600 hover:bg-neutral-100 transition-colors">Cancel</button>
+                  <button type="submit" disabled={isSubmittingFolder} className="px-5 py-2.5 bg-[#111] hover:bg-black text-white font-bold rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50">Create</button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
 
-      {isItemModalOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Add Resource Link</h2>
-            <form onSubmit={handleItemSubmit(onItemSubmit)} className="space-y-4">
-              <div>
-                <label className="block text-sm mb-1">Title</label>
-                <input {...registerItem("title", { required: true })} className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg p-2" />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Description</label>
-                <textarea {...registerItem("description")} className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg p-2" />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">URL / Link</label>
-                <input {...registerItem("url", { required: true })} className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg p-2" />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Tech Stack (comma separated)</label>
-                <input {...registerItem("techStack")} placeholder="React, Node.js, Python" className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg p-2" />
-              </div>
-              <div className="flex gap-4">
-                <button type="button" onClick={() => setIsItemModalOpen(false)} className="flex-1 border border-[var(--card-border)] py-2 rounded-lg">Cancel</button>
-                <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded-lg">Add</button>
-              </div>
-            </form>
+        {isItemModalOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white/90 backdrop-blur-2xl border border-white rounded-[2rem] p-6 md:p-8 w-full max-w-md shadow-[0_20px_60px_rgba(0,0,0,0.2)]"
+            >
+              <h2 className="text-2xl font-black mb-6 text-[#111]">Add Resource</h2>
+              <form onSubmit={handleItemSubmit(onItemSubmit)} className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Title</label>
+                  <input {...registerItem("title", { required: true })} className={inputClass} placeholder="e.g. React Docs" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Type</label>
+                    <select {...registerItem("type", { required: true })} className={inputClass}>
+                      <option value="link">Link</option>
+                      <option value="document">Document</option>
+                      <option value="video">Video</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Tech Stack (CSV)</label>
+                    <input {...registerItem("techStack")} className={inputClass} placeholder="React, TS" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">URL</label>
+                  <input type="url" {...registerItem("url", { required: true })} className={inputClass} placeholder="https://..." />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Description</label>
+                  <textarea {...registerItem("description", { required: true })} rows={3} className={inputClass} placeholder="Brief description..." />
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  <button type="button" onClick={() => setIsItemModalOpen(false)} className="px-5 py-2.5 rounded-xl font-bold text-neutral-600 hover:bg-neutral-100 transition-colors">Cancel</button>
+                  <button type="submit" disabled={isSubmittingItem} className="px-5 py-2.5 bg-[#111] hover:bg-black text-white font-bold rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50">Add Resource</button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
+export default withRoleGuard(AdminResourcesPage, ["admin", "core-team"]);

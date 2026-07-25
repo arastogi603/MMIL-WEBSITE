@@ -1,4 +1,5 @@
 export const CLUB_ROLES = [
+  "system_admin",
   "president",
   "vice-president",
   "ctc",
@@ -8,15 +9,27 @@ export const CLUB_ROLES = [
   "design-head",
   "programming-head",
   "technical-head",
-  "web-development-head"
+  "web-development-head",
+  "technical",
+  "programming",
+  "design",
+  "web-development"
 ];
+
+export const isAdminRights = (role: string | undefined | null): boolean => {
+  if (!role) return false;
+  const lowerRole = role.toLowerCase();
+  return lowerRole === 'system_admin' || lowerRole === 'admin' || lowerRole === 'president' || lowerRole === 'ctc';
+};
 
 export const isCoreTeam = (role: string | undefined | null): boolean => {
   if (!role) return false;
   const lowerRole = role.toLowerCase();
-  return lowerRole === 'admin' || lowerRole === 'core-team' || CLUB_ROLES.includes(lowerRole);
+  return isAdminRights(role) || lowerRole === 'core-team' || CLUB_ROLES.includes(lowerRole);
 };
 
 export const formatRoleName = (role: string): string => {
-  return role.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  if (!role) return "Student";
+  if (role.toLowerCase() === "student") return "Student";
+  return role.split('_').map(w => w.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')).join(' ');
 };

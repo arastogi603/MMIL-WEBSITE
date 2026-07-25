@@ -31,7 +31,7 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   // Don't show navbar in admin, portal, or auth
-  if (pathname.startsWith("/admin") || pathname.startsWith("/portal") || pathname === "/login" || pathname === "/register") {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/portal") || pathname === "/login" || pathname === "/register" || pathname === "/forgot-password") {
     return null;
   }
 

@@ -7,9 +7,14 @@ import Link from "next/link";
 import { apiClient } from "@/lib/api/client";
 import { withRoleGuard } from "@/components/auth/RoleGuard";
 
+import { useAuthStore } from "@/lib/store/auth.store";
+import { isAdminRights } from "@/lib/roles";
+
 function ProjectReviewPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuthStore();
+  const isAdmin = isAdminRights(user?.role);
 
   useEffect(() => {
     // In a real app, this fetches all pending projects from an admin endpoint
@@ -118,14 +123,16 @@ function ProjectReviewPage() {
                   </p>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row md:flex-col gap-3 min-w-[140px]">
-                  <button onClick={() => handleStatusUpdate(project.slug, 'approved')} className="w-full py-3 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors border border-emerald-200 font-bold flex justify-center items-center gap-2">
-                    <Check className="w-5 h-5" /> Approve
-                  </button>
-                  <button onClick={() => handleStatusUpdate(project.slug, 'rejected')} className="w-full py-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200 font-bold flex justify-center items-center gap-2">
-                    <X className="w-5 h-5" /> Reject
-                  </button>
-                </div>
+                {isAdmin && (
+                  <div className="flex flex-col sm:flex-row md:flex-col gap-3 min-w-[140px]">
+                    <button onClick={() => handleStatusUpdate(project.slug, 'approved')} className="w-full py-3 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors border border-emerald-200 font-bold flex justify-center items-center gap-2">
+                      <Check className="w-5 h-5" /> Approve
+                    </button>
+                    <button onClick={() => handleStatusUpdate(project.slug, 'rejected')} className="w-full py-3 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200 font-bold flex justify-center items-center gap-2">
+                      <X className="w-5 h-5" /> Reject
+                    </button>
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
