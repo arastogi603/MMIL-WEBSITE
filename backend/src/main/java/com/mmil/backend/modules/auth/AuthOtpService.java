@@ -1,9 +1,14 @@
 package com.mmil.backend.modules.auth;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,30 +16,50 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class AuthOtpService {
 
-    private final JavaMailSender mailSender;
+    @Value("${brevo.api-key}")
+    private String brevoApiKey;
+
+    private final RestTemplate restTemplate = new RestTemplate();
     
     // Temporary in-memory cache for OTPs (email -> otp)
     private final Map<String, String> otpCache = new ConcurrentHashMap<>();
-
-    public AuthOtpService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
 
     public void sendPasswordResetOtp(String toEmail) {
         String otp = generateOtp();
         otpCache.put(toEmail, otp);
 
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(toEmail);
-            message.setSubject("MMIL Password Reset Code");
-            message.setText("Hello,\n\nYour 4-digit code to reset your password is: " + otp + "\n\nIf you did not request this, please ignore this email.\n\nThanks,\nMMIL Team");
+            String url = "https://api.brevo.com/v3/smtp/email";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", brevoApiKey);
+            headers.set("accept", "application/json");
+
+            Map<String, Object> body = new HashMap<>();
             
-            mailSender.send(message);
-            System.out.println("PASSWORD RESET EMAIL SENT SUCCESSFULLY TO: " + toEmail);
+            // Sender info
+            Map<String, String> sender = new HashMap<>();
+            sender.put("name", "MMIL Website");
+            sender.put("email", "noreply@mmil.jssaten.ac.in");
+            body.put("sender", sender);
+            
+            // Recipient info
+            Map<String, String> recipient = new HashMap<>();
+            recipient.put("email", toEmail);
+            body.put("to", List.of(recipient));
+            
+            body.put("subject", "MMIL Password Reset Code");
+            body.put("htmlContent", "<html><body><h3>Hello,</h3><p>Your 4-digit code to reset your password is: <b>" + otp + "</b></p><p>If you did not request this, please ignore this email.</p><br><p>Thanks,<br>MMIL Team</p></body></html>");
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+            
+            restTemplate.postForEntity(url, request, String.class);
+            System.out.println("REST API EMAIL SENT SUCCESSFULLY TO: " + toEmail);
+            
         } catch (Exception e) {
             System.out.println("=================================================");
-            System.out.println("FAILED TO SEND EMAIL. IS GMAIL CONFIGURED IN PROPERTIES?");
+            System.out.println("FAILED TO SEND EMAIL VIA REST API. IS BREVO_API_KEY CONFIGURED?");
             System.out.println("ERROR: " + e.getMessage());
             System.out.println("MOCK SENDING PASSWORD RESET EMAIL TO: " + toEmail);
             System.out.println("OTP: " + otp);

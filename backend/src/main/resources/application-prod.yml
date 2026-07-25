@@ -18,20 +18,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
+
 
 server:
   port: ${PORT:8080}
@@ -39,3 +26,6 @@ server:
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000 # 24 hours
+
+brevo:
+  api-key: ${BREVO_API_KEY}
