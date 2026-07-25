@@ -218,7 +218,7 @@ function AdminResourcesPage() {
                         
                         <div className="flex gap-4">
                           <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 shadow-[inset_0_1px_2px_rgba(255,255,255,1)]">
-                            {item.type === 'link' ? <LinkIcon size={24} /> : <Code size={24} />}
+                            <LinkIcon size={24} />
                           </div>
                           <div>
                             <h4 className="font-black text-lg text-[#111] pr-10">{item.title}</h4>
@@ -300,19 +300,9 @@ function AdminResourcesPage() {
                   <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Title</label>
                   <input {...registerItem("title", { required: true })} className={inputClass} placeholder="e.g. React Docs" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Type</label>
-                    <select {...registerItem("type", { required: true })} className={inputClass}>
-                      <option value="link">Link</option>
-                      <option value="document">Document</option>
-                      <option value="video">Video</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Tech Stack (CSV)</label>
-                    <input {...registerItem("techStack")} className={inputClass} placeholder="React, TS" />
-                  </div>
+                <div>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Tech Stack (CSV)</label>
+                  <input {...registerItem("techStack")} className={inputClass} placeholder="React, TS" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">URL</label>
