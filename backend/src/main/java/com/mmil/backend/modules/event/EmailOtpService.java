@@ -41,7 +41,7 @@ public class EmailOtpService {
             // Sender info
             Map<String, String> sender = new HashMap<>();
             sender.put("name", "MMIL Hackathons");
-            sender.put("email", "noreply@mmil.jssaten.ac.in");
+            sender.put("email", "fakeidarastogi6032@gmail.com");
             body.put("sender", sender);
             
             // Recipient info
