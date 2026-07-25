@@ -58,8 +58,10 @@ public class AuthOtpService {
             System.out.println("REST API EMAIL SENT SUCCESSFULLY TO: " + toEmail);
             
         } catch (Exception e) {
+            String maskedKey = (brevoApiKey != null && brevoApiKey.length() > 6) ? brevoApiKey.substring(0, 6) + "..." : "NULL_OR_TOO_SHORT";
             System.out.println("=================================================");
             System.out.println("FAILED TO SEND EMAIL VIA REST API. IS BREVO_API_KEY CONFIGURED?");
+            System.out.println("API KEY LOADED INTO SPRING STARTS WITH: '" + maskedKey + "'");
             System.out.println("ERROR: " + e.getMessage());
             System.out.println("MOCK SENDING PASSWORD RESET EMAIL TO: " + toEmail);
             System.out.println("OTP: " + otp);
