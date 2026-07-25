@@ -27,5 +27,5 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000 # 24 hours
 
-brevo:
-  api-key: ${BREVO_API_KEY}
+google:
+  script-url: ${GOOGLE_SCRIPT_URL}

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class EmailOtpService {
 
-    @Value("${brevo.api-key}")
-    private String brevoApiKey;
+    @Value("${google.script-url}")
+    private String googleScriptUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();
     
@@ -29,37 +28,24 @@ public class EmailOtpService {
         otpCache.put(toEmail, otp);
 
         try {
-            String url = "https://api.brevo.com/v3/smtp/email";
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("api-key", brevoApiKey);
-            headers.set("accept", "application/json");
 
             Map<String, Object> body = new HashMap<>();
-            
-            // Sender info
-            Map<String, String> sender = new HashMap<>();
-            sender.put("name", "MMIL Hackathons");
-            sender.put("email", "mmil.website@gmail.com");
-            body.put("sender", sender);
-            
-            // Recipient info
-            Map<String, String> recipient = new HashMap<>();
-            recipient.put("email", toEmail);
-            body.put("to", List.of(recipient));
-            
+            body.put("to", toEmail);
             body.put("subject", "MMIL Team Registration OTP");
-            body.put("htmlContent", "<html><body><h3>Hello,</h3><p>Your OTP for team registration is: <b style='font-size:20px; color:#2563eb;'>" + otp + "</b></p><p>This code will expire soon. Do not share this code with anyone.</p><br><p>Best regards,<br>MMIL Team</p></body></html>");
+            body.put("body", "<html><body><h3>Hello,</h3><p>Your OTP for team registration is: <b style='font-size:20px; color:#2563eb;'>" + otp + "</b></p><p>This code will expire soon. Do not share this code with anyone.</p><br><p>Best regards,<br>MMIL Team</p></body></html>");
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
             
-            restTemplate.postForEntity(url, request, String.class);
-            System.out.println("TEAM REGISTRATION OTP SENT SUCCESSFULLY TO: " + toEmail);
+            restTemplate.postForEntity(googleScriptUrl, request, String.class);
+            System.out.println("GOOGLE SCRIPT TEAM REGISTRATION OTP SENT SUCCESSFULLY TO: " + toEmail);
             
         } catch (Exception e) {
+            String maskedUrl = (googleScriptUrl != null && googleScriptUrl.length() > 20) ? googleScriptUrl.substring(0, 20) + "..." : "NULL_OR_TOO_SHORT";
             System.out.println("=================================================");
-            System.out.println("FAILED TO SEND EMAIL VIA REST API. IS BREVO_API_KEY CONFIGURED?");
+            System.out.println("FAILED TO SEND EMAIL VIA GOOGLE SCRIPT. IS GOOGLE_SCRIPT_URL CONFIGURED?");
+            System.out.println("URL LOADED INTO SPRING STARTS WITH: '" + maskedUrl + "'");
             System.out.println("ERROR: " + e.getMessage());
             System.out.println("MOCK SENDING EMAIL TO: " + toEmail);
             System.out.println("OTP: " + otp);
