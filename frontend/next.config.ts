@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   // @ts-ignore - this is required by Next.js 14+ for local network access
   allowedDevOrigins: ["192.168.1.8"],
   images: {
+    qualities: [25, 50, 75, 100],
     remotePatterns: [
       {
         protocol: 'https',

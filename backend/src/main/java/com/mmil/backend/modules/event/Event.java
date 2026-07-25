@@ -43,6 +43,9 @@ public class Event {
     private Integer teamSizeMax;
 
     private String domain; // Frontend, AI, Cloud, etc.
+    
+    @Column(name = "poster_url")
+    private String posterUrl; // Optional URL for custom event poster
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -103,6 +106,9 @@ public class Event {
     
     public String getDomain() { return domain; }
     public void setDomain(String domain) { this.domain = domain; }
+    
+    public String getPosterUrl() { return posterUrl; }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

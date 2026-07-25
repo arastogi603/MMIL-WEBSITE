@@ -1,0 +1,20 @@
+Types of Events Conducted
+1. Annual College Associated Events
+(Orientation Programs, Recruitments, and Zealicon)
+● Zealicon Events:
+○ Logocon
+○ Code-in-Pair
+○ Decode
+○ Valorant Gaming Tournament
+2. Society Flagship Events
+● Hack-o-Code (Annual Coding Contest)
+● GitHub & Version Control Workshop
+● LinkedIn & Resume Building Workshop
+● Generative AI & Python Programming Workshop
+● Web Development & Core Programming Bootcamp
+Suggestions for Future Events
+● Tech Week: A 7-day workshop series featuring a different technology/topic each day.
+● Hackathon: A dedicated 24 to 48-hour development marathon (can be hosted online or offl ine).
+● TEDx-Style Talk: An industry speaker session organized in collaboration with Coding Blocks.
+● Treasuro: A tech-themed treasure hunt event designed specifi cally for Zealicon.
+● Alumni Meet: A networking session connecting current society members with MMIL alumni.

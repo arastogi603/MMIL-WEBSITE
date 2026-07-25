@@ -23,13 +23,11 @@ public class ResourceController {
     }
 
     @GetMapping("/folders")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ResourceFolder>> getAllFolders() {
         return ResponseEntity.ok(resourceService.getAllFolders());
     }
 
     @GetMapping("/folders/{folderId}/items")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ResourceItem>> getItemsByFolder(@PathVariable UUID folderId) {
         return ResponseEntity.ok(resourceService.getItemsByFolder(folderId));
     }

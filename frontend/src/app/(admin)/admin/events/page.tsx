@@ -13,13 +13,15 @@ export default function AdminEventsPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingEventSlug, setEditingEventSlug] = useState<string | null>(null);
   const { user } = useAuthStore();
   
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     title: "", type: "event", location: "", capacity: 100, 
     startDate: "", endDate: "", description: "",
-    isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 4
-  });
+    isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 4, posterUrl: ""
+  };
+  const [formData, setFormData] = useState(initialFormState);
 
   const fetchEvents = async () => {
     setIsLoading(true);
@@ -59,7 +61,7 @@ export default function AdminEventsPage() {
   };
 
   const handleDeleteDraft = async (slug: string) => {
-    if (!confirm("Are you sure you want to delete this draft event? This cannot be undone.")) return;
+    if (!confirm("Are you sure you want to delete this event? This cannot be undone.")) return;
     try {
       await eventsApi.deleteEvent(slug);
       setEvents(events.filter(e => e.slug !== slug));
@@ -68,17 +70,41 @@ export default function AdminEventsPage() {
     }
   };
 
-  const handleCreateEvent = async (e: React.FormEvent) => {
+  const handleEditClick = (event: any) => {
+    setEditingEventSlug(event.slug);
+    setFormData({
+      title: event.title || "",
+      type: event.type || "event",
+      location: event.location || "",
+      capacity: event.capacity || 100,
+      startDate: event.startDate ? event.startDate.substring(0, 16) : "",
+      endDate: event.endDate ? event.endDate.substring(0, 16) : "",
+      description: event.description || "",
+      isTeamEvent: event.isTeamEvent || false,
+      teamSizeMin: event.teamSizeMin || 1,
+      teamSizeMax: event.teamSizeMax || 4,
+      posterUrl: event.posterUrl || ""
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCreateOrUpdateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsCreating(true);
     try {
-      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
-      await eventsApi.createEvent({ ...formData, slug });
+      if (editingEventSlug) {
+        const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
+        await eventsApi.updateEvent(editingEventSlug, { ...formData, slug });
+      } else {
+        const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
+        await eventsApi.createEvent({ ...formData, slug });
+      }
       setIsModalOpen(false);
-      setFormData({ title: "", type: "event", location: "", capacity: 100, startDate: "", endDate: "", description: "", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 4 });
+      setEditingEventSlug(null);
+      setFormData(initialFormState);
       fetchEvents();
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to create event.");
+      alert(err.response?.data?.message || "Failed to save event.");
     } finally {
       setIsCreating(false);
     }
@@ -86,6 +112,7 @@ export default function AdminEventsPage() {
 
   const draftEvents = events.filter(e => e.status === "draft");
   const publishedEvents = events.filter(e => e.status === "published");
+  const completedEvents = events.filter(e => e.status === "completed");
 
   const inputClass = "w-full bg-white/80 backdrop-blur-xl border border-black/10 rounded-xl py-2.5 px-4 text-[#111] focus:outline-none focus:border-[#111] focus:ring-1 focus:ring-[#111]/20 transition-all placeholder:text-neutral-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)]";
 
@@ -119,7 +146,7 @@ export default function AdminEventsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Draft Events Column */}
         <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)] overflow-hidden">
@@ -136,40 +163,60 @@ export default function AdminEventsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={event.id} 
-                className="p-5 rounded-2xl border border-black/5 bg-[#faf7f3] shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
+                className="p-6 rounded-[2rem] border border-white/80 bg-gradient-to-b from-[#faf7f3] to-white shadow-[0_10px_25px_rgba(0,0,0,0.05),inset_0_2px_4px_rgba(255,255,255,1)] relative group overflow-hidden"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="font-bold text-[#111] text-lg">{event.title}</h3>
-                  <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200 uppercase tracking-wider">Draft</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                
+                <div className="flex justify-between items-start mb-4 relative">
+                  <h3 className="font-black text-[#111] text-xl leading-tight">{event.title}</h3>
+                  <span className="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-b from-amber-100 to-amber-50 text-amber-700 border border-amber-200 shadow-[inset_0_2px_4px_rgba(255,255,255,1)] uppercase tracking-wider">Draft</span>
                 </div>
-                <p className="text-sm text-neutral-500 mb-4 line-clamp-2">{event.description}</p>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3 mb-6 relative">
+                  <div className="flex items-center gap-3 text-sm text-neutral-500 font-bold bg-white/50 p-3 rounded-2xl border border-black/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                    <Calendar className="w-4 h-4 text-amber-500" />
+                    {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-neutral-500 font-bold bg-white/50 p-3 rounded-2xl border border-black/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+                    <MapPin className="w-4 h-4 text-amber-500" />
+                    {event.location || 'Location TBA'}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 relative">
+                  <button 
+                    onClick={() => handleEditClick(event)}
+                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Type className="w-4 h-4" /> Edit Event
+                  </button>
                   <button 
                     onClick={() => handlePublish(event.slug)}
-                    className="w-full py-2.5 rounded-xl font-bold text-sm bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-emerald-50 to-emerald-100/50 text-emerald-600 border border-emerald-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(16,185,129,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(16,185,129,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                   >
-                    <CheckCircle className="w-4 h-4" /> Publish Event
+                    <CheckCircle className="w-4 h-4" /> Publish
                   </button>
-                  {user?.role?.toUpperCase() === "ADMIN" && (
-                    <button 
-                      onClick={() => handleDeleteDraft(event.slug)}
-                      className="w-full py-2.5 rounded-xl font-bold text-sm bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Trash2 className="w-4 h-4" /> Delete Draft
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => handleDeleteDraft(event.slug)}
+                    className="col-span-2 w-full py-3 rounded-2xl font-black text-sm text-neutral-500 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" /> Delete Draft
+                  </button>
                 </div>
+
               </motion.div>
             ))}
           </div>
         </div>
 
         {/* Published Events Column */}
-        <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)] overflow-hidden">
-          <div className="p-5 md:p-6 border-b border-black/5">
-            <h2 className="text-lg font-black text-[#111]">Published ({publishedEvents.length})</h2>
+        <div className="bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-3xl rounded-[3rem] border border-white/60 shadow-[0_20px_40px_rgba(0,0,0,0.08),inset_0_4px_8px_rgba(255,255,255,0.8)] overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400/10 rounded-full blur-[80px] -z-10" />
+          <div className="p-6 md:p-8 border-b border-black/5 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_8px_16px_rgba(59,130,246,0.3)] text-white">
+              <CheckCircle className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-black text-[#111]">Published ({publishedEvents.length})</h2>
           </div>
-          <div className="p-4 md:p-6 space-y-4">
+          <div className="p-4 md:p-6 space-y-5">
             {isLoading && events.length === 0 ? (
               <p className="text-neutral-400 text-center py-4 font-medium">Loading...</p>
             ) : publishedEvents.length === 0 ? (
@@ -179,32 +226,81 @@ export default function AdminEventsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={event.id} 
-                className="p-5 rounded-2xl border border-black/5 bg-[#faf7f3] shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]"
+                className="p-6 rounded-[2rem] border border-white/80 bg-gradient-to-b from-[#faf7f3] to-white shadow-[0_10px_25px_rgba(0,0,0,0.05),inset_0_2px_4px_rgba(255,255,255,1)] relative group overflow-hidden"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="font-bold text-[#111] text-lg">{event.title}</h3>
-                  <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase tracking-wider">Live</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                
+                <div className="flex justify-between items-start mb-4 relative">
+                  <h3 className="font-black text-[#111] text-xl leading-tight">{event.title}</h3>
+                  <span className="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-b from-emerald-100 to-emerald-50 text-emerald-700 border border-emerald-200 shadow-[inset_0_2px_4px_rgba(255,255,255,1)] uppercase tracking-wider">Live</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-neutral-500 mb-4 font-medium">
-                  <Calendar className="w-4 h-4 text-neutral-400" />
+                <div className="flex items-center gap-3 text-sm text-neutral-500 mb-6 font-bold bg-white/50 p-3 rounded-2xl border border-black/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] relative">
+                  <Calendar className="w-4 h-4 text-emerald-500" />
                   {new Date(event.startDate).toLocaleDateString()}
                 </div>
+                
                 {event.isTeamEvent && (
                   <Link 
                     href={`/admin/events/${event.slug}/teams`}
-                    className="w-full py-2.5 rounded-xl font-bold text-sm bg-purple-50 text-purple-600 border border-purple-200 hover:bg-purple-100 transition-colors flex items-center justify-center gap-2 mb-2"
+                    className="w-full py-3 mb-3 rounded-2xl font-black text-sm bg-gradient-to-b from-purple-50 to-purple-100/50 text-purple-600 border border-purple-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(168,85,247,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(168,85,247,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 relative"
                   >
                     <Users className="w-4 h-4" /> Manage Teams
                   </Link>
                 )}
-                {user?.role?.toUpperCase() === "ADMIN" && (
+                <div className="grid grid-cols-2 gap-3 relative">
+                  <button 
+                    onClick={() => handleEditClick(event)}
+                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Type className="w-4 h-4" /> Edit Event
+                  </button>
                   <button 
                     onClick={() => handleUnpublish(event.slug)}
-                    className="w-full py-2.5 rounded-xl font-bold text-sm bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-red-50 to-red-100/50 text-red-600 border border-red-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(239,68,68,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                   >
-                    <ShieldAlert className="w-4 h-4" /> Unpublish (Admin Only)
+                    <ShieldAlert className="w-4 h-4" /> Unpublish
                   </button>
-                )}
+                </div>
+
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Completed Events Column */}
+        <div className="bg-white/70 backdrop-blur-xl rounded-[2rem] border border-white shadow-[0_8px_30px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)] overflow-hidden">
+          <div className="p-5 md:p-6 border-b border-black/5 flex items-center gap-3">
+            <h2 className="text-lg font-black text-[#111]">Completed ({completedEvents.length})</h2>
+          </div>
+          <div className="p-4 md:p-6 space-y-4">
+            {isLoading && events.length === 0 ? (
+              <p className="text-neutral-400 text-center py-4 font-medium">Loading...</p>
+            ) : completedEvents.length === 0 ? (
+              <p className="text-neutral-400 text-center py-4 font-medium">No completed events.</p>
+            ) : completedEvents.map(event => (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                key={event.id} 
+                className="p-6 rounded-[2rem] border border-white/80 bg-gradient-to-b from-[#faf7f3] to-white shadow-[0_10px_25px_rgba(0,0,0,0.05),inset_0_2px_4px_rgba(255,255,255,1)] relative group overflow-hidden opacity-80 hover:opacity-100 transition-opacity"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                
+                <div className="flex justify-between items-start mb-4 relative">
+                  <h3 className="font-black text-[#111] text-xl leading-tight">{event.title}</h3>
+                  <span className="px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-b from-neutral-200 to-neutral-100 text-neutral-600 border border-neutral-300 shadow-[inset_0_2px_4px_rgba(255,255,255,1)] uppercase tracking-wider">Past</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-neutral-500 mb-6 font-bold bg-white/50 p-3 rounded-2xl border border-black/5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] relative">
+                  <Calendar className="w-4 h-4 text-neutral-400" />
+                  {new Date(event.startDate).toLocaleDateString()}
+                </div>
+                
+                <button 
+                  onClick={() => handleEditClick(event)}
+                  className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                >
+                  <Type className="w-4 h-4" /> Edit Event
+                </button>
               </motion.div>
             ))}
           </div>
@@ -222,14 +318,14 @@ export default function AdminEventsPage() {
               className="bg-white/90 backdrop-blur-3xl w-full max-w-2xl rounded-[2rem] border border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden max-h-[90vh] flex flex-col"
             >
               <div className="p-6 border-b border-black/5 flex justify-between items-center">
-                <h2 className="text-xl font-black text-[#111]">Create New Event</h2>
+                <h2 className="text-xl font-black text-[#111]">{editingEventSlug ? "Edit Event" : "Create New Event"}</h2>
                 <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center text-neutral-500 hover:text-[#111] hover:bg-black/10 transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               
               <div className="p-6 overflow-y-auto">
-                <form id="create-event-form" onSubmit={handleCreateEvent} className="space-y-4">
+                <form id="create-event-form" onSubmit={handleCreateOrUpdateEvent} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-sm font-bold text-neutral-600">Title</label>
@@ -251,9 +347,14 @@ export default function AdminEventsPage() {
                       <input required type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className={inputClass} placeholder="e.g. Main Auditorium" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-sm font-bold text-neutral-600">Capacity (Seats)</label>
-                      <input required type="number" min="1" value={formData.capacity || ""} onChange={e => setFormData({...formData, capacity: parseInt(e.target.value) || 0})} className={inputClass} placeholder="100" />
+                      <label className="text-sm font-bold text-neutral-600">Poster Image URL (Optional)</label>
+                      <input type="url" value={formData.posterUrl} onChange={e => setFormData({...formData, posterUrl: e.target.value})} className={inputClass} placeholder="https://example.com/poster.jpg" />
                     </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-neutral-600">Capacity (Seats)</label>
+                    <input required type="number" min="1" value={formData.capacity || ""} onChange={e => setFormData({...formData, capacity: parseInt(e.target.value) || 0})} className={inputClass} placeholder="100" />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

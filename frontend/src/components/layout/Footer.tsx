@@ -11,7 +11,7 @@ export function Footer() {
   
   return (
     <footer 
-      className={`site-footer relative z-0 w-full mt-auto border-t border-[var(--footer-border)] bg-[var(--footer-bg)] ${theme === "dark" ? "footer-dark" : ""} ${isAdmin ? "md:pl-72 pb-16 md:pb-0" : ""}`.trim()}
+      className={`site-footer relative z-0 w-full mt-auto border-t font-[family-name:var(--font-geist)] border-[var(--footer-border)] bg-[var(--footer-bg)] ${theme === "dark" ? "footer-dark" : ""} ${isAdmin ? "md:pl-72 pb-16 md:pb-0" : ""}`.trim()}
     >
       <div 
         className="footer-inner max-w-[1400px] mx-auto relative flex flex-col md:flex-row items-center justify-between px-6 py-3 min-h-[52px] gap-4" 

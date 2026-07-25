@@ -45,6 +45,12 @@ public class EventController {
         return ResponseEntity.ok(eventService.createEvent(dto));
     }
 
+    @PutMapping("/{slug}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
+    public ResponseEntity<Event> updateEvent(@PathVariable String slug, @Valid @RequestBody CreateEventDto dto) {
+        return ResponseEntity.ok(eventService.updateEvent(slug, dto));
+    }
+
     @PostMapping("/{slug}/publish")
     @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
     public ResponseEntity<Event> publishEvent(@PathVariable String slug) {
@@ -52,7 +58,7 @@ public class EventController {
     }
 
     @PostMapping("/{slug}/unpublish")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
     public ResponseEntity<Event> unpublishEvent(@PathVariable String slug) {
         return ResponseEntity.ok(eventService.unpublishEvent(slug));
     }
@@ -84,7 +90,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{slug}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
     public ResponseEntity<?> deleteEvent(@PathVariable String slug) {
         eventService.deleteEvent(slug);
         return ResponseEntity.ok().build();

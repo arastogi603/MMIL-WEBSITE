@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/lib/theme/theme";
+import Image from "next/image";
 
 export function BackgroundShapes() {
   const { theme } = useTheme();
@@ -17,17 +18,15 @@ export function BackgroundShapes() {
         willChange: "transform",
       }}
     >
-      <img
-        src={theme === "dark" ? "/bg-dark.svg" : "/bg-light.svg"}
-        alt=""
+      <Image
+        src={theme === "dark" ? "/bg-dark.png" : "/bg-light.svg"}
+        alt="Background"
+        fill
+        priority
+        quality={100}
+        unoptimized
         style={{
-          width: "100%",
-          height: "100%",
           objectFit: "cover",
-          position: "fixed",
-          inset: 0,
-          pointerEvents: "none",
-          transform: "translateZ(0)",
         }}
       />
     </div>

@@ -1,30 +1,15 @@
 import type { Metadata } from "next";
-import { Inter, Josefin_Sans, Geist_Mono, Bebas_Neue, Caveat, Geist } from "next/font/google";
+import { Poppins, Geist } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas",
-  weight: "400",
-  subsets: ["latin"],
-});
-
-const josefin = Josefin_Sans({
-  variable: "--font-josefin",
-  subsets: ["latin"],
-});
-
-const caveat = Caveat({
-  variable: "--font-script",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
@@ -44,9 +29,6 @@ import { InitialLoader } from "@/components/layout/InitialLoader";
 import { ThemeProvider } from "@/lib/theme/theme";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,10 +37,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", inter.variable, geistMono.variable, bebasNeue.variable, josefin.variable, caveat.variable, "font-sans", geist.variable)}
+      className={cn("h-full", "antialiased", poppins.variable, geist.variable)}
       suppressHydrationWarning
     >
-      <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <body 
+        className="font-[family-name:var(--font-poppins)]"
+        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      >
         <ThemeProvider>
           <InitialLoader />
           <BackgroundShapes />

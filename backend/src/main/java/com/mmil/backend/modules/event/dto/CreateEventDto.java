@@ -27,6 +27,7 @@ public class CreateEventDto {
     private Boolean isTeamEvent;
     private Integer teamSizeMin;
     private Integer teamSizeMax;
+    private String posterUrl;
 
     // Getters and Setters
     public String getTitle() { return title; }
@@ -61,4 +62,7 @@ public class CreateEventDto {
 
     public Integer getTeamSizeMax() { return teamSizeMax; }
     public void setTeamSizeMax(Integer teamSizeMax) { this.teamSizeMax = teamSizeMax; }
+
+    public String getPosterUrl() { return posterUrl; }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
 }

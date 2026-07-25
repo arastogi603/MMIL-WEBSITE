@@ -96,20 +96,10 @@ export function InitialLoader() {
                 transition={{ duration: 1.5, ease: "easeOut" }}
                 className="flex flex-col items-center w-full max-w-md"
               >
-                <motion.div 
-                  animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.2)", "0 0 25px rgba(255,255,255,0.8)", "0 0 10px rgba(255,255,255,0.2)"] }}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                  className="text-5xl md:text-7xl text-white font-medium leading-tight"
-                  style={{ fontFamily: 'var(--font-script)' }}
-                >
-                  Enter Experience
-                </motion.div>
                 <motion.p 
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 1 }}
-                  className="text-[10px] md:text-xs font-light tracking-[0.4em] uppercase mt-4 md:mt-6" 
-                  style={{ color: "rgba(255,255,255,0.6)" }}
+                  animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.1)", "0 0 20px rgba(255,255,255,0.5)", "0 0 10px rgba(255,255,255,0.1)"] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                  className="text-xs md:text-sm font-medium tracking-[0.4em] uppercase text-white" 
                 >
                   Click anywhere to launch
                 </motion.p>

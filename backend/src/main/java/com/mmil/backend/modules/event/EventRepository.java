@@ -14,6 +14,6 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     long countByStatus(String status);
 
     
-    @Query("SELECT e FROM Event e WHERE e.status = 'published' ORDER BY e.startDate ASC")
+    @Query("SELECT e FROM Event e WHERE e.status IN ('published', 'completed') ORDER BY e.startDate DESC")
     List<Event> findPublishedUpcoming();
 }

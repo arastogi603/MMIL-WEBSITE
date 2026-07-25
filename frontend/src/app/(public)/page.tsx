@@ -21,7 +21,7 @@ export default function Home() {
   // removed sheetY to rely on native sticky scroll and fix extra empty space
 
   return (
-    <main style={{ fontFamily: "'Outfit', 'Inter', sans-serif" }} className="relative w-full">
+    <main className="relative w-full">
       {/* Scroll animation target container */}
       <div ref={targetRef} className="relative w-full">
         {/* ───── HERO SECTION (FULL VIEWPORT STICKY) ───── */}

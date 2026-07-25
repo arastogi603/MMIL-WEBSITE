@@ -6,9 +6,11 @@ import com.mmil.backend.modules.event.dto.CreateEventDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
 public class EventService {
@@ -55,9 +57,50 @@ public class EventService {
         event.setIsTeamEvent(dto.getIsTeamEvent() != null ? dto.getIsTeamEvent() : false);
         event.setTeamSizeMin(dto.getTeamSizeMin());
         event.setTeamSizeMax(dto.getTeamSizeMax());
+        event.setPosterUrl(dto.getPosterUrl());
         event.setStatus("draft");
 
         return eventRepository.save(event);
+    }
+
+    @Transactional
+    public Event updateEvent(String slug, CreateEventDto dto) {
+        Event event = getEventBySlug(slug);
+        
+        event.setTitle(dto.getTitle());
+        if (!event.getSlug().equals(dto.getSlug())) {
+            if (eventRepository.findBySlug(dto.getSlug()).isPresent()) {
+                throw new RuntimeException("Event slug must be unique");
+            }
+            event.setSlug(dto.getSlug());
+        }
+        event.setType(dto.getType());
+        event.setStartDate(dto.getStartDate());
+        event.setEndDate(dto.getEndDate());
+        event.setLocation(dto.getLocation());
+        event.setDescription(dto.getDescription());
+        event.setCapacity(dto.getCapacity());
+        event.setIsTeamEvent(dto.getIsTeamEvent() != null ? dto.getIsTeamEvent() : false);
+        event.setTeamSizeMin(dto.getTeamSizeMin());
+        event.setTeamSizeMax(dto.getTeamSizeMax());
+        event.setPosterUrl(dto.getPosterUrl());
+
+        return eventRepository.save(event);
+    }
+
+    @Scheduled(fixedDelay = 60000) // Runs every minute
+    @Transactional
+    public void autoCompleteEvents() {
+        List<Event> publishedEvents = eventRepository.findPublishedUpcoming();
+        LocalDateTime now = LocalDateTime.now();
+        for (Event event : publishedEvents) {
+            if (event.getEndDate() != null && event.getEndDate().isBefore(now)) {
+                if ("published".equals(event.getStatus())) {
+                    event.setStatus("completed");
+                    eventRepository.save(event);
+                }
+            }
+        }
     }
 
     public Event publishEvent(String slug) {

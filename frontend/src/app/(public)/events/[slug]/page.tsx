@@ -165,12 +165,6 @@ export default function EventDetailsPage() {
   return (
     <main className="min-h-screen bg-transparent text-[var(--text-primary)] pt-32 pb-24 relative overflow-hidden font-['Outfit']">
       
-      {/* Immersive Glassmorphic Banner */}
-      <div className="absolute top-0 left-0 w-full h-[500px] z-0 overflow-hidden">
-        <Image src={getEventImage(event.type)} alt={event.title} fill className="object-cover opacity-40 blur-xl scale-110" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-[#faf7f3]/80 to-[#faf7f3]" />
-      </div>
-      
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <Link href="/events" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors mb-8 w-fit bg-[var(--background)]/50 backdrop-blur-md px-4 py-2 rounded-full border border-[var(--border)] shadow-sm">
           <ArrowLeft className="w-4 h-4" />
@@ -183,10 +177,10 @@ export default function EventDetailsPage() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-50" />
           
           <div className="flex flex-wrap items-center gap-3 mb-8">
-            <span className="px-4 py-1.5 text-xs font-black uppercase tracking-widest rounded-full bg-blue-50 text-blue-600 border border-blue-100 shadow-sm">
+            <span className="px-4 py-1.5 text-xs font-black uppercase tracking-widest rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 shadow-sm">
               {event.type} {event.isTeamEvent && '(Team Event)'}
             </span>
-            <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-widest rounded-full border shadow-sm ${isFull ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'}`}>
+            <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-widest rounded-full border shadow-sm ${isFull ? 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-100 dark:border-red-500/20' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20'}`}>
               {isFull ? 'Registration Closed' : `${seatsLeft} Seats Left`}
             </span>
           </div>
@@ -217,16 +211,16 @@ export default function EventDetailsPage() {
           </div>
 
           {error && !isTeamModalOpen && (
-            <div className="p-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 font-bold text-sm mb-8 flex items-center gap-3">
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-red-600 dark:text-red-400 font-bold text-sm mb-8 flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
               {error}
             </div>
           )}
 
-          <div className="flex flex-col gap-4 border-t border-black/5 pt-8">
+          <div className="flex flex-col gap-4 border-t border-[var(--border)] pt-8">
             {isRegistered ? (
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="flex items-center gap-3 text-emerald-600 font-black px-8 py-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm w-full sm:w-auto justify-center">
+                <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-400 font-black px-8 py-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 shadow-sm w-full sm:w-auto justify-center">
                   <CheckCircle className="w-6 h-6" />
                   ALREADY REGISTERED
                 </div>

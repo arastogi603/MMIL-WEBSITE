@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, X, GitBranch, AlertCircle, RefreshCw, Globe, Code, User } from "lucide-react";
 import { projectsApi } from "@/lib/api/projects";
+import Link from "next/link";
 
 export default function AdminProjectsPage() {
   const [activeTab, setActiveTab] = useState<"pending" | "approved">("pending");
@@ -50,12 +51,17 @@ export default function AdminProjectsPage() {
           <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-black text-[#111] tracking-tight">Project Submissions</motion.h1>
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="text-neutral-500 font-medium mt-1">Review and approve projects submitted by MMIL members.</motion.p>
         </div>
-        <button 
-          onClick={fetchProjects}
-          className="p-3 rounded-xl bg-white/70 backdrop-blur-xl border border-black/5 text-neutral-500 hover:text-[#111] hover:bg-white transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)]"
-        >
-          <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
-        </button>
+        <div className="flex gap-2">
+          <Link href="/projects/submit" className="px-5 py-3 rounded-xl bg-[#111] text-white font-bold flex items-center justify-center hover:bg-black/80 transition-colors shadow-md text-sm">
+            Submit Project
+          </Link>
+          <button 
+            onClick={fetchProjects}
+            className="p-3 rounded-xl bg-white/70 backdrop-blur-xl border border-black/5 text-neutral-500 hover:text-[#111] hover:bg-white transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.04),inset_0_2px_4px_rgba(255,255,255,1)]"
+          >
+            <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
       </div>
 
       {error && (

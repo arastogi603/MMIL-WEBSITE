@@ -1,260 +1,314 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
-import { Calendar, Clock, MapPin, Users, ArrowRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { eventsApi } from "@/lib/api/events";
+import { eventsApi, Event } from "@/lib/api/events";
+import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
+import { Calendar, Users, ChevronRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 
-// Maps event type to its specific cover photo
-function getEventImage(type?: string): string {
-  const t = (type || "").toLowerCase();
-  if (t.includes("hackathon")) return "/event-hackathon.png";
-  if (t.includes("workshop")) return "/event-workshop.jpg";
-  if (t.includes("ideathon")) return "/event-ideathon.png";
-  return "/event-default.jpg";
-}
-
-// Helper for 3D Tilt Card
-function TiltCard({ event, index }: { event: any; index: number }) {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
-    const { left, top, width, height } = currentTarget.getBoundingClientRect();
-    const x = (clientX - left - width / 2) * 0.15; // sensitivity
-    const y = (clientY - top - height / 2) * -0.15;
-    mouseX.set(x);
-    mouseY.set(y);
-  }
-
-  function handleMouseLeave() {
-    mouseX.set(0);
-    mouseY.set(0);
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX: mouseY,
-        rotateY: mouseX,
-        transformStyle: "preserve-3d",
-      }}
-      className="relative h-full"
-    >
-      <div className="absolute inset-0 bg-black/[0.02] rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-      <div className="relative h-full bg-white/60 p-8 rounded-[2rem] border border-black/5 hover:border-black/10 transition-colors flex flex-col justify-between overflow-hidden group backdrop-blur-md shadow-sm">
-        
-        {/* Glow effect that follows mouse */}
-        <motion.div
-          className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          style={{
-            background: useMotionTemplate`
-              radial-gradient(
-                400px circle at ${useMotionValue(100)}px ${useMotionValue(100)}px,
-                rgba(255,255,255,0.1),
-                transparent 80%
-              )
-            `,
-          }}
-        />
-
-        <div>
-          <div className="flex justify-between items-start mb-8">
-            <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full bg-black/5 text-neutral-600 border border-black/10">
-              {event.type}
-            </span>
-            <div className="flex items-center gap-1.5 text-neutral-500 text-xs font-semibold tracking-wider uppercase">
-              <Users className="w-3.5 h-3.5" />
-              <span>{event.capacity - event.seatsTaken} left</span>
-            </div>
-          </div>
-          
-          <h3 className="text-3xl font-bold text-[#111] mb-4 tracking-tight group-hover:text-[#eb4d6d] transition-colors" style={{ transform: "translateZ(30px)" }}>
-            {event.title}
-          </h3>
-          
-          <p className="text-neutral-600 text-sm leading-relaxed font-light line-clamp-3 mb-8" style={{ transform: "translateZ(20px)" }}>
-            {event.description}
-          </p>
-        </div>
-
-        <div className="space-y-3 pt-6 border-t border-black/5" style={{ transform: "translateZ(10px)" }}>
-          <div className="flex items-center gap-3 text-sm text-neutral-600">
-            <Calendar className="w-4 h-4 text-[#eb4d6d]" />
-            <span>{new Date(event.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-neutral-600">
-            <Clock className="w-4 h-4 text-[#eb4d6d]" />
-            <span>{new Date(event.startDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
-          </div>
-          
-          <Link 
-            href={`/events/${event.slug}`} 
-            className="mt-6 flex items-center justify-between w-full px-6 py-3 bg-black/5 hover:bg-black/10 border border-black/10 rounded-xl transition-all text-sm font-bold text-[#111] group/btn"
-          >
-            <span>View Details</span>
-            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
+// Fallback events if backend is not started/seeded yet
+const fallbackEvents: Event[] = [
+  { id: "1", title: "Logocon", slug: "logocon", description: "Zealicon flagship logic and coding contest.", type: "event", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0 },
+  { id: "2", title: "Code-in-Pair", slug: "code-in-pair", description: "Two-member team coding relay contest.", type: "event", status: "completed", isTeamEvent: true, teamSizeMin: 2, teamSizeMax: 2, seatsTaken: 0 },
+  { id: "3", title: "Decode", slug: "decode", description: "Cryptic hunt and algorithmic decoding event.", type: "event", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0 },
+  { id: "4", title: "Valorant Gaming Tournament", slug: "valorant", description: "Zealicon e-sports Valorant tournament.", type: "event", status: "completed", isTeamEvent: true, teamSizeMin: 5, teamSizeMax: 5, seatsTaken: 0 },
+  { id: "5", title: "Hack-o-Code", slug: "hack-o-code", description: "Annual Coding Contest.", type: "event", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0 },
+  { id: "6", title: "GitHub & Version Control", slug: "github-workshop", description: "Learn Git basics and open-source contribution.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0 },
+  { id: "7", title: "LinkedIn & Resume Building", slug: "resume-workshop", description: "Professional profile optimization session.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0 },
+];
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    async function loadEvents() {
-      try {
-        const data = await eventsApi.getPublishedEvents();
+    setIsHydrated(true);
+    eventsApi.getPublishedEvents().then(data => {
+      if (data && data.length > 0) {
         setEvents(data);
-      } catch (error) {
-        console.error("Failed to fetch events", error);
-        // Fallback mock data for design preview
-        setEvents([
-          {
-            id: 1, slug: 'ai-hack-2026', title: 'Generative AI Hackathon', type: 'Hackathon',
-            description: 'Build the future of AI. Join 500+ hackers in our largest flagship generative AI hackathon yet.',
-            startDate: new Date().toISOString(), capacity: 500, seatsTaken: 420
-          },
-          {
-            id: 2, slug: 'web3-masterclass', title: 'Web3 & Smart Contracts', type: 'Workshop',
-            description: 'Learn Solidity from the ground up. Write, test, and deploy your first smart contract on Ethereum.',
-            startDate: new Date(Date.now() + 86400000).toISOString(), capacity: 100, seatsTaken: 89
-          },
-          {
-            id: 3, slug: 'cloud-summit', title: 'AWS Cloud Summit', type: 'Event',
-            description: 'A full day of technical deep dives into AWS infrastructure, serverless architectures, and Kubernetes.',
-            startDate: new Date(Date.now() + 86400000 * 5).toISOString(), capacity: 200, seatsTaken: 15
-          }
-        ]);
-      } finally {
-        setIsLoading(false);
+      } else {
+        setEvents(fallbackEvents);
       }
-    }
-    loadEvents();
+    }).catch(() => {
+      setEvents(fallbackEvents);
+    });
   }, []);
 
+  if (!isHydrated) return null;
+
+  const ongoingEvents = events.filter(e => e.status !== "completed" && e.status !== "draft");
+  const completedEvents = events.filter(e => e.status === "completed");
+
   return (
-    <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-40 pb-24 relative overflow-hidden font-['Outfit']">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="flex flex-col items-center text-center mb-16">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-[4rem] sm:text-[6rem] md:text-[8rem] font-black tracking-tighter leading-none mb-4 text-[var(--text-primary)]"
+    <main className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto w-full">
+      <div className="mb-16 text-center">
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-5xl md:text-7xl font-black mb-6 tracking-tight text-[var(--text-primary)]"
+        >
+          OUR EVENTS
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-[var(--text-secondary)] text-lg md:text-xl max-w-2xl mx-auto"
+        >
+          Explore our flagship technical contests, workshops, and the grand Zealicon fests.
+        </motion.p>
+      </div>
+
+      <AnimatePresence>
+        {ongoingEvents.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="mb-24"
           >
-            OUR EVENTS
-          </motion.h1>
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center py-32">
-            <div className="w-12 h-12 border-4 border-black/20 border-t-black rounded-full animate-spin" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[250px] max-w-6xl mx-auto">
-            {/* Left Large Bento Box */}
-            {events[0] && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                className="col-span-1 md:col-span-2 row-span-2 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-xl transition-all cursor-pointer"
-              >
-                <Link href={`/events/${events[0].slug}`} className="absolute inset-0 z-20" />
-                <Image src={getEventImage(events[0].type)} alt={events[0].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                
-                <div className="absolute inset-0 p-10 flex flex-col justify-end">
-                  <span className="px-4 py-1.5 bg-white/80 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest text-neutral-800 w-max mb-4 shadow-sm border border-white">
-                    Featured Event
-                  </span>
-                  <h3 className="text-4xl font-black text-white uppercase tracking-tight leading-none mb-3">
-                    {events[0].title}
-                  </h3>
-                  <p className="text-white/70 font-medium max-w-md line-clamp-2">
-                    {events[0].description}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Middle Column (Two stacked bento boxes) */}
-            <div className="col-span-1 row-span-2 flex flex-col gap-4">
-              {events[1] && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="flex-1 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-center p-8 text-center hover:shadow-xl transition-all cursor-pointer"
-                >
-                  <Link href={`/events/${events[1].slug}`} className="absolute inset-0 z-20" />
-                  <Image src={getEventImage(events[1].type)} alt={events[1].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-black/40" />
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight relative z-10">{events[1].title}</h3>
-                </motion.div>
-              )}
-              {events[2] && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex-1 relative rounded-[3rem] bg-[#111] overflow-hidden group shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex items-center justify-center p-8 text-center hover:shadow-xl transition-all cursor-pointer"
-                >
-                  <Link href={`/events/${events[2].slug}`} className="absolute inset-0 z-20" />
-                  <Image src={getEventImage(events[2].type)} alt={events[2].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-black/40" />
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight relative z-10">{events[2].title}</h3>
-                </motion.div>
-              )}
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">Ongoing Now</h2>
+              <div className="h-px bg-black/10 dark:bg-white/20 flex-1 rounded-full" />
+              <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.6)]" />
+            </div>
+            
+            {/* Desktop Layout: Large Banners */}
+            <div className="hidden md:flex flex-col gap-12">
+              {ongoingEvents.map((evt) => (
+                <Link href={`/events/${evt.slug}`} key={`desktop-${evt.id || evt.slug}`}>
+                  <LiquidGlassCard className="h-[400px] flex overflow-hidden border-emerald-500/20 dark:border-emerald-500/30 group p-0" status="ongoing">
+                    {/* Poster Half */}
+                    <div className="w-1/2 relative bg-black/5 dark:bg-white/5 border-r border-black/5 dark:border-white/10">
+                      <Image 
+                        src={
+                          evt.posterUrl || (
+                            (evt.type || "").toLowerCase().includes("hackathon") ? "/event-hackathon.png" :
+                            (evt.type || "").toLowerCase().includes("workshop") ? "/event-workshop.jpg" :
+                            (evt.type || "").toLowerCase().includes("ideathon") ? "/event-ideathon.png" :
+                            "/event-default.jpg"
+                          )
+                        }
+                        alt={evt.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    {/* Content Half */}
+                    <div className="w-1/2 p-12 flex flex-col justify-between bg-emerald-50 dark:bg-emerald-500/5">
+                      <div>
+                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-sm font-semibold tracking-wider uppercase mb-4">
+                          <Calendar className="w-4 h-4" /> Registration Open
+                        </div>
+                        <h3 className="text-4xl font-bold text-[var(--text-primary)] mb-4 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-tight">{evt.title}</h3>
+                        <p className="text-[var(--text-secondary)] text-lg leading-relaxed line-clamp-3">{evt.description}</p>
+                      </div>
+                      
+                      <div className="mt-8 flex flex-wrap gap-4 items-center justify-between">
+                        <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm font-bold uppercase tracking-wider">
+                          <Users className="w-4 h-4" />
+                          {evt.isTeamEvent ? `Team Size: ${evt.teamSizeMin}-${evt.teamSizeMax}` : "Individual Event"}
+                        </div>
+                        <div className="flex items-center gap-2 text-[var(--text-primary)] font-semibold bg-black/5 dark:bg-white/10 px-6 py-3 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
+                          Register Now <ChevronRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    </div>
+                  </LiquidGlassCard>
+                </Link>
+              ))}
             </div>
 
-            {/* Right Large Bento Box */}
-            {events[3] ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 }}
-                className="col-span-1 row-span-2 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 flex flex-col justify-between hover:shadow-xl transition-all cursor-pointer"
-              >
-                <Link href={`/events/${events[3].slug}`} className="absolute inset-0 z-20" />
-                <Image src={getEventImage(events[3].type)} alt={events[3].title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-sm border border-white relative z-10">
-                  <span className="text-xl">✨</span>
-                </div>
-                <div className="relative z-10">
-                  <h3 className="text-3xl font-black text-white uppercase tracking-tight mb-2">{events[3].title}</h3>
-                  <p className="text-white/70 font-medium line-clamp-3">
-                    {events[3].description}
-                  </p>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 }}
-                className="col-span-1 row-span-2 relative rounded-[3rem] bg-neutral-100 overflow-hidden group border-2 border-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 flex flex-col items-center justify-center text-center"
-              >
-                <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-sm border border-neutral-100 mb-6">
-                  <span className="text-2xl">🚀</span>
-                </div>
-                <h3 className="text-2xl font-black text-neutral-400 uppercase tracking-tight">More Events Soon</h3>
-              </motion.div>
-            )}
-          </div>
+            {/* Mobile Layout: Horizontal Slider with Posters */}
+            <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory gap-4 pb-8 -mx-6 px-6 hide-scrollbar">
+              {ongoingEvents.map((evt, idx) => (
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  key={`mobile-${evt.id || evt.slug}`} 
+                  className="snap-center shrink-0 w-[85vw]"
+                >
+                  <Link href={`/events/${evt.slug}`}>
+                    <LiquidGlassCard className="p-0 overflow-hidden h-[480px] flex flex-col border-emerald-500/30 bg-emerald-50 dark:bg-[#111] group" status="ongoing">
+                      <div className="relative w-full h-[200px] bg-black/5 dark:bg-white/5 shrink-0 border-b border-black/5 dark:border-white/10">
+                        <Image 
+                          src={
+                            evt.posterUrl || (
+                              (evt.type || "").toLowerCase().includes("hackathon") ? "/event-hackathon.png" :
+                              (evt.type || "").toLowerCase().includes("workshop") ? "/event-workshop.jpg" :
+                              (evt.type || "").toLowerCase().includes("ideathon") ? "/event-ideathon.png" :
+                              "/event-default.jpg"
+                            )
+                          }
+                          alt={evt.title}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      </div>
+                      
+                      <div className="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase mb-3">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            Registration Open
+                          </div>
+                          <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-tight">{evt.title}</h3>
+                          <p className="text-[var(--text-secondary)] text-sm line-clamp-2">{evt.description}</p>
+                        </div>
+                        
+                        <div className="mt-4 flex flex-col gap-3">
+                          <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs font-bold uppercase tracking-wider">
+                            <Users className="w-4 h-4" />
+                            {evt.isTeamEvent ? `Team: ${evt.teamSizeMin}-${evt.teamSizeMax}` : "Individual"}
+                          </div>
+                          <div className="flex items-center gap-2 text-white font-black bg-emerald-600 px-4 py-3 rounded-xl justify-center shadow-lg shadow-emerald-500/20">
+                            Register Now <ChevronRight className="w-4 h-4" />
+                          </div>
+                        </div>
+                      </div>
+                    </LiquidGlassCard>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         )}
+      </AnimatePresence>
+
+      <div className="flex items-center gap-4 mb-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Past Events Repository</h2>
+        <div className="h-px bg-black/10 dark:bg-white/10 flex-1 rounded-full" />
+      </div>
+
+      {/* Mobile Layout: Spatial Sticky Cascading Deck */}
+      <div className="flex sm:hidden flex-col pb-[60vh] relative mt-10 w-full max-w-[400px] mx-auto">
+        <div className="text-center mb-6 text-sm font-black text-neutral-400 uppercase tracking-widest flex items-center justify-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-neutral-400 animate-pulse" />
+          Scroll to Explore
+          <div className="w-1 h-1 rounded-full bg-neutral-400 animate-pulse" />
+        </div>
+        {completedEvents.map((evt, idx) => (
+          <div 
+            key={`mobile-${evt.id || evt.slug}`}
+            className="sticky w-full"
+            style={{ 
+              top: `calc(80px + ${idx * 20}px)`,
+              zIndex: idx,
+              marginBottom: '4rem'
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="w-full origin-top"
+            >
+              <Link href={`/events/${evt.slug}`}>
+                <LiquidGlassCard className="p-4 group h-[480px] flex flex-col border border-black/10 dark:border-white/20 bg-[#f8f9fa] dark:bg-[#111] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.8)] rounded-[2.5rem]" status="completed">
+                  <div className="relative w-full h-[220px] rounded-[1.8rem] overflow-hidden mb-4 bg-black/5 dark:bg-white/5 shrink-0">
+                    <Image 
+                      src={
+                        evt.posterUrl || (
+                          (evt.type || "").toLowerCase().includes("hackathon") ? "/event-hackathon.png" :
+                          (evt.type || "").toLowerCase().includes("workshop") ? "/event-workshop.jpg" :
+                          (evt.type || "").toLowerCase().includes("ideathon") ? "/event-ideathon.png" :
+                          "/event-default.jpg"
+                        )
+                      }
+                      alt={evt.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  </div>
+                  
+                  <div className="px-3 pb-2 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                         <span className="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg bg-black/5 dark:bg-white/10 text-[var(--text-primary)] border border-black/5 dark:border-white/10 shadow-sm">
+                           {evt.type}
+                         </span>
+                      </div>
+                      <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2 leading-tight drop-shadow-sm">
+                        {evt.title}
+                      </h3>
+                      <p className="text-[var(--text-secondary)] text-sm line-clamp-2 leading-relaxed">
+                        {evt.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center text-xs font-black tracking-widest text-[var(--text-secondary)] uppercase mt-4 bg-black/5 dark:bg-white/5 px-4 py-3 rounded-xl justify-between border border-black/5 dark:border-white/10">
+                      Explore Details <ExternalLink className="w-4 h-4" />
+                    </div>
+                  </div>
+                </LiquidGlassCard>
+              </Link>
+            </motion.div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Layout: Staggered 3-Column Grid */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          completedEvents.filter((_, i) => i % 3 === 0),
+          completedEvents.filter((_, i) => i % 3 === 1),
+          completedEvents.filter((_, i) => i % 3 === 2),
+        ].map((column, colIdx) => (
+          <div key={colIdx} className={`flex flex-col gap-6 ${colIdx % 2 === 0 ? 'lg:pt-16' : ''}`}>
+            {column.map((evt, idx) => (
+              <motion.div
+                key={`desktop-${evt.id || evt.slug}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
+              >
+                <Link href={`/events/${evt.slug}`}>
+                  <LiquidGlassCard className="p-4 sm:p-5 group" status="completed">
+                    <div className="relative w-full aspect-square rounded-2xl overflow-hidden mb-5 bg-black/5 dark:bg-white/5">
+                      <Image 
+                        src={
+                          evt.posterUrl || (
+                            (evt.type || "").toLowerCase().includes("hackathon") ? "/event-hackathon.png" :
+                            (evt.type || "").toLowerCase().includes("workshop") ? "/event-workshop.jpg" :
+                            (evt.type || "").toLowerCase().includes("ideathon") ? "/event-ideathon.png" :
+                            "/event-default.jpg"
+                          )
+                        }
+                        alt={evt.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    
+                    <div className="px-2 pb-2">
+                      <div className="flex items-center gap-2 mb-2">
+                         <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest rounded bg-black/5 dark:bg-white/10 text-[var(--text-secondary)]">
+                           {evt.type}
+                         </span>
+                      </div>
+                      <h3 className="text-xl md:text-2xl font-bold text-[var(--text-primary)] mb-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {evt.title}
+                      </h3>
+                      
+                      <div className="flex items-center text-xs font-bold tracking-wider text-[var(--text-secondary)] uppercase group-hover:text-[var(--text-primary)] transition-colors mt-4">
+                        View Details <ExternalLink className="w-3 h-3 ml-2" />
+                      </div>
+                    </div>
+                  </LiquidGlassCard>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        ))}
       </div>
     </main>
   );

@@ -35,6 +35,7 @@ export default function AdminResourcesPage() {
   };
 
   const fetchItems = async (folderId: string) => {
+    setItems([]); // Clear previous items immediately
     const data = await resourcesApi.getItemsByFolder(folderId);
     setItems(data);
   };

@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAuthStore } from "@/lib/store/auth.store";
 import { resourcesApi, ResourceFolder, ResourceItem } from "@/lib/api/resources";
-import { Lock, FolderOpen, ArrowLeft, ExternalLink, Code, User, ChevronRight, BookOpen } from "lucide-react";
+import { FolderOpen, ArrowLeft, ExternalLink, Code, User, ChevronRight, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -26,7 +25,6 @@ const skeumorphicGlass = "relative overflow-hidden rounded-[2rem] border border-
 const colors = ["text-blue-500", "text-emerald-500", "text-orange-500", "text-pink-500", "text-indigo-500", "text-purple-500"];
 
 export default function ResourcesPage() {
-  const { isAuthenticated } = useAuthStore();
   const [isHydrated, setIsHydrated] = useState(false);
   const [folders, setFolders] = useState<ResourceFolder[]>([]);
   const [items, setItems] = useState<ResourceItem[]>([]);
@@ -35,41 +33,21 @@ export default function ResourcesPage() {
 
   useEffect(() => {
     setIsHydrated(true);
-    if (isAuthenticated) {
-      resourcesApi.getAllFolders().then(setFolders);
-    }
-  }, [isAuthenticated]);
+    resourcesApi.getAllFolders().then(setFolders).catch(err => console.error("Failed to load resource folders", err));
+  }, []);
 
   const handleFolderClick = async (folder: ResourceFolder) => {
+    setItems([]); // Clear previous items immediately
     setSelectedFolder(folder);
-    const data = await resourcesApi.getItemsByFolder(folder.id);
-    setItems(data);
+    try {
+      const data = await resourcesApi.getItemsByFolder(folder.id);
+      setItems(data);
+    } catch (err) {
+      console.error("Failed to load folder items", err);
+    }
   };
 
   if (!isHydrated) return null;
-
-  if (!isAuthenticated) {
-    return (
-      <main className="min-h-screen flex items-center justify-center p-6 bg-[var(--background)]">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full p-8 rounded-3xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-2xl text-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_15px_30px_rgba(0,0,0,0.15)] dark:shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),0_15px_30px_rgba(0,0,0,0.3)]"
-        >
-          <div className="w-20 h-20 bg-blue-500/10 rounded-[2rem] shadow-[inset_0_2px_4px_rgba(255,255,255,0.8)] dark:shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)] flex items-center justify-center mx-auto mb-6">
-            <Lock size={40} className="text-blue-500" />
-          </div>
-          <h2 className="text-3xl font-bold mb-4 text-[var(--text-primary)]">Members Only</h2>
-          <p className="text-[var(--text-muted)] mb-8">
-            The resources library contains exclusive materials, roadmaps, and guides. Please log in to access this section.
-          </p>
-          <Link href="/login" className="inline-block w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-[inset_0_1px_2px_rgba(255,255,255,0.4),0_8px_16px_rgba(37,99,235,0.4)] transition-all active:scale-95 active:shadow-inner">
-            Log In to Access
-          </Link>
-        </motion.div>
-      </main>
-    );
-  }
 
   return (
     <main className="min-h-screen pt-32 pb-20 px-6 max-w-6xl mx-auto">

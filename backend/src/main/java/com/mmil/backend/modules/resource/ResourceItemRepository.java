@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface ResourceItemRepository extends JpaRepository<ResourceItem, UUID> {
     List<ResourceItem> findByFolderId(UUID folderId);
+    boolean existsByFolderIdAndTitle(UUID folderId, String title);
 }
