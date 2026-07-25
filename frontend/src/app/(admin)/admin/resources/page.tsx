@@ -158,7 +158,7 @@ function AdminResourcesPage() {
                       <h3 className={`font-bold text-sm ${selectedFolder === folder.id ? 'text-blue-900' : 'text-[#111]'}`}>
                         {folder.name}
                       </h3>
-                      <p className="text-xs text-neutral-500 font-medium">{folder.level}</p>
+                      <p className="text-xs text-neutral-500 font-medium truncate max-w-[150px]">{folder.description}</p>
                     </div>
                   </div>
                   {selectedFolder === folder.id && (
@@ -185,7 +185,7 @@ function AdminResourcesPage() {
                     {folders.find(f => f.id === selectedFolder)?.name}
                   </h1>
                   <p className="text-sm text-neutral-500 font-medium flex items-center gap-1 mt-1">
-                    {folders.find(f => f.id === selectedFolder)?.level} <ChevronRight className="w-3 h-3" /> {items.length} items
+                    <span className="truncate max-w-[200px]">{folders.find(f => f.id === selectedFolder)?.description}</span> <ChevronRight className="w-3 h-3 flex-shrink-0" /> {items.length} items
                   </p>
                 </div>
                 <button
@@ -274,12 +274,8 @@ function AdminResourcesPage() {
                   <input {...registerFolder("name", { required: true })} className={inputClass} placeholder="e.g. Design Systems" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Level / Category</label>
-                  <select {...registerFolder("level", { required: true })} className={inputClass}>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
+                  <label className="text-xs font-bold text-neutral-400 uppercase tracking-wider ml-1 mb-1.5 block">Description</label>
+                  <input {...registerFolder("description")} className={inputClass} placeholder="Brief description..." />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
                   <button type="button" onClick={() => setIsFolderModalOpen(false)} className="px-5 py-2.5 rounded-xl font-bold text-neutral-600 hover:bg-neutral-100 transition-colors">Cancel</button>
