@@ -85,7 +85,15 @@ export default function AdminEventsPage() {
       isTeamEvent: event.isTeamEvent || false,
       teamSizeMin: event.teamSizeMin || 1,
       teamSizeMax: event.teamSizeMax || 4,
-      posterUrl: event.posterUrl || ""
+      posterUrl: event.posterUrl || "",
+      round1StartsAt: event.round1StartsAt ? event.round1StartsAt.substring(0, 16) : "",
+      round1EndsAt: event.round1EndsAt ? event.round1EndsAt.substring(0, 16) : "",
+      round2Type: event.round2Type || "ONLINE",
+      round2Address: event.round2Address || "",
+      round2StartsAt: event.round2StartsAt ? event.round2StartsAt.substring(0, 16) : "",
+      round2EndsAt: event.round2EndsAt ? event.round2EndsAt.substring(0, 16) : "",
+      round3StartsAt: event.round3StartsAt ? event.round3StartsAt.substring(0, 16) : "",
+      round3EndsAt: event.round3EndsAt ? event.round3EndsAt.substring(0, 16) : ""
     });
     setIsModalOpen(true);
   };
@@ -94,12 +102,27 @@ export default function AdminEventsPage() {
     e.preventDefault();
     setIsCreating(true);
     try {
+      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
+      const payload = {
+        ...formData,
+        slug,
+        isTeamEvent: formData.isTeamEvent || formData.type === 'hackathon',
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : null,
+        endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null,
+        round1StartsAt: formData.round1StartsAt ? new Date(formData.round1StartsAt).toISOString() : null,
+        round1EndsAt: formData.round1EndsAt ? new Date(formData.round1EndsAt).toISOString() : null,
+        round2Type: formData.round2Type,
+        round2Address: formData.round2Type === 'OFFLINE' ? formData.round2Address : null,
+        round2StartsAt: formData.round2StartsAt ? new Date(formData.round2StartsAt).toISOString() : null,
+        round2EndsAt: formData.round2EndsAt ? new Date(formData.round2EndsAt).toISOString() : null,
+        round3StartsAt: formData.round3StartsAt ? new Date(formData.round3StartsAt).toISOString() : null,
+        round3EndsAt: formData.round3EndsAt ? new Date(formData.round3EndsAt).toISOString() : null,
+      };
+
       if (editingEventSlug) {
-        const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
-        await eventsApi.updateEvent(editingEventSlug, { ...formData, slug });
+        await eventsApi.updateEvent(editingEventSlug, payload);
       } else {
-        const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
-        await eventsApi.createEvent({ ...formData, slug });
+        await eventsApi.createEvent(payload);
       }
       setIsModalOpen(false);
       setEditingEventSlug(null);
@@ -339,7 +362,10 @@ export default function AdminEventsPage() {
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-sm font-bold text-neutral-600">Type</label>
-                      <select required value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className={inputClass + " appearance-none"}>
+                      <select required value={formData.type} onChange={e => {
+                        const newType = e.target.value;
+                        setFormData({...formData, type: newType, isTeamEvent: formData.isTeamEvent || newType === 'hackathon'});
+                      }} className={inputClass + " appearance-none"}>
                         <option value="event">General Event</option>
                         <option value="hackathon">Hackathon</option>
                         <option value="workshop">Workshop</option>
@@ -375,19 +401,83 @@ export default function AdminEventsPage() {
                   </div>
 
                   <div className="flex items-center gap-3 py-2">
-                    <input type="checkbox" id="isTeamEvent" checked={formData.isTeamEvent} onChange={e => setFormData({...formData, isTeamEvent: e.target.checked})} className="w-5 h-5 rounded border-black/10 text-[#111] focus:ring-[#111]" />
-                    <label htmlFor="isTeamEvent" className="text-sm font-bold text-neutral-600">This is a Team Event</label>
+                    <input 
+                      type="checkbox" 
+                      id="isTeamEvent" 
+                      checked={formData.isTeamEvent || formData.type === 'hackathon'} 
+                      onChange={e => setFormData({...formData, isTeamEvent: e.target.checked})} 
+                      disabled={formData.type === 'hackathon'}
+                      className="w-5 h-5 rounded border-black/10 text-[#111] focus:ring-[#111] disabled:opacity-50" 
+                    />
+                    <label htmlFor="isTeamEvent" className={`text-sm font-bold ${formData.type === 'hackathon' ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                      This is a Team Event {formData.type === 'hackathon' && '(Required for Hackathons)'}
+                    </label>
                   </div>
 
-                  {formData.isTeamEvent && (
-                    <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl border border-blue-200 bg-blue-50">
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-bold text-blue-700">Min Team Size</label>
-                        <input required type="number" min="1" value={formData.teamSizeMin || ""} onChange={e => setFormData({...formData, teamSizeMin: parseInt(e.target.value) || 1})} className={inputClass} />
+                  {(formData.isTeamEvent || formData.type === 'hackathon') && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl border border-blue-200 bg-blue-50">
+                        <div className="space-y-1.5">
+                          <label className="text-sm font-bold text-blue-700">Min Team Size</label>
+                          <input required type="number" min="1" value={formData.teamSizeMin || ""} onChange={e => setFormData({...formData, teamSizeMin: parseInt(e.target.value) || 1})} className={inputClass} />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-sm font-bold text-blue-700">Max Team Size</label>
+                          <input required type="number" min="1" value={formData.teamSizeMax || ""} onChange={e => setFormData({...formData, teamSizeMax: parseInt(e.target.value) || 4})} className={inputClass} />
+                        </div>
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-bold text-blue-700">Max Team Size</label>
-                        <input required type="number" min="1" value={formData.teamSizeMax || ""} onChange={e => setFormData({...formData, teamSizeMax: parseInt(e.target.value) || 4})} className={inputClass} />
+
+                      <div className="border border-neutral-200 rounded-[1.5rem] p-4 space-y-4 bg-neutral-50/50">
+                        <h3 className="text-sm font-black text-[#111] border-b pb-2">Rounds Configuration</h3>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 1 (PPT) Starts At</label>
+                            <input type="datetime-local" value={formData.round1StartsAt || ""} onChange={e => setFormData({...formData, round1StartsAt: e.target.value})} className={inputClass} />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 1 (PPT) Ends At</label>
+                            <input type="datetime-local" value={formData.round1EndsAt || ""} onChange={e => setFormData({...formData, round1EndsAt: e.target.value})} className={inputClass} />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 2 Type</label>
+                            <select value={formData.round2Type || "ONLINE"} onChange={e => setFormData({...formData, round2Type: e.target.value})} className={`${inputClass} appearance-none`}>
+                              <option value="ONLINE">Online</option>
+                              <option value="OFFLINE">Offline</option>
+                            </select>
+                          </div>
+                          {formData.round2Type === 'OFFLINE' && (
+                            <div className="space-y-1.5">
+                              <label className="text-xs font-bold text-neutral-600">Round 2 Address</label>
+                              <input type="text" placeholder="Venue Address..." value={formData.round2Address || ""} onChange={e => setFormData({...formData, round2Address: e.target.value})} className={inputClass} />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 2 Starts At</label>
+                            <input type="datetime-local" value={formData.round2StartsAt || ""} onChange={e => setFormData({...formData, round2StartsAt: e.target.value})} className={inputClass} />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 2 Ends At</label>
+                            <input type="datetime-local" value={formData.round2EndsAt || ""} onChange={e => setFormData({...formData, round2EndsAt: e.target.value})} className={inputClass} />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 3 (Finals) Starts At</label>
+                            <input type="datetime-local" value={formData.round3StartsAt || ""} onChange={e => setFormData({...formData, round3StartsAt: e.target.value})} className={inputClass} />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-neutral-600">Round 3 (Finals) Ends At</label>
+                            <input type="datetime-local" value={formData.round3EndsAt || ""} onChange={e => setFormData({...formData, round3EndsAt: e.target.value})} className={inputClass} />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}

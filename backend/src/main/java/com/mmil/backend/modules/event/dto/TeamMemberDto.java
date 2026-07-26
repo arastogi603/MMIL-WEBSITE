@@ -6,6 +6,7 @@ public class TeamMemberDto {
     private UUID registrationId;
     private String name;
     private String email;
+    private String phone;
     private String collegeName;
     private boolean isLeader;
 
@@ -18,6 +19,9 @@ public class TeamMemberDto {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
     public String getCollegeName() { return collegeName; }
     public void setCollegeName(String collegeName) { this.collegeName = collegeName; }

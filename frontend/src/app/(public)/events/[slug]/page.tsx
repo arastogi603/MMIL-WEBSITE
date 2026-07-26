@@ -44,9 +44,8 @@ export default function EventDetailsPage() {
   const [joinCodeResult, setJoinCodeResult] = useState("");
 
   // Member Form State
-  const [memberForm, setMemberForm] = useState({
-    joinCode: "", phone: "", collegeName: "", district: "", state: ""
-  });
+  const [memberForm, setMemberForm] = useState({ joinCode: "", phone: "", collegeName: "", district: "", state: "" });
+  const [joinSuccessMsg, setJoinSuccessMsg] = useState("");
 
   useEffect(() => {
     async function loadEvent() {
@@ -140,8 +139,7 @@ export default function EventDetailsPage() {
     setError("");
     try {
       await apiClient.post(`/events/${slug}/teams/join`, memberForm);
-      setIsRegistered(true);
-      setIsTeamModalOpen(false);
+      setJoinSuccessMsg("Your join request has been sent to the team leader! You will be registered once they approve it.");
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to join team.");
     } finally {
@@ -210,6 +208,45 @@ export default function EventDetailsPage() {
             <p className="text-[var(--text-secondary)] leading-relaxed text-lg font-medium">{event.description}</p>
           </div>
 
+          {event.isTeamEvent && (event.round1StartsAt || event.round2StartsAt) && (
+            <div className="mb-12">
+              <h2 className="text-xl font-black uppercase tracking-tight mb-4 flex items-center gap-2 text-[var(--text-primary)]">
+                <Calendar className="w-5 h-5 text-blue-500" />
+                Hackathon Schedule
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {event.round1StartsAt && (
+                  <div className="p-5 rounded-2xl border bg-[var(--background)] border-[var(--card-border)] shadow-sm">
+                    <h3 className="font-black text-[var(--text-primary)] mb-1">Round 1: PPT Submission</h3>
+                    <p className="text-sm font-bold text-[var(--text-secondary)]">
+                      Starts: {new Date(event.round1StartsAt).toLocaleString()}<br/>
+                      Ends: {event.round1EndsAt ? new Date(event.round1EndsAt).toLocaleString() : 'TBA'}
+                    </p>
+                  </div>
+                )}
+                {event.round2StartsAt && (
+                  <div className="p-5 rounded-2xl border bg-[var(--background)] border-[var(--card-border)] shadow-sm">
+                    <h3 className="font-black text-[var(--text-primary)] mb-1">Round 2: Main Event</h3>
+                    <p className="text-sm font-bold text-[var(--text-secondary)]">
+                      {event.round2Type === 'OFFLINE' ? `Offline @ ${event.round2Address || 'TBA'}` : 'Online'}<br/>
+                      Starts: {new Date(event.round2StartsAt).toLocaleString()}<br/>
+                      Ends: {event.round2EndsAt ? new Date(event.round2EndsAt).toLocaleString() : 'TBA'}
+                    </p>
+                  </div>
+                )}
+                {event.round3StartsAt && (
+                  <div className="p-5 rounded-2xl border bg-[var(--background)] border-[var(--card-border)] shadow-sm">
+                    <h3 className="font-black text-[var(--text-primary)] mb-1">Round 3: Finals</h3>
+                    <p className="text-sm font-bold text-[var(--text-secondary)]">
+                      Starts: {new Date(event.round3StartsAt).toLocaleString()}<br/>
+                      Ends: {event.round3EndsAt ? new Date(event.round3EndsAt).toLocaleString() : 'TBA'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {error && !isTeamModalOpen && (
             <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-red-600 dark:text-red-400 font-bold text-sm mb-8 flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -219,15 +256,21 @@ export default function EventDetailsPage() {
 
           <div className="flex flex-col gap-4 border-t border-[var(--border)] pt-8">
             {isRegistered ? (
-              <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
                 <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-400 font-black px-8 py-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 shadow-sm w-full sm:w-auto justify-center">
                   <CheckCircle className="w-6 h-6" />
-                  ALREADY REGISTERED
+                  REGISTERED
                 </div>
-                {hasTeam && (
-                  <Link href={`/events/${slug}/team`} className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black transition-all shadow-md text-center transform hover:scale-[1.02]">
-                    TEAM DASHBOARD
-                  </Link>
+                {event.isTeamEvent ? (
+                  hasTeam && (
+                    <Link href={`/events/${slug}/team`} className="flex-1 px-8 py-4 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black transition-all shadow-md text-center transform hover:scale-[1.02] flex items-center justify-center">
+                      TEAM DASHBOARD
+                    </Link>
+                  )
+                ) : (
+                  <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="flex-1 px-8 py-4 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black transition-all shadow-md text-center transform hover:scale-[1.02] flex items-center justify-center">
+                    VIEW EVENT DETAILS
+                  </button>
                 )}
               </div>
             ) : (
@@ -356,7 +399,7 @@ export default function EventDetailsPage() {
                 </div>
               )}
 
-              {teamFlow === 'member' && (
+              {teamFlow === 'member' && !joinSuccessMsg && (
                 <form onSubmit={handleJoinTeam} className="space-y-4 py-2 text-left">
                   <h2 className="text-3xl font-black mb-2 text-[var(--text-primary)] tracking-tight">Join Team</h2>
                   <p className="text-[var(--text-secondary)] mb-6 font-medium">Enter the team code and your details.</p>
@@ -390,9 +433,23 @@ export default function EventDetailsPage() {
                   </div>
                   
                   <button type="submit" disabled={isRegistering} className="w-full py-4 mt-6 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide hover:opacity-90 transition-all disabled:opacity-50">
-                    {isRegistering ? "JOINING..." : "JOIN TEAM"}
+                    {isRegistering ? "SENDING REQUEST..." : "REQUEST TO JOIN"}
                   </button>
                 </form>
+              )}
+
+              {teamFlow === 'member' && joinSuccessMsg && (
+                <div className="text-center py-8">
+                  <div className="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[inset_0_2px_4px_rgba(255,255,255,1)]">
+                    <CheckCircle className="w-10 h-10" />
+                  </div>
+                  <h2 className="text-3xl font-black mb-3 text-[var(--text-primary)] tracking-tight">Request Sent!</h2>
+                  <p className="text-[var(--text-secondary)] mb-8 font-medium">{joinSuccessMsg}</p>
+                  
+                  <button onClick={() => { setIsTeamModalOpen(false); setJoinSuccessMsg(""); }} className="w-full py-4 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide transition-all">
+                    DONE
+                  </button>
+                </div>
               )}
 
             </motion.div>

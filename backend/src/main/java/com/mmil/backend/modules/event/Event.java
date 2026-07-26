@@ -47,6 +47,15 @@ public class Event {
     @Column(name = "poster_url")
     private String posterUrl; // Optional URL for custom event poster
 
+    private LocalDateTime round1StartsAt;
+    private LocalDateTime round1EndsAt;
+    private String round2Type; // ONLINE or OFFLINE
+    private String round2Address;
+    private LocalDateTime round2StartsAt;
+    private LocalDateTime round2EndsAt;
+    private LocalDateTime round3StartsAt;
+    private LocalDateTime round3EndsAt;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -118,6 +127,30 @@ public class Event {
     
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
+    
+    public LocalDateTime getRound1StartsAt() { return round1StartsAt; }
+    public void setRound1StartsAt(LocalDateTime round1StartsAt) { this.round1StartsAt = round1StartsAt; }
+    
+    public LocalDateTime getRound1EndsAt() { return round1EndsAt; }
+    public void setRound1EndsAt(LocalDateTime round1EndsAt) { this.round1EndsAt = round1EndsAt; }
+    
+    public String getRound2Type() { return round2Type; }
+    public void setRound2Type(String round2Type) { this.round2Type = round2Type; }
+    
+    public String getRound2Address() { return round2Address; }
+    public void setRound2Address(String round2Address) { this.round2Address = round2Address; }
+    
+    public LocalDateTime getRound2StartsAt() { return round2StartsAt; }
+    public void setRound2StartsAt(LocalDateTime round2StartsAt) { this.round2StartsAt = round2StartsAt; }
+    
+    public LocalDateTime getRound2EndsAt() { return round2EndsAt; }
+    public void setRound2EndsAt(LocalDateTime round2EndsAt) { this.round2EndsAt = round2EndsAt; }
+    
+    public LocalDateTime getRound3StartsAt() { return round3StartsAt; }
+    public void setRound3StartsAt(LocalDateTime round3StartsAt) { this.round3StartsAt = round3StartsAt; }
+    
+    public LocalDateTime getRound3EndsAt() { return round3EndsAt; }
+    public void setRound3EndsAt(LocalDateTime round3EndsAt) { this.round3EndsAt = round3EndsAt; }
 
     @PreUpdate
     public void setLastUpdate() { this.updatedAt = LocalDateTime.now(); }

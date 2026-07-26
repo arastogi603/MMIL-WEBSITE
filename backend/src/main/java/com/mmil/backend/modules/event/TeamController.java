@@ -27,13 +27,15 @@ public class TeamController {
     private final TeamRepository teamRepository;
     private final EventRegistrationRepository registrationRepository;
     private final com.mmil.backend.modules.user.UserRepository userRepository;
+    private final TeamJoinRequestRepository joinRequestRepository;
 
-    public TeamController(EmailOtpService otpService, EventRepository eventRepository, TeamRepository teamRepository, EventRegistrationRepository registrationRepository, com.mmil.backend.modules.user.UserRepository userRepository) {
+    public TeamController(EmailOtpService otpService, EventRepository eventRepository, TeamRepository teamRepository, EventRegistrationRepository registrationRepository, com.mmil.backend.modules.user.UserRepository userRepository, TeamJoinRequestRepository joinRequestRepository) {
         this.otpService = otpService;
         this.eventRepository = eventRepository;
         this.teamRepository = teamRepository;
         this.registrationRepository = registrationRepository;
         this.userRepository = userRepository;
+        this.joinRequestRepository = joinRequestRepository;
     }
 
     @PostMapping("/otp/send")
@@ -130,23 +132,136 @@ public class TeamController {
              return ResponseEntity.badRequest().body(Map.of("message", "You are already registered for this event"));
         }
 
-        // Check Team Capacity (mock check, ideally query team members count)
-        // For simplicity assuming max is handled, or let's not enforce strictly here for now without a big count query.
+        if (joinRequestRepository.existsByTeamIdAndUserIdAndStatus(team.getId(), user.getId(), "PENDING")) {
+             return ResponseEntity.badRequest().body(Map.of("message", "You already have a pending join request for this team"));
+        }
+
+        TeamJoinRequest request = new TeamJoinRequest();
+        request.setEvent(event);
+        request.setUser(user);
+        request.setTeam(team);
+        request.setPhone(dto.getPhone());
+        request.setCollegeName(dto.getCollegeName());
+        request.setDistrict(dto.getDistrict());
+        request.setState(dto.getState());
+        joinRequestRepository.save(request);
+
+        return ResponseEntity.ok(Map.of("message", "Join request sent to team leader"));
+    }
+
+    @GetMapping("/events/{slug}/teams/requests")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getJoinRequests(
+            @PathVariable String slug, 
+            @AuthenticationPrincipal com.mmil.backend.modules.user.User authUser) {
+        
+        Event event = eventRepository.findBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        EventRegistration myReg = registrationRepository.findByEventIdAndUserId(event.getId(), authUser.getId())
+                .orElseThrow(() -> new RuntimeException("Not registered"));
+
+        Team team = myReg.getTeam();
+        if (team == null || !team.getLeader().getId().equals(authUser.getId())) {
+            return ResponseEntity.status(403).body(Map.of("message", "Only team leader can view requests"));
+        }
+
+        List<TeamJoinRequest> requests = joinRequestRepository.findByTeamIdAndStatus(team.getId(), "PENDING");
+        
+        List<Map<String, Object>> response = requests.stream().map(r -> {
+            Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", r.getId());
+            map.put("name", r.getUser().getName());
+            map.put("email", r.getUser().getEmail());
+            map.put("collegeName", r.getCollegeName());
+            map.put("phone", r.getPhone());
+            map.put("createdAt", r.getCreatedAt());
+            return map;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/events/{slug}/teams/requests/{requestId}/approve")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> approveJoinRequest(
+            @PathVariable String slug, 
+            @PathVariable UUID requestId,
+            @AuthenticationPrincipal com.mmil.backend.modules.user.User authUser) {
+        
+        Event event = eventRepository.findBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        TeamJoinRequest request = joinRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        if (!request.getEvent().getId().equals(event.getId())) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid event for request"));
+        }
+
+        if (!request.getStatus().equals("PENDING")) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Request is already processed"));
+        }
+
+        Team team = request.getTeam();
+        if (!team.getLeader().getId().equals(authUser.getId())) {
+            return ResponseEntity.status(403).body(Map.of("message", "Only team leader can approve requests"));
+        }
+
+        if (team.getIsLocked()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Team is locked, no new members can be added"));
+        }
+
+        // Optional: Check Max Size
+        if (event.getTeamSizeMax() != null) {
+            long currentMembers = registrationRepository.findByTeamId(team.getId()).size();
+            if (currentMembers >= event.getTeamSizeMax()) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Team has reached maximum capacity"));
+            }
+        }
+
+        request.setStatus("APPROVED");
+        joinRequestRepository.save(request);
 
         EventRegistration reg = new EventRegistration();
         reg.setEvent(event);
-        reg.setUser(user);
+        reg.setUser(request.getUser());
         reg.setTeam(team);
-        reg.setPhone(dto.getPhone());
-        reg.setCollegeName(dto.getCollegeName());
-        reg.setDistrict(dto.getDistrict());
-        reg.setState(dto.getState());
+        reg.setPhone(request.getPhone());
+        reg.setCollegeName(request.getCollegeName());
+        reg.setDistrict(request.getDistrict());
+        reg.setState(request.getState());
         registrationRepository.save(reg);
 
         event.setSeatsTaken(event.getSeatsTaken() + 1);
         eventRepository.save(event);
 
-        return ResponseEntity.ok(Map.of("message", "Successfully joined team"));
+        return ResponseEntity.ok(Map.of("message", "Request approved"));
+    }
+
+    @PostMapping("/events/{slug}/teams/requests/{requestId}/reject")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> rejectJoinRequest(
+            @PathVariable String slug, 
+            @PathVariable UUID requestId,
+            @AuthenticationPrincipal com.mmil.backend.modules.user.User authUser) {
+        
+        TeamJoinRequest request = joinRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        Team team = request.getTeam();
+        if (!team.getLeader().getId().equals(authUser.getId())) {
+            return ResponseEntity.status(403).body(Map.of("message", "Only team leader can reject requests"));
+        }
+
+        if (!request.getStatus().equals("PENDING")) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Request is already processed"));
+        }
+
+        request.setStatus("REJECTED");
+        joinRequestRepository.save(request);
+
+        return ResponseEntity.ok(Map.of("message", "Request rejected"));
     }
 
     @GetMapping("/events/{slug}/teams/my")
@@ -187,6 +302,7 @@ public class TeamController {
             dto.setRegistrationId(m.getId());
             dto.setName(m.getUser().getName());
             dto.setEmail(m.getUser().getEmail());
+            dto.setPhone(m.getPhone());
             dto.setCollegeName(m.getCollegeName());
             dto.setIsLeader(team.getLeader().getId().equals(m.getUser().getId()));
             return dto;

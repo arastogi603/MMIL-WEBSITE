@@ -57,6 +57,7 @@ public class AdminTeamController {
                 dto.setRegistrationId(m.getId());
                 dto.setName(m.getUser().getName());
                 dto.setEmail(m.getUser().getEmail());
+                dto.setPhone(m.getPhone());
                 dto.setCollegeName(m.getCollegeName());
                 dto.setIsLeader(team.getLeader().getId().equals(m.getUser().getId()));
                 return dto;

@@ -19,9 +19,14 @@ const fallbackEvents: Event[] = [
   { id: "7", title: "LinkedIn & Resume Building", slug: "resume-workshop", description: "Professional profile optimization session.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0 },
 ];
 
+import { useAuthStore } from "@/lib/store/auth.store";
+import { apiClient } from "@/lib/api/client";
+
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [registeredEvents, setRegisteredEvents] = useState<Record<string, boolean>>({});
+  const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     setIsHydrated(true);
@@ -35,6 +40,26 @@ export default function EventsPage() {
       setEvents(fallbackEvents);
     });
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && events.length > 0) {
+      const ongoing = events.filter(e => e.status !== "completed" && e.status !== "draft");
+      Promise.all(
+        ongoing.map(async (e) => {
+          try {
+            const res = await apiClient.get(`/events/${e.slug}/registration-status`);
+            return { slug: e.slug, isRegistered: res.data.isRegistered };
+          } catch (err) {
+            return { slug: e.slug, isRegistered: false };
+          }
+        })
+      ).then(results => {
+        const statuses: Record<string, boolean> = {};
+        results.forEach(r => statuses[r.slug] = r.isRegistered);
+        setRegisteredEvents(statuses);
+      });
+    }
+  }, [isAuthenticated, events]);
 
   if (!isHydrated) return null;
 
@@ -112,7 +137,9 @@ export default function EventsPage() {
                           {evt.isTeamEvent ? `Team Size: ${evt.teamSizeMin}-${evt.teamSizeMax}` : "Individual Event"}
                         </div>
                         <div className="flex items-center gap-2 text-[var(--text-primary)] font-semibold bg-black/5 dark:bg-white/10 px-6 py-3 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
-                          Register Now <ChevronRight className="w-4 h-4" />
+                          {registeredEvents[evt.slug] ? (
+                            evt.isTeamEvent ? "Team Dashboard" : "View Details"
+                          ) : "Register Now"} <ChevronRight className="w-4 h-4" />
                         </div>
                       </div>
                     </div>
@@ -166,7 +193,9 @@ export default function EventsPage() {
                             {evt.isTeamEvent ? `Team: ${evt.teamSizeMin}-${evt.teamSizeMax}` : "Individual"}
                           </div>
                           <div className="flex items-center gap-2 text-white font-black bg-emerald-600 px-4 py-3 rounded-xl justify-center shadow-lg shadow-emerald-500/20">
-                            Register Now <ChevronRight className="w-4 h-4" />
+                            {registeredEvents[evt.slug] ? (
+                              evt.isTeamEvent ? "Team Dashboard" : "View Details"
+                            ) : "Register Now"} <ChevronRight className="w-4 h-4" />
                           </div>
                         </div>
                       </div>

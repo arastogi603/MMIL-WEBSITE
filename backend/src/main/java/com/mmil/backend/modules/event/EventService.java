@@ -58,6 +58,14 @@ public class EventService {
         event.setTeamSizeMin(dto.getTeamSizeMin());
         event.setTeamSizeMax(dto.getTeamSizeMax());
         event.setPosterUrl(dto.getPosterUrl());
+        event.setRound1StartsAt(dto.getRound1StartsAt());
+        event.setRound1EndsAt(dto.getRound1EndsAt());
+        event.setRound2Type(dto.getRound2Type());
+        event.setRound2Address(dto.getRound2Address());
+        event.setRound2StartsAt(dto.getRound2StartsAt());
+        event.setRound2EndsAt(dto.getRound2EndsAt());
+        event.setRound3StartsAt(dto.getRound3StartsAt());
+        event.setRound3EndsAt(dto.getRound3EndsAt());
         event.setStatus("draft");
 
         return eventRepository.save(event);
@@ -84,6 +92,14 @@ public class EventService {
         event.setTeamSizeMin(dto.getTeamSizeMin());
         event.setTeamSizeMax(dto.getTeamSizeMax());
         event.setPosterUrl(dto.getPosterUrl());
+        event.setRound1StartsAt(dto.getRound1StartsAt());
+        event.setRound1EndsAt(dto.getRound1EndsAt());
+        event.setRound2Type(dto.getRound2Type());
+        event.setRound2Address(dto.getRound2Address());
+        event.setRound2StartsAt(dto.getRound2StartsAt());
+        event.setRound2EndsAt(dto.getRound2EndsAt());
+        event.setRound3StartsAt(dto.getRound3StartsAt());
+        event.setRound3EndsAt(dto.getRound3EndsAt());
 
         return eventRepository.save(event);
     }
