@@ -21,7 +21,10 @@ export default function AdminEventsPage() {
   const initialFormState = {
     title: "", type: "event", location: "", capacity: 100, 
     startDate: "", endDate: "", description: "",
-    isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 4, posterUrl: ""
+    isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 4, posterUrl: "",
+    round1StartsAt: "", round1EndsAt: "",
+    round2Type: "ONLINE", round2Address: "", round2StartsAt: "", round2EndsAt: "",
+    round3StartsAt: "", round3EndsAt: ""
   };
   const [formData, setFormData] = useState(initialFormState);
 
