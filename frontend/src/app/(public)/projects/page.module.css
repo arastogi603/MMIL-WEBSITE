@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 100dvh;
+  background-color: #1a1a1a;
 }
 .page__wrap {
   display: none;
@@ -13,7 +14,7 @@
   top: 0;
   left: 0;
   overflow: hidden;
-  background-color: transparent;
+  background-color: #1a1a1a;
   color: #fff;
 }
 .page__wrapper__bg {
