@@ -34,18 +34,7 @@ export default async function ProjectsPage() {
 
   mapped = [coverProject, ...mapped];
 
-  // Pad with mock projects until there are 20 real projects (21 items including cover)
-  if (mapped.length < 21) {
-    const remaining = 21 - mapped.length;
-    const mocks = Array.from({ length: remaining }, (_, i) => ({
-      id: `mock-${i}`,
-      slug: `mock-${i}`,
-      title: `Project ${mapped.length + i}`,
-      image: `https://picsum.photos/seed/${mapped.length + i}/800/800`,
-      basicInfo: { category: 'Design', year: '2026' }
-    }));
-    mapped = [...mapped, ...mocks];
-  }
+
 
   return <ProjectsClient initialPosts={mapped} />;
 }
