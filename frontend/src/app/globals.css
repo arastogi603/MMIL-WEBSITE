@@ -133,6 +133,7 @@ html, body {
   -ms-overflow-style: none;
   scrollbar-width: none;
   overflow-x: clip;
+  background-color: var(--background);
 }
 
 html::-webkit-scrollbar,
