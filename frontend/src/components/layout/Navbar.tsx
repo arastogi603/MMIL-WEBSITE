@@ -21,7 +21,7 @@ const navItems = [
   { label: "Projects", href: "/projects", icon: Briefcase },
   { label: "Teams", href: "/team", icon: Users },
   { label: "Gallery", href: "/gallery", icon: ImageIcon },
-  { label: "Resources", href: "/resources", icon: Library },
+  // { label: "Resources", href: "/resources", icon: Library },
 ];
 
 export function Navbar() {
@@ -51,8 +51,8 @@ export function Navbar() {
           { label: "Sign Out", href: "#", icon: LogOut, onClick: (e: React.MouseEvent) => { e.preventDefault(); logout(); window.location.href = "/"; } }
         ]
       : [
-          { label: "Sign In", href: "/login", icon: LogIn },
-          { label: "Join Now", href: "/register", icon: UserPlus }
+          // { label: "Sign In", href: "/login", icon: LogIn },
+          // { label: "Join Now", href: "/register", icon: UserPlus }
         ]),
     { 
       label: "", // Remove text label so it looks clean like before

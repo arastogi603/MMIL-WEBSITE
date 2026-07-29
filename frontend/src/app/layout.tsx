@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
 import { Poppins, Geist } from "next/font/google";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { BackgroundShapes } from "@/components/layout/BackgroundShapes";
+import { InitialLoader } from "@/components/layout/InitialLoader";
+import { ThemeProvider } from "@/lib/theme/theme";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  display: "swap",
 });
 
 const geist = Geist({
-  variable: "--font-geist",
   subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -22,14 +31,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { BackgroundShapes } from "@/components/layout/BackgroundShapes";
-import { InitialLoader } from "@/components/layout/InitialLoader";
-import { ThemeProvider } from "@/lib/theme/theme";
-import { AuthProvider } from "@/components/auth/AuthProvider";
-import { cn } from "@/lib/utils";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,13 +39,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", poppins.variable, geist.variable)}
+      data-theme="light"
+      className={cn("h-full", "antialiased", poppins.variable, geist.variable, poppins.className, "font-sans")}
       suppressHydrationWarning
     >
-      <body 
-        className="font-[family-name:var(--font-poppins)]"
-        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
-      >
+      <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }} className={poppins.className}>
         <ThemeProvider>
           <AuthProvider>
             <InitialLoader />
@@ -58,3 +57,4 @@ export default function RootLayout({
     </html>
   );
 }
+

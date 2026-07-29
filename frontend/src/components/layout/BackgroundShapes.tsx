@@ -8,6 +8,7 @@ export function BackgroundShapes() {
 
   return (
     <div
+      className="bg-shapes-layer"
       style={{
         position: "fixed",
         inset: 0,

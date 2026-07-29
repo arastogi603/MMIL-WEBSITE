@@ -19,8 +19,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem("mmil-theme") as Theme | null;
     if (stored === "light" || stored === "dark") {
       setTheme(stored);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
+    } else {
+      setTheme("light");
     }
     setMounted(true);
   }, []);

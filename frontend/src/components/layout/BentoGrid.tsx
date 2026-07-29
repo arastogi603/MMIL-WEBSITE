@@ -53,16 +53,16 @@ const bentoItems = [
     gradient: "from-indigo-500/10 via-indigo-500/5 to-transparent",
     size: "col-span-6 md:col-span-4 row-span-1",
   },
-  {
-    title: "Learning Hub",
-    subtitle: "Curated roadmaps, repos, and dev resources",
-    href: "/resources",
-    icon: BookOpen,
-    color: "text-purple-500 dark:text-purple-400",
-    badge: "Free Resources",
-    gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
-    size: "col-span-6 md:col-span-4 row-span-1",
-  },
+  // {
+  //   title: "Learning Hub",
+  //   subtitle: "Curated roadmaps, repos, and dev resources",
+  //   href: "/resources",
+  //   icon: BookOpen,
+  //   color: "text-purple-500 dark:text-purple-400",
+  //   badge: "Free Resources",
+  //   gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
+  //   size: "col-span-6 md:col-span-4 row-span-1",
+  // },
 ];
 
 const containerVariants = {

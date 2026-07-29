@@ -24,10 +24,22 @@ export default function AlumniPage() {
   return (
     <main className="min-h-screen pt-32 pb-20 px-6 max-w-7xl mx-auto">
       <div className="text-center mb-16">
-        <h1 className="text-5xl md:text-6xl font-black mb-6 text-[var(--text-primary)]">OUR ALUMNI</h1>
-        <p className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-5xl md:text-6xl font-black mb-6 text-[var(--text-primary)]"
+        >
+          OUR ALUMNI
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+          className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto"
+        >
           Meet the brilliant minds who helped shape MMIL. See where they are now and connect with them.
-        </p>
+        </motion.p>
       </div>
 
       {/* Horizontal Timeline */}
@@ -37,11 +49,10 @@ export default function AlumniPage() {
             <button
               key={year}
               onClick={() => setActiveYear(year)}
-              className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${
-                activeYear === year 
-                  ? "bg-blue-600 text-white shadow-lg" 
+              className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${activeYear === year
+                  ? "bg-blue-600 text-white shadow-lg"
                   : "hover:bg-white/10 text-[var(--text-secondary)]"
-              }`}
+                }`}
             >
               {year}
             </button>
@@ -52,7 +63,7 @@ export default function AlumniPage() {
 
       {/* Alumni Grid */}
       <AnimatePresence mode="wait">
-        <motion.div 
+        <motion.div
           key={activeYear || 'empty'}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
