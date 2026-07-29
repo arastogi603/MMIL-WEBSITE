@@ -2,16 +2,31 @@ import { apiClient } from './client';
 
 export const projectsApi = {
   getPublicProjects: async () => {
-    const response = await apiClient.get('/projects');
-    return response.data;
+    try {
+      const response = await apiClient.get('/projects');
+      return response.data || [];
+    } catch (error) {
+      console.warn("Failed to fetch public projects:", error);
+      return [];
+    }
   },
   getProjectBySlug: async (slug: string) => {
-    const response = await apiClient.get(`/projects/${slug}`);
-    return response.data;
+    try {
+      const response = await apiClient.get(`/projects/${slug}`);
+      return response.data;
+    } catch (error) {
+      console.warn(`Failed to fetch project by slug (${slug}):`, error);
+      return null;
+    }
   },
   getAllProjects: async () => {
-    const response = await apiClient.get('/projects/all');
-    return response.data;
+    try {
+      const response = await apiClient.get('/projects/all');
+      return response.data || [];
+    } catch (error) {
+      console.warn("Failed to fetch all projects:", error);
+      return [];
+    }
   },
   updateStatus: async (slug: string, status: string) => {
     const response = await apiClient.post(`/projects/${slug}/status`, null, {
@@ -20,3 +35,4 @@ export const projectsApi = {
     return response.data;
   }
 };
+

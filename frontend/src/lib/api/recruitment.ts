@@ -2,18 +2,33 @@ import { apiClient } from "./client";
 
 export const recruitmentApi = {
   getActiveCycles: async () => {
-    const response = await apiClient.get('/recruitment/active');
-    return response.data;
+    try {
+      const response = await apiClient.get('/recruitment/active');
+      return response.data || [];
+    } catch (error) {
+      console.warn("Failed to fetch active recruitment cycles:", error);
+      return [];
+    }
   },
 
   getAllCycles: async () => {
-    const response = await apiClient.get('/recruitment/all');
-    return response.data;
+    try {
+      const response = await apiClient.get('/recruitment/all');
+      return response.data || [];
+    } catch (error) {
+      console.warn("Failed to fetch all recruitment cycles:", error);
+      return [];
+    }
   },
 
   getCycleBySlug: async (slug: string) => {
-    const response = await apiClient.get(`/recruitment/${slug}`);
-    return response.data;
+    try {
+      const response = await apiClient.get(`/recruitment/${slug}`);
+      return response.data;
+    } catch (error) {
+      console.warn(`Failed to fetch recruitment cycle by slug (${slug}):`, error);
+      return null;
+    }
   },
 
   createCycle: async (data: any) => {
@@ -37,8 +52,13 @@ export const recruitmentApi = {
   },
 
   getApplications: async () => {
-    const response = await apiClient.get('/recruitment/applications');
-    return response.data;
+    try {
+      const response = await apiClient.get('/recruitment/applications');
+      return response.data || [];
+    } catch (error) {
+      console.warn("Failed to fetch recruitment applications:", error);
+      return [];
+    }
   },
 
   updateApplicationStatus: async (id: string, status: string) => {
@@ -48,3 +68,4 @@ export const recruitmentApi = {
     return response.data;
   }
 };
+
