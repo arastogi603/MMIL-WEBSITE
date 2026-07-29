@@ -5,8 +5,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --font-sans: var(--font-poppins), 'Poppins', sans-serif;
+  --font-heading: var(--font-poppins), 'Poppins', sans-serif;
+  --font-inter: var(--font-poppins), 'Poppins', sans-serif;
+  --font-josefin: var(--font-poppins), 'Poppins', sans-serif;
+  --font-bebas: var(--font-poppins), 'Poppins', sans-serif;
+  --font-script: var(--font-poppins), 'Poppins', sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+}
+
+*, ::before, ::after {
+  font-family: 'Poppins', var(--font-poppins), system-ui, -apple-system, sans-serif !important;
 }
 
 /* ============================================
@@ -14,6 +24,13 @@
    ============================================ */
 [data-theme="light"],
 :root {
+  --font-sans: var(--font-poppins), 'Poppins', sans-serif !important;
+  --font-inter: var(--font-poppins), 'Poppins', sans-serif !important;
+  --font-josefin: var(--font-poppins), 'Poppins', sans-serif !important;
+  --font-bebas: var(--font-poppins), 'Poppins', sans-serif !important;
+  --font-script: var(--font-poppins), 'Poppins', sans-serif !important;
+  --font-heading: var(--font-poppins), 'Poppins', sans-serif !important;
+  font-family: 'Poppins', var(--font-poppins), system-ui, -apple-system, sans-serif !important;
   --background: #FFFFFF;
   --page-bg-img: url('/bg-light.svg');
   --foreground: #111111;
@@ -1008,13 +1025,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @layer base {
-  * {
+  *, ::before, ::after {
     @apply border-border outline-ring/50;
+    font-family: 'Poppins', var(--font-poppins), system-ui, -apple-system, sans-serif !important;
   }
-  body {
+  body, html {
     @apply bg-background text-foreground;
+    font-family: 'Poppins', var(--font-poppins), system-ui, -apple-system, sans-serif !important;
   }
-  html {
-    @apply font-sans;
+
+  /* Refine Poppins headings for clean, crisp tracking */
+  h1, h2, h3, h4, h5, h6, b, strong {
+    letter-spacing: -0.015em;
   }
 }
+
+/* Poppins font weight normalization: tone down extra-heavy weights by one step */
+.font-black {
+  font-weight: 800 !important;
+}
+
+.font-extrabold {
+  font-weight: 700 !important;
+}
+
+.font-bold {
+  font-weight: 600 !important;
+}
+
+.font-semibold {
+  font-weight: 500 !important;
+}
+

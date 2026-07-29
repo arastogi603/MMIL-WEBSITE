@@ -4,12 +4,12 @@ import './GooeyNav.css';
 
 const GooeyNav = ({
   items,
-  animationTime = 600,
-  particleCount = 18,
-  particleDistances = [90, 10],
-  particleR = 100,
-  timeVariance = 300,
-  colors = [1, 2, 3, 1, 2, 3, 1, 4],
+  animationTime = 400,
+  particleCount = 8,
+  particleDistances = [50, 10],
+  particleR = 60,
+  timeVariance = 150,
+  colors = [1, 2, 3, 1, 2, 3],
   initialActiveIndex = 0
 }) => {
   const containerRef = useRef(null);

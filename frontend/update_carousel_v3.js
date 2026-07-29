@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const fileContent = `"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,7 +26,7 @@ import { apiClient } from "@/lib/api/client";
 
 function StatusBadge({ status }: { status?: string }) {
   const s = (status || "").toLowerCase();
-
+  
   if (s === "ongoing" || s === "live") {
     return (
       <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pink-100 dark:bg-pink-900/30 border border-pink-200 dark:border-pink-800 backdrop-blur-md">
@@ -33,7 +35,7 @@ function StatusBadge({ status }: { status?: string }) {
       </div>
     );
   }
-
+  
   if (s === "upcoming" || s === "draft") {
     return (
       <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 backdrop-blur-md">
@@ -55,7 +57,7 @@ function EventFallbackImage({ type }: { type: string }) {
   let Icon = Trophy;
   let bg = "bg-blue-100 dark:bg-blue-900/30";
   let color = "text-blue-500 dark:text-blue-400";
-
+  
   if (t.includes("hackathon") || t.includes("code")) {
     Icon = Code;
     bg = "bg-teal-100 dark:bg-teal-900/30";
@@ -75,7 +77,7 @@ function EventFallbackImage({ type }: { type: string }) {
   }
 
   return (
-    <div className={`w-full h-full flex flex-col items-center justify-center ${bg} ${color}`}>
+    <div className={\`w-full h-full flex flex-col items-center justify-center \${bg} \${color}\`}>
       <Icon className="w-20 h-20 opacity-40 mb-3" strokeWidth={1.5} />
       <span className="text-xs font-bold tracking-widest uppercase opacity-40">{type}</span>
     </div>
@@ -150,7 +152,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
     <div className="w-full relative flex flex-col items-center">
       {/* Carousel Track Container - 560px Center Card Width & 80% Vertical Occupancy */}
       <div className="relative w-full max-w-6xl h-[460px] sm:h-[560px] md:h-[640px] lg:h-[660px] flex items-center justify-center overflow-hidden py-2 select-none">
-        <motion.div
+        <motion.div 
           className="relative w-full h-full flex items-center justify-center"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
@@ -165,7 +167,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
 
             return (
               <motion.div
-                key={`coverflow-${evt.id || evt.slug}`}
+                key={\`coverflow-\${evt.id || evt.slug}\`}
                 onClick={() => {
                   if (!props.isCenter) setActiveIndex(idx);
                 }}
@@ -180,13 +182,14 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
                   zIndex: props.zIndex,
                   pointerEvents: props.pointerEvents,
                 }}
-                className={`absolute w-[300px] sm:w-[440px] md:w-[540px] lg:w-[560px] h-[400px] sm:h-[500px] md:h-[580px] lg:h-[600px] rounded-2xl bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 overflow-hidden flex flex-col cursor-pointer ${props.isCenter
-                    ? "shadow-[0_12px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
+                className={\`absolute w-[300px] sm:w-[440px] md:w-[540px] lg:w-[560px] h-[400px] sm:h-[500px] md:h-[580px] lg:h-[600px] rounded-2xl bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 overflow-hidden flex flex-col cursor-pointer \${
+                  props.isCenter 
+                    ? "shadow-[0_12px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.8)]" 
                     : "shadow-none"
-                  }`}
+                }\`}
               >
                 {/* Poster Image / Fallback */}
-                <div className={`relative w-full overflow-hidden shrink-0 border-b border-black/5 dark:border-white/10 ${props.isCenter ? 'h-[76%]' : 'h-full'}`}>
+                <div className={\`relative w-full overflow-hidden shrink-0 border-b border-black/5 dark:border-white/10 \${props.isCenter ? 'h-[76%]' : 'h-full'}\`}>
                   {evt.posterUrl ? (
                     <Image
                       src={evt.posterUrl}
@@ -239,13 +242,14 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
       <div className="flex items-center gap-2 mt-4 mb-5">
         {events.map((_, idx) => (
           <button
-            key={`dot-${idx}`}
+            key={\`dot-\${idx}\`}
             onClick={() => setActiveIndex(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-            className={`h-2.5 rounded-full transition-all duration-300 ${idx === activeIndex
+            aria-label={\`Go to slide \${idx + 1}\`}
+            className={\`h-2.5 rounded-full transition-all duration-300 \${
+              idx === activeIndex
                 ? "w-8 bg-[#eb4d6d]"
                 : "w-2.5 bg-black/20 dark:bg-white/20 hover:bg-black/40 dark:hover:bg-white/40"
-              }`}
+            }\`}
           />
         ))}
       </div>
@@ -253,7 +257,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
       {/* View Details Button tied to centered event */}
       {activeEvent && (
         <Link
-          href={`/events/${activeEvent.slug}`}
+          href={\`/events/\${activeEvent.slug}\`}
           className="px-8 py-3.5 rounded-full bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm sm:text-base hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg"
         >
           View details <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -289,7 +293,7 @@ export default function EventsPage() {
       Promise.all(
         ongoing.map(async (e) => {
           try {
-            const res = await apiClient.get(`/events/${e.slug}/registration-status`);
+            const res = await apiClient.get(\`/events/\${e.slug}/registration-status\`);
             return { slug: e.slug, isRegistered: res.data.isRegistered };
           } catch (err) {
             return { slug: e.slug, isRegistered: false };
@@ -318,7 +322,7 @@ export default function EventsPage() {
       const wB = (b.status === "ongoing" || b.status === "live") ? 2 : (b.status === "upcoming" ? 1 : 0);
       return wB - wA;
     });
-
+    
     if (categoryFilter === "All") return sorted;
     return sorted.filter(e => e.type === categoryFilter);
   }, [events, categoryFilter]);
@@ -328,31 +332,22 @@ export default function EventsPage() {
   const ongoingEvents = events.filter(e => e.status !== "completed" && e.status !== "draft");
 
   return (
-    <main className="min-h-screen pt-36 md:pt-40 pb-20 px-6 max-w-7xl mx-auto w-full font-['Outfit'] bg-transparent relative z-10">
-
+    <main className="min-h-screen pt-36 md:pt-40 pb-20 px-6 max-w-7xl mx-auto w-full font-['Outfit'] bg-[var(--background)]">
+      <style dangerouslySetInnerHTML={{ __html: \`
+        .bg-shapes-layer { display: none !important; visibility: hidden !important; opacity: 0 !important; }
+      \`}} />
+      
       {/* Hero Header Section */}
-      <div className="mb-12 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#eb4d6d] mb-3"
-        >
-          MMIL EVENTS
-        </motion.div>
-        <motion.h1
+      <div className="mb-14 text-center relative z-10">
+        <motion.h1 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-7xl font-black mb-4 tracking-tight text-[var(--text-primary)] uppercase flex flex-wrap items-center justify-center gap-x-3.5"
+          className="text-5xl md:text-7xl font-black mb-4 tracking-tight text-[var(--text-primary)] uppercase"
         >
-          <span>OUR</span>{" "}
-          <span className="relative inline-block text-[#eb4d6d]">
-            EVENTS
-            <span className="absolute -bottom-2 left-0 w-[60px] h-[3px] bg-[#eb4d6d] rounded-full" />
-          </span>
+          OUR EVENTS
         </motion.h1>
-        <motion.p
+        <motion.p 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
@@ -364,12 +359,17 @@ export default function EventsPage() {
 
       {/* Featured Coverflow Carousel Section */}
       <section className="mb-20 relative z-10">
+        <div className="flex items-center gap-4 mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Featured Highlights</h2>
+          <div className="h-px bg-black/10 dark:bg-white/10 flex-1 rounded-full" />
+        </div>
+
         <CoverflowCarousel events={featuredEvents} />
       </section>
 
       <AnimatePresence>
         {ongoingEvents.length > 0 && (
-          <motion.div
+          <motion.div 
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             className="mb-16 relative z-10"
@@ -379,18 +379,18 @@ export default function EventsPage() {
               <div className="h-px bg-black/10 dark:bg-white/20 flex-1 rounded-full" />
               <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.6)]" />
             </div>
-
+            
             {/* Desktop Layout: Large Banners */}
             <div className="hidden md:flex flex-col gap-12">
               {ongoingEvents.map((evt) => (
-                <Link href={`/events/${evt.slug}`} key={`desktop-ongoing-${evt.id || evt.slug}`}>
+                <Link href={\`/events/\${evt.slug}\`} key={\`desktop-ongoing-\${evt.id || evt.slug}\`}>
                   <LiquidGlassCard className="h-[400px] flex overflow-hidden border-emerald-500/20 dark:border-emerald-500/30 group p-0" status="ongoing">
                     {/* Poster Half */}
                     <div className="w-1/2 relative bg-black/5 dark:bg-white/5 border-r border-black/5 dark:border-white/10">
                       {evt.posterUrl ? (
-                        <Image src={evt.posterUrl} alt={evt.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                         <Image src={evt.posterUrl} alt={evt.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                       ) : (
-                        <div className="w-full h-full transition-transform duration-700 group-hover:scale-105"><EventFallbackImage type={evt.type || "Event"} /></div>
+                         <div className="w-full h-full transition-transform duration-700 group-hover:scale-105"><EventFallbackImage type={evt.type || "Event"} /></div>
                       )}
                     </div>
                     {/* Content Half */}
@@ -402,11 +402,11 @@ export default function EventsPage() {
                         <h3 className="text-4xl font-bold text-[var(--text-primary)] mb-4 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-tight">{evt.title}</h3>
                         <p className="text-[var(--text-secondary)] text-lg leading-relaxed line-clamp-3">{evt.description}</p>
                       </div>
-
+                      
                       <div className="mt-8 flex flex-wrap gap-4 items-center justify-between">
                         <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm font-bold uppercase tracking-wider">
                           <Users className="w-4 h-4" />
-                          {evt.isTeamEvent ? `Team Size: ${evt.teamSizeMin}-${evt.teamSizeMax}` : "Individual Event"}
+                          {evt.isTeamEvent ? \`Team Size: \${evt.teamSizeMin}-\${evt.teamSizeMax}\` : "Individual Event"}
                         </div>
                         <div className="flex items-center gap-2 text-[var(--text-primary)] font-semibold bg-black/5 dark:bg-white/10 px-6 py-3 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
                           {registeredEvents[evt.slug] ? (
@@ -423,24 +423,24 @@ export default function EventsPage() {
             {/* Mobile Layout: Horizontal Slider with Posters */}
             <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory gap-4 pb-8 -mx-6 px-6 hide-scrollbar">
               {ongoingEvents.map((evt, idx) => (
-                <motion.div
+                <motion.div 
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
-                  key={`mobile-ongoing-${evt.id || evt.slug}`}
+                  key={\`mobile-ongoing-\${evt.id || evt.slug}\`} 
                   className="snap-center shrink-0 w-[85vw]"
                 >
-                  <Link href={`/events/${evt.slug}`}>
+                  <Link href={\`/events/\${evt.slug}\`}>
                     <LiquidGlassCard className="p-0 overflow-hidden h-[480px] flex flex-col border-emerald-500/30 bg-emerald-50 dark:bg-[#111] group" status="ongoing">
                       <div className="relative w-full h-[200px] bg-black/5 dark:bg-white/5 shrink-0 border-b border-black/5 dark:border-white/10">
                         {evt.posterUrl ? (
-                          <Image src={evt.posterUrl} alt={evt.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                           <Image src={evt.posterUrl} alt={evt.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                         ) : (
-                          <div className="w-full h-full transition-transform duration-700 group-hover:scale-105"><EventFallbackImage type={evt.type || "Event"} /></div>
+                           <div className="w-full h-full transition-transform duration-700 group-hover:scale-105"><EventFallbackImage type={evt.type || "Event"} /></div>
                         )}
                       </div>
-
+                      
                       <div className="p-6 flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-widest uppercase mb-3">
@@ -450,11 +450,11 @@ export default function EventsPage() {
                           <h3 className="text-2xl font-black text-[var(--text-primary)] mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-tight">{evt.title}</h3>
                           <p className="text-[var(--text-secondary)] text-sm line-clamp-2">{evt.description}</p>
                         </div>
-
+                        
                         <div className="mt-4 flex flex-col gap-3">
                           <div className="flex items-center gap-2 text-[var(--text-secondary)] text-xs font-bold uppercase tracking-wider">
                             <Users className="w-4 h-4" />
-                            {evt.isTeamEvent ? `Team: ${evt.teamSizeMin}-${evt.teamSizeMax}` : "Individual"}
+                            {evt.isTeamEvent ? \`Team: \${evt.teamSizeMin}-\${evt.teamSizeMax}\` : "Individual"}
                           </div>
                           <div className="flex items-center gap-2 text-white font-black bg-emerald-600 px-4 py-3 rounded-xl justify-center shadow-lg shadow-emerald-500/20">
                             {registeredEvents[evt.slug] ? (
@@ -471,6 +471,113 @@ export default function EventsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 relative z-10">
+        <div className="flex items-center gap-4 flex-1">
+          <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)] tracking-tight">Events Repository</h2>
+          <div className="h-px bg-black/10 dark:bg-white/10 flex-1 rounded-full hidden sm:block" />
+        </div>
+        
+        {/* Filter Chips */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(cat)}
+              className={\`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-200 border \${
+                categoryFilter === cat 
+                  ? "bg-[#eb4d6d] border-[#eb4d6d] text-white shadow-md shadow-pink-500/20" 
+                  : "bg-transparent border-[var(--text-primary)]/10 text-[var(--text-secondary)] hover:border-[#eb4d6d]/50 hover:text-[#eb4d6d]"
+              }\`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Asymmetric Grid Layout */}
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px] relative z-10">
+        <AnimatePresence mode="popLayout">
+          {filteredEvents.map((evt, idx) => {
+            const isFeatured = idx === 0; // First event is larger
+            return (
+              <motion.div
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: Math.min(idx * 0.08, 0.4) }}
+                key={\`grid-\${evt.id || evt.slug}\`}
+                className={\`h-full \${isFeatured ? 'md:col-span-2 md:row-span-2' : 'row-span-1'}\`}
+              >
+                <Link href={\`/events/\${evt.slug}\`} className="block h-full">
+                  <div className="group h-full flex flex-col p-4 md:p-6 rounded-[2.5rem] bg-white dark:bg-[var(--background)] border border-[var(--text-primary)]/10 hover:-translate-y-1 hover:border-[#eb4d6d]/50 transition-all duration-300">
+                    
+                    {/* Image / Fallback block */}
+                    <div className={\`relative w-full overflow-hidden rounded-2xl bg-black/5 dark:bg-white/5 mb-5 \${isFeatured ? 'h-full md:h-[350px] aspect-square md:aspect-auto' : 'aspect-square md:aspect-auto flex-1'}\`}>
+                      {evt.posterUrl ? (
+                        <Image 
+                          src={evt.posterUrl} 
+                          alt={evt.title} 
+                          fill 
+                          sizes="(max-width: 768px) 100vw, 50vw" 
+                          className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]" 
+                        />
+                      ) : (
+                        <div className="w-full h-full transition-transform duration-300 ease-out group-hover:scale-[1.03]">
+                          <EventFallbackImage type={evt.type || "Event"} />
+                        </div>
+                      )}
+                      
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span className="px-5 py-2.5 bg-white text-black text-sm font-bold rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-xl">
+                          View details
+                        </span>
+                      </div>
+                      
+                      {/* Status Badge */}
+                      <div className="absolute top-4 right-4 z-10">
+                        <StatusBadge status={evt.status} />
+                      </div>
+                    </div>
+                    
+                    {/* Text Content */}
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded bg-black/5 dark:bg-white/10 text-[var(--text-secondary)]">
+                          {evt.type}
+                        </span>
+                      </div>
+                      <h3 className={\`font-bold text-[var(--text-primary)] leading-tight group-hover:text-[#eb4d6d] transition-colors line-clamp-2 \${isFeatured ? 'text-2xl md:text-4xl' : 'text-lg md:text-xl'}\`}>
+                        {evt.title}
+                      </h3>
+                      {isFeatured && evt.description && (
+                        <p className="text-[var(--text-secondary)] text-sm md:text-base line-clamp-2 mt-3 leading-relaxed">
+                          {evt.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
+          {filteredEvents.length === 0 && (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className="col-span-full py-20 text-center text-[var(--text-secondary)] font-light"
+            >
+              No events found for this category.
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </main>
   );
 }
+`;
+
+fs.writeFileSync('src/app/(public)/events/page.tsx', fileContent);
+console.log('Successfully updated coverflow v3 in src/app/(public)/events/page.tsx');

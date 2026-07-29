@@ -33,10 +33,10 @@ export const ScrollRevealText = ({ text, className = "" }: ScrollRevealTextProps
 };
 
 const Word = ({ children, progress, range }: any) => {
-  const opacity = useTransform(progress, range, [0.2, 1]);
+  const opacity = useTransform(progress, range, [0.75, 1]);
   return (
     <span className="relative mr-2 mt-2">
-      <span className="absolute opacity-20">{children}</span>
+      <span className="absolute text-[var(--text-primary)] opacity-100 select-none">{children}</span>
       <motion.span style={{ opacity: opacity }}>
         {children}
       </motion.span>
