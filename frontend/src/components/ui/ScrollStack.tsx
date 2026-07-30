@@ -231,11 +231,22 @@ const ScrollStack = ({
     getElementOffset
   ]);
 
+  const rafIdRef = useRef<number | null>(null);
+
   const handleScroll = useCallback(() => {
-    updateCardTransforms();
+    if (rafIdRef.current !== null) return;
+    rafIdRef.current = requestAnimationFrame(() => {
+      updateCardTransforms();
+      rafIdRef.current = null;
+    });
   }, [updateCardTransforms]);
 
   const setupLenis = useCallback(() => {
+    const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0));
+    if (isTouchDevice && useWindowScroll) {
+      return null;
+    }
+
     if (useWindowScroll) {
       const lenis = new Lenis({
         duration: 1.0,
@@ -276,9 +287,7 @@ const ScrollStack = ({
         wheelMultiplier: 1,
         touchInertiaMultiplier: 35,
         lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075,
-        touchInertia: 0.6
+        syncTouch: false,
       } as any);
 
       lenis.on('scroll', handleScroll);

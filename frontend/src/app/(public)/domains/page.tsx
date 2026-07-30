@@ -120,11 +120,19 @@ export default function DomainsPage() {
     }
   };
 
+  const [itemDistance, setItemDistance] = useState(360);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setItemDistance(200);
+    }
+  }, []);
+
   return (
     <main className="text-[var(--text-primary)] bg-transparent font-['Outfit'] relative z-10 w-full min-h-screen pt-20 pb-0">
-      {/* Background gradients */}
-      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-blue-500/15 rounded-full blur-[160px] pointer-events-none z-[-1]" />
-      <div className="fixed bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/15 rounded-full blur-[160px] pointer-events-none z-[-1]" />
+      {/* Background gradients (hidden on mobile for 120fps touch scroll) */}
+      <div className="hidden md:block fixed top-0 right-0 w-[600px] h-[600px] bg-blue-500/15 rounded-full blur-[160px] pointer-events-none z-[-1]" />
+      <div className="hidden md:block fixed bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/15 rounded-full blur-[160px] pointer-events-none z-[-1]" />
 
       {/* Full-screen Hero Title Section */}
       <section className="min-h-screen flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-4 z-0 relative">
@@ -151,7 +159,7 @@ export default function DomainsPage() {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
         <ScrollStack
           useWindowScroll={true}
-          itemDistance={360}
+          itemDistance={itemDistance}
           itemStackDistance={28}
           stackPosition="80px"
           baseScale={0.92}
