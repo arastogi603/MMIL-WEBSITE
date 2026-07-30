@@ -160,11 +160,7 @@ export default function DomainsPage() {
           {domainData.map((domain) => (
             <ScrollStackItem key={domain.id}>
               <div
-                className="w-full rounded-[1.75rem] sm:rounded-[2.5rem] md:rounded-[4rem] p-4 sm:p-8 md:p-14 lg:p-16 flex flex-col relative shadow-[0_30px_70px_rgba(0,0,0,0.14)] border border-[var(--border)] overflow-hidden"
-                style={{
-                  background: "linear-gradient(135deg, color-mix(in srgb, var(--background) 94%, transparent) 0%, color-mix(in srgb, var(--background) 99%, transparent) 100%)",
-                  backdropFilter: "blur(25px)"
-                }}
+                className="w-full rounded-[1.75rem] sm:rounded-[2.5rem] md:rounded-[4rem] p-5 sm:p-8 md:p-14 lg:p-16 flex flex-col relative shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-[var(--border)] overflow-hidden bg-white dark:bg-[#151518]"
               >
                 {/* Glossy top highlight */}
                 <div className="absolute top-0 left-0 w-full h-[35%] bg-gradient-to-b from-[var(--text-primary)]/5 to-transparent pointer-events-none rounded-t-[1.75rem] sm:rounded-t-[2.5rem] md:rounded-t-[4rem]" />

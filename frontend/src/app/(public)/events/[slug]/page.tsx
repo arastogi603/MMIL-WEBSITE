@@ -10,20 +10,32 @@ import { useAuthStore } from "@/lib/store/auth.store";
 import { apiClient } from "@/lib/api/client";
 import Image from "next/image";
 
-// Maps event type to its specific cover photo
-function getEventImage(type?: string): string {
-  const t = (type || "").toLowerCase();
-  if (t.includes("hackathon")) return "/event-hackathon.png";
-  if (t.includes("workshop")) return "/event-workshop.jpg";
-  if (t.includes("ideathon")) return "/event-ideathon.png";
-  return "/event-default.jpg";
+const DEFAULT_EVENT_POSTERS: Record<string, string> = {
+  "logocon": "/images/events/Logocon.png",
+  "code-in-pair": "/images/events/CodeInPair.png",
+  "decode": "/images/events/deencode.png",
+  "deencode": "/images/events/deencode.png",
+  "valorant": "/images/events/valorant.png",
+};
+
+function getEventPoster(evt: any): string | undefined {
+  if (!evt) return undefined;
+  if (evt.posterUrl && evt.posterUrl.trim() !== "") return evt.posterUrl;
+  const slug = (evt.slug || "").toLowerCase();
+  if (DEFAULT_EVENT_POSTERS[slug]) return DEFAULT_EVENT_POSTERS[slug];
+  const title = (evt.title || "").toLowerCase();
+  if (title.includes("logocon")) return "/images/events/Logocon.png";
+  if (title.includes("code-in-pair") || title.includes("code in pair")) return "/images/events/CodeInPair.png";
+  if (title.includes("decode") || title.includes("deencode")) return "/images/events/deencode.png";
+  if (title.includes("valorant")) return "/images/events/valorant.png";
+  return undefined;
 }
 
 export default function EventDetailsPage() {
   const { slug } = useParams();
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
-  
+
   const [event, setEvent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -34,7 +46,7 @@ export default function EventDetailsPage() {
   // Team Modals state
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [teamFlow, setTeamFlow] = useState<'selection' | 'leader' | 'member'>('selection');
-  
+
   // Leader Form State
   const [leaderStep, setLeaderStep] = useState<1 | 2 | 3>(1);
   const [teamForm, setTeamForm] = useState({
@@ -52,7 +64,7 @@ export default function EventDetailsPage() {
       try {
         const data = await eventsApi.getEventBySlug(slug as string);
         setEvent(data);
-        
+
         if (isAuthenticated) {
           try {
             const statusRes = await apiClient.get(`/events/${slug}/registration-status`);
@@ -62,7 +74,7 @@ export default function EventDetailsPage() {
                 setHasTeam(true);
               }
             }
-          } catch(e) {
+          } catch (e) {
             console.error("Failed to fetch registration status");
           }
         }
@@ -80,7 +92,7 @@ export default function EventDetailsPage() {
       router.push(`/login?redirect=/events/${slug}`);
       return;
     }
-    
+
     if (event.isTeamEvent) {
       setIsTeamModalOpen(true);
       setTeamFlow('selection');
@@ -160,9 +172,11 @@ export default function EventDetailsPage() {
   const seatsLeft = event.capacity - event.seatsTaken;
   const isFull = seatsLeft <= 0;
 
+  const poster = getEventPoster(event);
+
   return (
     <main className="min-h-screen bg-transparent text-[var(--text-primary)] pt-32 pb-24 relative overflow-hidden font-['Outfit']">
-      
+
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <Link href="/events" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors mb-8 w-fit bg-[var(--background)]/50 backdrop-blur-md px-4 py-2 rounded-full border border-[var(--border)] shadow-sm">
           <ArrowLeft className="w-4 h-4" />
@@ -170,10 +184,16 @@ export default function EventDetailsPage() {
         </Link>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-[var(--card-bg)] backdrop-blur-md md:backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-[var(--card-border)] p-6 sm:p-8 md:p-12 relative overflow-hidden">
-          
+
           {/* Subtle light effect inside the card */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-50" />
-          
+
+          {poster && (
+            <div className="relative w-full max-w-md mx-auto aspect-[640/892] rounded-2xl overflow-hidden mb-8 border border-black/10 dark:border-white/10 shadow-lg bg-black/5 dark:bg-white/5">
+              <Image src={poster} alt={event.title || "Event Poster"} fill className="object-contain object-center w-full h-full" priority />
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center gap-3 mb-8">
             <span className="px-4 py-1.5 text-xs font-black uppercase tracking-widest rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20 shadow-sm">
               {event.type} {event.isTeamEvent && '(Team Event)'}
@@ -186,7 +206,7 @@ export default function EventDetailsPage() {
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-black mb-8 md:mb-10 tracking-tighter text-[var(--text-primary)] leading-[0.95]">
             {event.title}
           </h1>
-          
+
           {/* Spatial UI Info Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             {[
@@ -219,7 +239,7 @@ export default function EventDetailsPage() {
                   <div className="p-5 rounded-2xl border bg-[var(--background)] border-[var(--card-border)] shadow-sm">
                     <h3 className="font-black text-[var(--text-primary)] mb-1">Round 1: PPT Submission</h3>
                     <p className="text-sm font-bold text-[var(--text-secondary)]">
-                      Starts: {new Date(event.round1StartsAt).toLocaleString()}<br/>
+                      Starts: {new Date(event.round1StartsAt).toLocaleString()}<br />
                       Ends: {event.round1EndsAt ? new Date(event.round1EndsAt).toLocaleString() : 'TBA'}
                     </p>
                   </div>
@@ -228,8 +248,8 @@ export default function EventDetailsPage() {
                   <div className="p-5 rounded-2xl border bg-[var(--background)] border-[var(--card-border)] shadow-sm">
                     <h3 className="font-black text-[var(--text-primary)] mb-1">Round 2: Main Event</h3>
                     <p className="text-sm font-bold text-[var(--text-secondary)]">
-                      {event.round2Type === 'OFFLINE' ? `Offline @ ${event.round2Address || 'TBA'}` : 'Online'}<br/>
-                      Starts: {new Date(event.round2StartsAt).toLocaleString()}<br/>
+                      {event.round2Type === 'OFFLINE' ? `Offline @ ${event.round2Address || 'TBA'}` : 'Online'}<br />
+                      Starts: {new Date(event.round2StartsAt).toLocaleString()}<br />
                       Ends: {event.round2EndsAt ? new Date(event.round2EndsAt).toLocaleString() : 'TBA'}
                     </p>
                   </div>
@@ -238,7 +258,7 @@ export default function EventDetailsPage() {
                   <div className="p-5 rounded-2xl border bg-[var(--background)] border-[var(--card-border)] shadow-sm">
                     <h3 className="font-black text-[var(--text-primary)] mb-1">Round 3: Finals</h3>
                     <p className="text-sm font-bold text-[var(--text-secondary)]">
-                      Starts: {new Date(event.round3StartsAt).toLocaleString()}<br/>
+                      Starts: {new Date(event.round3StartsAt).toLocaleString()}<br />
                       Ends: {event.round3EndsAt ? new Date(event.round3EndsAt).toLocaleString() : 'TBA'}
                     </p>
                   </div>
@@ -274,7 +294,7 @@ export default function EventDetailsPage() {
                 )}
               </div>
             ) : (
-              <button 
+              <button
                 onClick={handleRegisterClick}
                 disabled={isFull || isRegistering}
                 className="w-full px-10 py-5 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black tracking-tight text-xl transition-all disabled:opacity-50 shadow-md transform hover:scale-[1.01] active:scale-95"
@@ -282,7 +302,7 @@ export default function EventDetailsPage() {
                 {isRegistering ? "PROCESSING..." : isFull ? "EVENT FULL" : "REGISTER NOW"}
               </button>
             )}
-            
+
             {!isAuthenticated && !isRegistered && (
               <p className="text-sm font-bold text-[var(--text-secondary)] text-center uppercase tracking-wider">Login required to register</p>
             )}
@@ -294,10 +314,10 @@ export default function EventDetailsPage() {
       <AnimatePresence>
         {isTeamModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" 
-              onClick={() => setIsTeamModalOpen(false)} 
+              className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm"
+              onClick={() => setIsTeamModalOpen(false)}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -313,7 +333,7 @@ export default function EventDetailsPage() {
                 <div className="p-8">
                   <h2 className="text-3xl font-black mb-3 text-[var(--text-primary)] tracking-tight">TEAM EVENT</h2>
                   <p className="text-[var(--text-secondary)] font-medium mb-8">This event requires participation in a team. You can either create a new team or join an existing one using a code.</p>
-                  
+
                   <div className="flex flex-col gap-4">
                     <button onClick={() => setTeamFlow('leader')} className="w-full py-4 rounded-2xl bg-[var(--text-primary)] hover:opacity-90 text-[var(--background)] font-black tracking-wide transition-all shadow-md">
                       CREATE A NEW TEAM
@@ -329,35 +349,35 @@ export default function EventDetailsPage() {
                 <form onSubmit={handleSendOtp} className="space-y-4 py-2">
                   <h2 className="text-3xl font-black mb-6 text-[var(--text-primary)] tracking-tight">Create Team</h2>
                   {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-bold rounded-xl">{error}</div>}
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Team Name</label>
-                      <input required type="text" value={teamForm.name} onChange={e => setTeamForm({...teamForm, name: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="text" value={teamForm.name} onChange={e => setTeamForm({ ...teamForm, name: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Phone (+code)</label>
-                      <input required type="tel" placeholder="+1234567890" value={teamForm.phone} onChange={e => setTeamForm({...teamForm, phone: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="tel" placeholder="+1234567890" value={teamForm.phone} onChange={e => setTeamForm({ ...teamForm, phone: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Email Address</label>
-                    <input required type="email" value={teamForm.email} onChange={e => setTeamForm({...teamForm, email: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                    <input required type="email" value={teamForm.email} onChange={e => setTeamForm({ ...teamForm, email: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">College Name</label>
-                    <input required type="text" value={teamForm.collegeName} onChange={e => setTeamForm({...teamForm, collegeName: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                    <input required type="text" value={teamForm.collegeName} onChange={e => setTeamForm({ ...teamForm, collegeName: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">District</label>
-                      <input required type="text" value={teamForm.district} onChange={e => setTeamForm({...teamForm, district: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="text" value={teamForm.district} onChange={e => setTeamForm({ ...teamForm, district: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">State</label>
-                      <input required type="text" value={teamForm.state} onChange={e => setTeamForm({...teamForm, state: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="text" value={teamForm.state} onChange={e => setTeamForm({ ...teamForm, state: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
 
@@ -372,9 +392,9 @@ export default function EventDetailsPage() {
                   <h2 className="text-3xl font-black mb-2 text-[var(--text-primary)] tracking-tight">Verify Email</h2>
                   <p className="text-[var(--text-secondary)] mb-8 font-medium">Enter the 6-digit OTP sent to your email.</p>
                   {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-bold rounded-xl text-left">{error}</div>}
-                  
-                  <input required type="text" maxLength={6} placeholder="000000" value={teamForm.otp} onChange={e => setTeamForm({...teamForm, otp: e.target.value})} className="w-2/3 mx-auto text-center tracking-[0.75em] font-mono text-3xl bg-[var(--background)] border border-[var(--card-border)] rounded-2xl py-4 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none block" />
-                  
+
+                  <input required type="text" maxLength={6} placeholder="000000" value={teamForm.otp} onChange={e => setTeamForm({ ...teamForm, otp: e.target.value })} className="w-2/3 mx-auto text-center tracking-[0.75em] font-mono text-3xl bg-[var(--background)] border border-[var(--card-border)] rounded-2xl py-4 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none block" />
+
                   <button type="submit" disabled={isRegistering} className="w-full py-4 mt-8 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide hover:opacity-90 transition-all disabled:opacity-50">
                     {isRegistering ? "VERIFYING..." : "VERIFY & CREATE TEAM"}
                   </button>
@@ -388,7 +408,7 @@ export default function EventDetailsPage() {
                   </div>
                   <h2 className="text-3xl font-black mb-3 text-[var(--text-primary)] tracking-tight">Team Created!</h2>
                   <p className="text-[var(--text-secondary)] mb-8 font-medium">Share this code with your teammates to let them join:</p>
-                  
+
                   <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 mb-8 select-all cursor-pointer hover:border-blue-200 transition-colors">
                     <span className="font-mono text-4xl font-black text-blue-600 tracking-widest">{joinCodeResult}</span>
                   </div>
@@ -404,34 +424,34 @@ export default function EventDetailsPage() {
                   <h2 className="text-3xl font-black mb-2 text-[var(--text-primary)] tracking-tight">Join Team</h2>
                   <p className="text-[var(--text-secondary)] mb-6 font-medium">Enter the team code and your details.</p>
                   {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-bold rounded-xl">{error}</div>}
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Join Code</label>
-                      <input required type="text" placeholder="MMIL-XXXXX" value={memberForm.joinCode} onChange={e => setMemberForm({...memberForm, joinCode: e.target.value.toUpperCase()})} className="w-full font-mono bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none uppercase font-bold" />
+                      <input required type="text" placeholder="MMIL-XXXXX" value={memberForm.joinCode} onChange={e => setMemberForm({ ...memberForm, joinCode: e.target.value.toUpperCase() })} className="w-full font-mono bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none uppercase font-bold" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Phone</label>
-                      <input required type="tel" value={memberForm.phone} onChange={e => setMemberForm({...memberForm, phone: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="tel" value={memberForm.phone} onChange={e => setMemberForm({ ...memberForm, phone: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">College Name</label>
-                    <input required type="text" value={memberForm.collegeName} onChange={e => setMemberForm({...memberForm, collegeName: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                    <input required type="text" value={memberForm.collegeName} onChange={e => setMemberForm({ ...memberForm, collegeName: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">District</label>
-                      <input required type="text" value={memberForm.district} onChange={e => setMemberForm({...memberForm, district: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="text" value={memberForm.district} onChange={e => setMemberForm({ ...memberForm, district: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">State</label>
-                      <input required type="text" value={memberForm.state} onChange={e => setMemberForm({...memberForm, state: e.target.value})} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
+                      <input required type="text" value={memberForm.state} onChange={e => setMemberForm({ ...memberForm, state: e.target.value })} className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl py-3 px-4 text-[var(--text-primary)] focus:border-blue-500 outline-none font-medium" />
                     </div>
                   </div>
-                  
+
                   <button type="submit" disabled={isRegistering} className="w-full py-4 mt-6 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide hover:opacity-90 transition-all disabled:opacity-50">
                     {isRegistering ? "SENDING REQUEST..." : "REQUEST TO JOIN"}
                   </button>
@@ -445,7 +465,7 @@ export default function EventDetailsPage() {
                   </div>
                   <h2 className="text-3xl font-black mb-3 text-[var(--text-primary)] tracking-tight">Request Sent!</h2>
                   <p className="text-[var(--text-secondary)] mb-8 font-medium">{joinSuccessMsg}</p>
-                  
+
                   <button onClick={() => { setIsTeamModalOpen(false); setJoinSuccessMsg(""); }} className="w-full py-4 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-black tracking-wide transition-all">
                     DONE
                   </button>

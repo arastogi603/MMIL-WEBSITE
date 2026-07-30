@@ -59,6 +59,8 @@ const ScrollStack = ({
   const lastTransformsRef = useRef<Map<number, TransformState>>(new Map());
   const isUpdatingRef = useRef<boolean>(false);
 
+  const cardBaseTopsRef = useRef<number[]>([]);
+
   const calculateProgress = useCallback((scrollTop: number, start: number, end: number) => {
     if (scrollTop < start) return 0;
     if (scrollTop > end) return 1;
@@ -72,10 +74,23 @@ const ScrollStack = ({
     return typeof value === 'number' ? value : parseFloat(value);
   }, []);
 
+  const measureCardTops = useCallback(() => {
+    if (!cardsRef.current.length) return;
+    cardBaseTopsRef.current = cardsRef.current.map((card) => {
+      let top = 0;
+      let curr: HTMLElement | null = card;
+      while (curr && curr !== document.body) {
+        top += curr.offsetTop;
+        curr = curr.offsetParent as HTMLElement | null;
+      }
+      return top;
+    });
+  }, []);
+
   const getScrollData = useCallback(() => {
     if (useWindowScroll) {
       return {
-        scrollTop: window.scrollY,
+        scrollTop: window.scrollY || window.pageYOffset || 0,
         containerHeight: window.innerHeight,
         scrollContainer: document.documentElement
       };
@@ -91,11 +106,17 @@ const ScrollStack = ({
 
   const getElementOffset = useCallback(
     (element: HTMLElement, index: number = -1) => {
+      if (index >= 0 && cardBaseTopsRef.current[index] !== undefined && cardBaseTopsRef.current[index] > 0) {
+        return cardBaseTopsRef.current[index];
+      }
       if (useWindowScroll) {
-        const rect = element.getBoundingClientRect();
-        const lastTransform = index >= 0 ? lastTransformsRef.current.get(index) : undefined;
-        const currentTranslateY = lastTransform ? lastTransform.translateY : 0;
-        return rect.top + window.scrollY - currentTranslateY;
+        let top = 0;
+        let curr: HTMLElement | null = element;
+        while (curr && curr !== document.body) {
+          top += curr.offsetTop;
+          curr = curr.offsetParent as HTMLElement | null;
+        }
+        return top;
       } else {
         return element.offsetTop;
       }
@@ -217,15 +238,13 @@ const ScrollStack = ({
   const setupLenis = useCallback(() => {
     if (useWindowScroll) {
       const lenis = new Lenis({
-        duration: 1.2,
+        duration: 1.0,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        touchMultiplier: 2,
+        touchMultiplier: 1.5,
         infinite: false,
         wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
+        syncTouch: false,
       });
 
       lenis.on('scroll', handleScroll);
@@ -304,16 +323,21 @@ const ScrollStack = ({
       card.style.webkitPerspective = '1000px';
     });
 
+    measureCardTops();
     setupLenis();
-
     updateCardTransforms();
+
+    const onWindowResize = () => {
+      measureCardTops();
+      updateCardTransforms();
+    };
 
     const onWindowScroll = () => {
       updateCardTransforms();
     };
 
     window.addEventListener('scroll', onWindowScroll, { passive: true });
-    window.addEventListener('resize', onWindowScroll, { passive: true });
+    window.addEventListener('resize', onWindowResize, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', onWindowScroll);
