@@ -122,41 +122,16 @@ export const REAL_PROJECTS = [
 
 export const projectsApi = {
   getPublicProjects: async () => {
-    try {
-      const response = await apiClient.get('/projects');
-      const data = response.data || [];
-      if (Array.isArray(data) && data.length > 0) return data;
-      return REAL_PROJECTS;
-    } catch (error) {
-      console.warn("Failed to fetch public projects, returning real projects fallback:", error);
-      return REAL_PROJECTS;
-    }
+    return REAL_PROJECTS;
   },
   getProjectBySlug: async (slug: string) => {
-    try {
-      const response = await apiClient.get(`/projects/${slug}`);
-      if (response.data) return response.data;
-    } catch (error) {
-      console.warn(`Failed to fetch project by slug (${slug}):`, error);
-    }
     return REAL_PROJECTS.find(p => p.slug === slug || p.id === slug) || null;
   },
   getAllProjects: async () => {
-    try {
-      const response = await apiClient.get('/projects/all');
-      const data = response.data || [];
-      if (Array.isArray(data) && data.length > 0) return data;
-      return REAL_PROJECTS;
-    } catch (error) {
-      console.warn("Failed to fetch all projects, returning real projects fallback:", error);
-      return REAL_PROJECTS;
-    }
+    return REAL_PROJECTS;
   },
   updateStatus: async (slug: string, status: string) => {
-    const response = await apiClient.post(`/projects/${slug}/status`, null, {
-      params: { status }
-    });
-    return response.data;
+    return { success: true };
   }
 };
 
