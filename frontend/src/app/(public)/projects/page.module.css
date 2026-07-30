@@ -45,23 +45,25 @@
 }
 .page__project {
   position: fixed;
-  padding: 1rem;
+  padding: 1.25rem 2.5rem;
   z-index: 10;
-  top: 50%;
+  bottom: 6%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
   height: fit-content;
   opacity: 0;
   pointer-events: auto;
   display: grid;
-  grid-template-columns: 1fr 1.5fr 3fr 1.5fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr;
   align-items: center;
   backdrop-filter: blur(0px);
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
   transition: all ease 0.3s;
   cursor: pointer;
+  border-radius: 12px;
 }
 .page__project:hover, .page__project--hovered {
   -webkit-backdrop-filter: blur(16px);
@@ -78,12 +80,19 @@
   .page__project {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
+    padding: 1rem 1.5rem;
   }
 }
 .page__project__title {
   opacity: 1;
   font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 700;
+  text-align: left;
+}
+.page__project__category {
+  text-align: center;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.85);
 }
 .page__project__link {
   display: flex;
@@ -100,30 +109,18 @@
   .page__project__link__button span {
     display: none;
   }
-}
-@media (max-width: 768px) {
   .page__project__category {
     text-align: right;
   }
 }
 .page__project__year {
   text-align: right;
-  grid-column: 4;
-}
-.page__project__index {
-  grid-column: 5;
-  text-align: right;
+  grid-column: 3;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.75);
 }
 @media (max-width: 768px) {
   .page__project__year {
-    display: none;
-  }
-}
-.page__project__index {
-  text-align: right;
-}
-@media (max-width: 768px) {
-  .page__project__index {
     display: none;
   }
 }
@@ -144,7 +141,9 @@
   top: 0;
   left: 0;
   overflow: hidden;
-  opacity: 1; /* Changed from 0 to 1 since we omit the intro animation for now */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   perspective: 1000px;
   transform-style: preserve-3d;
   will-change: transform, opacity;

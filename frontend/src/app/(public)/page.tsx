@@ -61,7 +61,7 @@ export default function Home() {
 
         {/* ───── BENTO SHEET (PEEKS AT BOTTOM ON LOAD, COVER ANIMATION ON SCROLL) ───── */}
         <motion.div 
-          className="relative z-10 -mt-[15vh] sm:-mt-[18vh] md:-mt-[25vh] lg:-mt-[30vh] w-[96%] md:w-[94%] max-w-[1400px] mx-auto bg-[var(--card-bg)] dark:bg-[#07171F]/90 backdrop-blur-3xl border border-[var(--card-border)] dark:border-white/10 rounded-t-[2.5rem] md:rounded-t-[3.5rem] pt-8 md:pt-14 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_-20px_60px_rgba(0,0,0,0.7)] flex flex-col items-center justify-start transition-colors duration-300"
+          className="relative z-10 -mt-[15vh] sm:-mt-[18vh] md:-mt-[25vh] lg:-mt-[30vh] w-[96%] md:w-[94%] max-w-[1400px] mx-auto bg-[var(--card-bg)] dark:bg-[#07171F]/90 backdrop-blur-3xl rounded-t-[2.5rem] md:rounded-t-[3.5rem] pt-8 md:pt-14 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_-20px_60px_rgba(0,0,0,0.7)] flex flex-col items-center justify-start transition-colors duration-300"
         >
           {/* Peek Handle Indicator */}
           <div className="w-16 h-1.5 bg-black/20 dark:bg-white/20 rounded-full mb-6 md:mb-8" />

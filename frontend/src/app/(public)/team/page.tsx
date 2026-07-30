@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link as LinkIcon } from "lucide-react";
+import { Link as LinkIcon, Award, BookOpen, Sparkles, ExternalLink, GraduationCap } from "lucide-react";
 import Image from "next/image";
 
 // ----------------------------------------------------
@@ -402,7 +402,7 @@ function PosterCard({
           href={member.linkedin}
           target="_blank"
           rel="noreferrer"
-          className="absolute top-4 right-4 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm z-10"
+          className="absolute top-4 right-4 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white border border-white/20 hover:bg-blue-600 hover:text-white hover:scale-110 transition-all duration-200 shadow-md z-10"
           aria-label={`${member.name}'s LinkedIn profile`}
         >
           <LinkIcon className="w-4 h-4" />
@@ -491,6 +491,115 @@ function DomainMemberCard({
   );
 }
 
+const facultyCoordinators = [
+  {
+    name: "Dr. Lavkush Sharma",
+    role: "HoD & Faculty Coordinator",
+    designation: "HoD & Professor, Dept. of IT",
+    avatar:
+      "https://backoffice.jssuninoida.edu.in/assets/img/faculty/1774855281_69ca2471438c3.webp",
+    linkedin: "https://www.linkedin.com/in/lavkushsharma",
+    universityLink: "https://jssuninoida.edu.in/faculty/lavkush-sharma",
+    bullets: [
+      "20+ Years Academic & Mentorship (50+ Projects)",
+      "35+ Research Papers in International Journals",
+      "UGC-NET Qualified & IEI Lifetime Member",
+    ],
+  },
+  {
+    name: "Dr. Charu Awasthi",
+    role: "Faculty Coordinator",
+    designation: "Assistant Professor, Dept. of IT",
+    avatar:
+      "https://backoffice.jssuninoida.edu.in/assets/img/faculty/1775556398_69d4d72ed79f9.webp",
+    linkedin: "https://www.linkedin.com/in/dr-charu-awasthi-49264077/",
+    universityLink: "https://jssuninoida.edu.in/faculty/ms-charu-awasthi",
+    bullets: [
+      "2 Granted Patents in Fog Computing & IoT",
+      "12+ Years Academic & Research Experience",
+      "Institute GDSC & MMIL Faculty Coordinator",
+    ],
+  },
+];
+
+/** Faculty Coordinators Section Component */
+function FacultyCoordinatorsSection() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+      {facultyCoordinators.map((coord, i) => (
+        <motion.div
+          key={`coord-${coord.name}`}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
+          className="relative group rounded-2xl overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.18)] shrink-0 w-[280px] sm:w-[320px] md:w-[350px] lg:w-[370px] h-[480px] sm:h-[520px] md:h-[540px] cursor-pointer bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10"
+        >
+          {/* Photo with Fallback */}
+          <PosterImage src={coord.avatar} alt={coord.name} name={coord.name} />
+
+          {/* Deep Gradient Scrim Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none" />
+
+          {/* Top Right Action Buttons (High contrast glass buttons) */}
+          <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
+            {coord.universityLink && (
+              <a
+                href={coord.universityLink}
+                target="_blank"
+                rel="noreferrer"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white border border-white/20 hover:bg-blue-600 hover:text-white hover:scale-110 transition-all duration-200 shadow-md"
+                aria-label={`${coord.name}'s University profile`}
+                title="University Profile"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+            {coord.linkedin && coord.linkedin !== "#" && (
+              <a
+                href={coord.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white border border-white/20 hover:bg-blue-600 hover:text-white hover:scale-110 transition-all duration-200 shadow-md"
+                aria-label={`${coord.name}'s LinkedIn profile`}
+                title="LinkedIn Profile"
+              >
+                <LinkIcon className="w-4 h-4" />
+              </a>
+            )}
+          </div>
+
+          {/* Content Inside Image Overlay */}
+          <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 text-white z-10 pointer-events-none">
+            {/* Name */}
+            <h3 className="text-xl sm:text-2xl font-black tracking-tight leading-snug mb-0.5">
+              {coord.name}
+            </h3>
+
+            {/* Designation */}
+            <p className="text-xs font-semibold text-white/80 uppercase tracking-wider mb-2.5">
+              {coord.designation}
+            </p>
+
+            {/* Point-wise Achievements */}
+            <div className="border-t border-white/20 pt-2.5 space-y-1">
+              {coord.bullets.map((bullet, bIdx) => (
+                <div
+                  key={bIdx}
+                  className="flex items-start gap-1.5 text-xs text-white/95 leading-snug font-medium"
+                >
+                  <span className="text-blue-400 font-bold shrink-0">•</span>
+                  <span>{bullet}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 // ----------------------------------------------------
 // PAGE
 // ----------------------------------------------------
@@ -529,7 +638,7 @@ export default function TeamPage() {
           <div className="flex items-center justify-center mb-12">
             <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
             <span className="px-6 text-xl sm:text-2xl font-black tracking-[0.1em] text-[var(--text-primary)] uppercase">
-              Executive Board
+              Executive Team
             </span>
             <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
           </div>
@@ -544,6 +653,19 @@ export default function TeamPage() {
               />
             ))}
           </div>
+        </section>
+
+        {/* 2. FACULTY COORDINATOR SECTION */}
+        <section className="mb-28">
+          <div className="flex items-center justify-center mb-12">
+            <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
+            <span className="px-6 text-xl sm:text-2xl font-black tracking-[0.1em] text-[var(--text-primary)] uppercase">
+              Faculty Coordinators
+            </span>
+            <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
+          </div>
+
+          <FacultyCoordinatorsSection />
         </section>
 
         {/* 2. DOMAINS SECTION */}

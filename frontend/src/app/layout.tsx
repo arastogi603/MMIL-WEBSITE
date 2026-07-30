@@ -27,6 +27,7 @@ export const metadata: Metadata = {
   description: "The premier technical society at JSS Academy of Technical Education, dedicated to fostering innovation, collaboration, and continuous learning.",
   icons: {
     icon: "/favicon.png",
+    shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
 };

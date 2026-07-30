@@ -70,7 +70,7 @@ export function Navbar() {
         <div className="navbar-inner">
           {/* Logo */}
           <Link href="/" className="navbar-logo">
-            <Image src="/mmil-logo-new.png" alt="MMIL Logo" width={32} height={32} className="navbar-logo-img" />
+            <Image src="/favicon.png" alt="MMIL Logo" width={32} height={32} className="navbar-logo-img" />
           </Link>
 
           {/* Desktop Navigation */}

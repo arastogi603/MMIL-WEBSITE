@@ -9,6 +9,7 @@ import gsap from "gsap";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/lib/theme/theme";
 import { Code, Server, Smartphone, Globe, Cpu, Palette, Database, Hexagon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Lenis from 'lenis';
 
@@ -33,13 +34,14 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   const { theme } = useTheme();
   const [posts, setPosts] = useState<any[]>(initialPosts);
   const [currentPost, setCurrentPost] = useState<any | null>(initialPosts[0] || null);
+  const [hoveredTitle, setHoveredTitle] = useState<string | null>(null);
 
   // Lenis is removed in favor of our custom WebGL scroll lerping loop
 
   const sketchRef = useRef<any>(null);
   const rafRef = useRef<number | null>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  
+
   const radiusRef = useRef(3);
   const positionRef = useRef(0);
   const spacingRef = useRef(0.8);
@@ -66,7 +68,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   ---------------------------------- */
   const handleViewMore = useCallback(
     (slug: string, imageUrl: string) => {
-      if (!projectRef.current || !sketchRef.current) return;
+      if (!sketchRef.current) return;
       isExitingRef.current = true;
       const img = new window.Image();
       img.onload = () => {
@@ -81,6 +83,8 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
 
   const infinitePosts = useMemo(() => posts, [posts]);
 
+  const heroTitleRef = useRef<HTMLDivElement>(null);
+
   /* ----------------------------------
      Init 3D Slider
   ---------------------------------- */
@@ -92,7 +96,18 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       images: infinitePosts,
       router: router,
       onHover: (slug: string | null) => {
-        // We now rely purely on native DOM onMouseEnter/Leave for perfectly instant hover states!
+        if (slug !== null && slug !== undefined) {
+          const found = infinitePosts.find(
+            (p) => String(p.slug) === String(slug) || String(p.id) === String(slug)
+          );
+          if (found) {
+            setHoveredTitle(found.title);
+          } else {
+            setHoveredTitle(null);
+          }
+        } else {
+          setHoveredTitle(null);
+        }
       },
       onClick: (slug: string) => {
         const isCurrentPost = slug !== null && String(slug) === String(currentPostRef.current?.slug);
@@ -104,7 +119,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
 
     sketchRef.current = sketch;
 
-    const loops = 5;
+    const loops = 2;
     let lastScroll = window.scrollY;
     let smoothVelocity = 0;
     let smoothScroll = window.scrollY;
@@ -113,48 +128,88 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       if (!sketchRef.current || isExitingRef.current) return;
 
       const targetScroll = window.scrollY;
-      smoothScroll += (targetScroll - smoothScroll) * 0.08; // Buttery smooth interpolation
+      smoothScroll += (targetScroll - smoothScroll) * 0.05;
 
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = maxScroll > 0 ? smoothScroll / maxScroll : 0;
+      const heroHeight = window.innerHeight;
 
-      const rawVelocity = (targetScroll - lastScroll) * 0.1;
-      lastScroll = targetScroll;
-      smoothVelocity += (rawVelocity - smoothVelocity) * 0.1;
+      // Cards fade IN starting at heroHeight*0.4 (overlap with hero fade for no blank gap)
+      const enterThreshold = heroHeight * 0.4;
+      const enterFadeRange = heroHeight * 0.25;
+      const enterProgress = smoothScroll < enterThreshold
+        ? 0
+        : Math.max(0, Math.min(1, (smoothScroll - enterThreshold) / enterFadeRange));
 
-      const position = progress * infinitePosts.length;
-      positionRef.current = position;
-      const idx = ((Math.round(position)) % infinitePosts.length + infinitePosts.length) % infinitePosts.length;
-      
+      // 3D Canvas: always stays fully visible once entered — no fade at end
+      const containerEl = document.getElementById("container");
+      if (containerEl) {
+        if (enterProgress > 0.01) {
+          containerEl.style.visibility = "visible";
+          containerEl.style.opacity = String(enterProgress);
+          containerEl.style.transform = `translateY(${(1 - enterProgress) * 25}vh)`;
+          containerEl.style.pointerEvents = enterProgress > 0.9 ? "auto" : "none";
+        } else {
+          containerEl.style.visibility = "hidden";
+          containerEl.style.opacity = "0";
+          containerEl.style.transform = "none";
+          containerEl.style.pointerEvents = "none";
+        }
+      }
+
+      // Project info overlay fades in with the 3D canvas
+      if (projectRef.current) {
+        projectRef.current.style.opacity = String(Math.min(1, enterProgress * 1.5));
+        projectRef.current.style.pointerEvents = enterProgress > 0.9 ? "auto" : "none";
+      }
+
+      // Hero title fades out — cards start fading in slightly before it disappears (no gap)
+      if (heroTitleRef.current) {
+        const heroFade = Math.max(0, 1 - smoothScroll / (heroHeight * 0.5));
+        heroTitleRef.current.style.opacity = String(heroFade);
+        heroTitleRef.current.style.transform = `translateY(${-smoothScroll * 0.3}px)`;
+        heroTitleRef.current.style.display = heroFade <= 0.01 ? "none" : "flex";
+      }
+
+      const galleryScroll = Math.max(0, smoothScroll - heroHeight * 0.2);
+      const maxGalleryScroll = Math.max(1, (posts.length * 150 * heroHeight / 100) - heroHeight * 0.2);
+      const progress = (galleryScroll / maxGalleryScroll) * infinitePosts.length;
+
+      positionRef.current = progress;
+      const idx = ((Math.round(progress)) % infinitePosts.length + infinitePosts.length) % infinitePosts.length;
+
       if (currentPostRef.current?.slug !== infinitePosts[idx].slug) {
         currentPostRef.current = infinitePosts[idx];
         setCurrentPost(infinitePosts[idx]);
       }
 
       const mappedVelocity = mapValue(Math.abs(smoothVelocity), 0, 15, 0, 5);
-      const clampVelocity = Math.max(0, Math.min(mappedVelocity, 2));
+      const clampVelocity = Math.max(0, Math.min(mappedVelocity, 1.5));
 
-      const minRadius = 2;
+      // Tight, cohesive radius and spacing for clean 3D spiral layout
+      const minRadius = 2.2;
       const maxRadius = 2.5;
-      
-      const minSpacing = 0.8;
-      const maxSpacing = 0.8;
 
-      const minHSpacing = 1.0;
-      const maxHSpacing = 1.2;
+      const minSpacing = 0.80;
+      const maxSpacing = 0.80;
+
+      const minHSpacing = 0.95;
+      const maxHSpacing = 1.05;
 
       const targetRadius = minRadius + clampVelocity * (maxRadius - minRadius);
       const targetSpacing = minSpacing + clampVelocity * (maxSpacing - minSpacing);
       const targetHSpacing = minHSpacing + clampVelocity * (maxHSpacing - minHSpacing);
 
-      const lerpSpeed = 0.15;
+      const lerpSpeed = 0.08;
       radiusRef.current += (targetRadius - radiusRef.current) * lerpSpeed;
       spacingRef.current += (targetSpacing - spacingRef.current) * lerpSpeed;
       hSpacingRef.current += (targetHSpacing - hSpacingRef.current) * lerpSpeed;
 
-      sketchRef.current.updateMeshes(position, loops, spacingRef.current, hSpacingRef.current, radiusRef.current);
+      sketchRef.current.updateMeshes(progress, loops, spacingRef.current, hSpacingRef.current, radiusRef.current);
       if (sketchRef.current.getVelocity) sketchRef.current.getVelocity(smoothVelocity);
-      sketchRef.current.setDeform(Math.max(-1.5, Math.min(1.5, smoothVelocity)));
+      sketchRef.current.setDeform(Math.max(-0.4, Math.min(0.4, smoothVelocity)));
+
+      const rawVelocity = (targetScroll - lastScroll) * 0.02;
+      lastScroll = targetScroll;
+      smoothVelocity += (rawVelocity - smoothVelocity) * 0.08;
 
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -166,46 +221,8 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       if (sketchRef.current) sketchRef.current.destroy();
       sketchRef.current = null;
     };
-    
+
   }, [infinitePosts, handleViewMore, router]);
-
-  /* ----------------------------------
-     Home intro
-  ---------------------------------- */
-  useEffect(() => {
-    const containerEl = document.getElementById("container");
-    if (
-      introPlayedRef.current ||
-      !containerEl ||
-      !projectRef.current ||
-      !currentPost
-    ) return;
-  
-    introPlayedRef.current = true;
-  
-    gsap.set(containerEl, { y: "120vh", rotateX: -45, opacity: 0 });
-    gsap.set(projectRef.current, { opacity: 0, y: 30 });
-  
-    gsap.to(containerEl, {
-      y: "0vh",
-      rotateX: 0,
-      opacity: 1,
-      duration: 1.8,
-      ease: "power3.inOut"
-    });
-
-    gsap.to(projectRef.current, { 
-      opacity: 1, 
-      y: 0, 
-      duration: 1, 
-      ease: "power3.out",
-      delay: 0.8
-    });
-  
-    setTimeout(() => {
-      sketchRef.current?.introAnimation();
-    }, 500); 
-  }, [currentPost]);
 
   /* ----------------------------------
      Background crossfade
@@ -264,24 +281,24 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   return (
     <div className={styles.page} style={{ color: '#fff' }}>
       {/* Hero Text that scrolls away naturally */}
-      <div className="absolute top-0 left-0 w-full h-[100vh] flex items-center justify-center z-50 pointer-events-none">
-        <h1 
+      <div ref={heroTitleRef} className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-50 pointer-events-none transition-all duration-75">
+        <h1
           className="hero-title drop-shadow-2xl"
-          style={{ 
-             color: '#fff',
-             WebkitTextFillColor: '#fff',
-             WebkitTextStroke: '0px',
-             fontFamily: "var(--font-josefin), sans-serif",
-             fontSize: "clamp(4rem, 15vw, 12rem)",
-             fontWeight: 900,
-             whiteSpace: "nowrap"
+          style={{
+            color: '#fff',
+            WebkitTextFillColor: '#fff',
+            WebkitTextStroke: '0px',
+            fontFamily: "var(--font-josefin), sans-serif",
+            fontSize: "clamp(4rem, 15vw, 12rem)",
+            fontWeight: 900,
+            whiteSpace: "nowrap"
           }}
         >
           OUR PROJECTS
         </h1>
       </div>
 
-      <div style={{ height: `${posts.length * 100}vh` }} />
+      <div style={{ height: `${posts.length * 150}vh` }} />
 
       <div className={styles.page__wrap}>
         {infinitePosts.map((post, index) => (
@@ -312,42 +329,26 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
             ))}
           </div>
           <div ref={overlayRef} className={styles.page__overlay} />
-
-          <div
-            ref={projectRef}
-            className={styles.page__project}
-            data-anim="project"
-            style={{ color: '#fff' }}
-            onMouseEnter={() => {
-              handlePreload(currentPost.image);
-              gsap.to(followerRef.current, { opacity: 1, duration: 0.3, ease: "power2.out" });
-              document.body.style.cursor = 'none';
-              projectRef.current?.classList.add(styles['page__project--hovered']);
-            }}
-            onMouseLeave={() => {
-              gsap.to(followerRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
-              document.body.style.cursor = '';
-              projectRef.current?.classList.remove(styles['page__project--hovered']);
-            }}
-            onClick={() => handleViewMore(currentPost.slug, currentPost.image)}
-          >
-            <p className={`${styles.page__project__item} ${styles.page__project__title}`}>
-              {currentPost.title}
-            </p>
-            <p className={`${styles.page__project__item} ${styles.page__project__category}`}>
-              {currentPost.basicInfo.category}
-            </p>
-            <p className={`${styles.page__project__item} ${styles.page__project__year}`}>
-              {currentPost.basicInfo.year}
-            </p>
-            <div className={`${styles.page__project__item} ${styles.page__project__index}`}>
-              {String(posts.findIndex(p => p.id === currentPost.id) + 1).padStart(2, '0')}
-            </div>
-          </div>
         </>
       )}
 
-      <div ref={followerRef} className={styles.page__follower}>[VIEW PROJECT]</div>
+      {/* Hovered Project Title on Left Side - Minimal & Clean */}
+      <AnimatePresence>
+        {hoveredTitle && (
+          <motion.div
+            initial={{ opacity: 0, x: -15 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed left-8 md:left-14 top-1/2 -translate-y-1/2 z-40 pointer-events-none max-w-sm md:max-w-md"
+          >
+            <p className="text-2xl md:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-lg">
+              {hoveredTitle}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div id="container" className={styles.page__container} />
     </div>
   );

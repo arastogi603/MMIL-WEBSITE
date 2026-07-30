@@ -4,9 +4,33 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, GitBranch, Globe, User, Calendar } from "lucide-react";
+import {
+  ArrowLeft,
+  ExternalLink,
+  Globe,
+  Sparkles,
+  Layers,
+  MapPin,
+  LayoutGrid,
+  Video,
+  Mic,
+  Activity,
+  Zap,
+  MessageSquare,
+  QrCode,
+  Tags,
+  TrendingUp,
+  CreditCard,
+  PieChart,
+  Calendar,
+  Timer,
+  BarChart2,
+  ShieldAlert,
+  Navigation,
+  Cpu,
+  Terminal,
+} from "lucide-react";
 import { projectsApi } from "@/lib/api/projects";
-import { ProjectPageBackground } from "@/components/layout/ProjectPageBackground";
 
 // Tech logo mapping — uses devicon CDN for real logos
 const TECH_ICONS: Record<string, string> = {
@@ -61,10 +85,268 @@ const TECH_ICONS: Record<string, string> = {
   ruby: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg",
   prometheus: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg",
   "ethers.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+  webrtc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
 };
+
+interface ProjectTheme {
+  primary: string;
+  textClass: string;
+  bgClass: string;
+  borderClass: string;
+  glowGradient: string;
+  eyebrow: string;
+}
+
+const PROJECT_THEMES: Record<string, ProjectTheme> = {
+  vaultmeet: {
+    primary: "#00F5D4",
+    textClass: "text-teal-400",
+    bgClass: "bg-teal-500/10",
+    borderClass: "border-teal-500/30",
+    glowGradient: "from-teal-500/25 via-emerald-500/20 to-cyan-500/20",
+    eyebrow: "SPATIAL VIRTUAL WORLD",
+  },
+  "voxtrace-ai": {
+    primary: "#00E5FF",
+    textClass: "text-cyan-400",
+    bgClass: "bg-cyan-500/10",
+    borderClass: "border-cyan-500/30",
+    glowGradient: "from-cyan-500/25 via-blue-500/20 to-indigo-500/20",
+    eyebrow: "AI CALLING & VOICE ANALYTICS",
+  },
+  clientflow: {
+    primary: "#10B981",
+    textClass: "text-emerald-400",
+    bgClass: "bg-emerald-500/10",
+    borderClass: "border-emerald-500/30",
+    glowGradient: "from-emerald-500/25 via-teal-500/20 to-green-500/20",
+    eyebrow: "CUSTOMER MESSAGING MVP",
+  },
+  vaultrade: {
+    primary: "#F59E0B",
+    textClass: "text-amber-400",
+    bgClass: "bg-amber-500/10",
+    borderClass: "border-amber-500/30",
+    glowGradient: "from-amber-500/25 via-orange-500/20 to-yellow-500/20",
+    eyebrow: "FINTECH TRADING PLATFORM",
+  },
+  "tech-taste-foods": {
+    primary: "#FF6B00",
+    textClass: "text-orange-400",
+    bgClass: "bg-orange-500/10",
+    borderClass: "border-orange-500/30",
+    glowGradient: "from-orange-500/25 via-amber-500/20 to-red-500/20",
+    eyebrow: "FOOD ORDERING & CATERING",
+  },
+  "parthdev-portfolio": {
+    primary: "#A855F7",
+    textClass: "text-purple-400",
+    bgClass: "bg-purple-500/10",
+    borderClass: "border-purple-500/30",
+    glowGradient: "from-purple-500/25 via-violet-500/20 to-indigo-500/20",
+    eyebrow: "DEVELOPER PORTFOLIO",
+  },
+  "kuldeep-pandit-portfolio": {
+    primary: "#6366F1",
+    textClass: "text-indigo-400",
+    bgClass: "bg-indigo-500/10",
+    borderClass: "border-indigo-500/30",
+    glowGradient: "from-indigo-500/25 via-blue-500/20 to-cyan-500/20",
+    eyebrow: "SOFTWARE ENGINEER PORTFOLIO",
+  },
+  "study-smart": {
+    primary: "#0EA5E9",
+    textClass: "text-sky-400",
+    bgClass: "bg-sky-500/10",
+    borderClass: "border-sky-500/30",
+    glowGradient: "from-sky-500/25 via-blue-500/20 to-cyan-500/20",
+    eyebrow: "STUDY SESSION MANAGER",
+  },
+  "guardian-safety-app": {
+    primary: "#EF4444",
+    textClass: "text-rose-400",
+    bgClass: "bg-rose-500/10",
+    borderClass: "border-rose-500/30",
+    glowGradient: "from-red-500/25 via-rose-500/20 to-pink-500/20",
+    eyebrow: "EMERGENCY SAFETY APP",
+  },
+};
+
+const DEFAULT_THEME: ProjectTheme = {
+  primary: "#00E5FF",
+  textClass: "text-cyan-400",
+  bgClass: "bg-cyan-500/10",
+  borderClass: "border-cyan-500/30",
+  glowGradient: "from-cyan-500/25 via-blue-500/20 to-indigo-500/20",
+  eyebrow: "FEATURED PROJECT",
+};
+
+function getProjectTheme(slugOrId: string): ProjectTheme {
+  const key = (slugOrId || "").toLowerCase();
+  return PROJECT_THEMES[key] || DEFAULT_THEME;
+}
 
 function getTechIcon(tech: string): string | null {
   return TECH_ICONS[tech.toLowerCase().trim()] || null;
+}
+
+function getDomainFromUrl(url?: string): string {
+  if (!url) return "project.preview";
+  try {
+    const parsed = new URL(url.startsWith("http") ? url : `https://${url}`);
+    return parsed.hostname.replace(/^www\./, "");
+  } catch {
+    return "project.preview";
+  }
+}
+
+interface FeatureItem {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}
+
+function getKeyFeatures(project: any): FeatureItem[] {
+  const text = (project.description || "").toLowerCase();
+  const slug = (project.slug || project.id || "").toLowerCase();
+
+  if (slug.includes("vaultmeet") || text.includes("virtual") || text.includes("2d")) {
+    return [
+      {
+        icon: <MapPin className="w-4 h-4" />,
+        title: "2D Spatial Audio & Avatars",
+        desc: "Interactive spatial map for hackathons, virtual booths, and organic participant networking.",
+      },
+      {
+        icon: <LayoutGrid className="w-4 h-4" />,
+        title: "Multi-Room Expo Spaces",
+        desc: "Customizable virtual stages, breakout rooms, and sponsor showcase zones.",
+      },
+      {
+        icon: <Video className="w-4 h-4" />,
+        title: "Real-time WebRTC Streaming",
+        desc: "Low-latency video streams, screen sharing, and interactive audience chat.",
+      },
+    ];
+  }
+
+  if (slug.includes("voxtrace") || text.includes("voice") || text.includes("ai")) {
+    return [
+      {
+        icon: <Mic className="w-4 h-4" />,
+        title: "Automated AI Telephony",
+        desc: "Real-time voice agent routing and conversational AI processing at scale.",
+      },
+      {
+        icon: <Activity className="w-4 h-4" />,
+        title: "Live Speech Analytics",
+        desc: "Instant sentiment detection, conversation transcripts, and latency tracking.",
+      },
+      {
+        icon: <Zap className="w-4 h-4" />,
+        title: "Zero-Friction Integration",
+        desc: "Seamless webhook connectivity with customer contact platforms and CRMs.",
+      },
+    ];
+  }
+
+  if (slug.includes("clientflow") || text.includes("whatsapp") || text.includes("inbox")) {
+    return [
+      {
+        icon: <MessageSquare className="w-4 h-4" />,
+        title: "Unified Multi-Agent Inbox",
+        desc: "Manage high-volume WhatsApp conversations across agents from one dashboard.",
+      },
+      {
+        icon: <QrCode className="w-4 h-4" />,
+        title: "QR Code Device Pairing",
+        desc: "Connect WhatsApp instances effortlessly powered by Evolution API.",
+      },
+      {
+        icon: <Tags className="w-4 h-4" />,
+        title: "Automated Lead Tagging",
+        desc: "Smart conversation categorization, customer history, and team handoffs.",
+      },
+    ];
+  }
+
+  if (slug.includes("vaultrade") || text.includes("trading") || text.includes("fintech")) {
+    return [
+      {
+        icon: <TrendingUp className="w-4 h-4" />,
+        title: "TradingView Chart Widgets",
+        desc: "Live financial market data, technical indicators, and real-time price feeds.",
+      },
+      {
+        icon: <CreditCard className="w-4 h-4" />,
+        title: "Payment Gateway Integration",
+        desc: "Secure Razorpay wallet funding, Google Auth, and transaction logs.",
+      },
+      {
+        icon: <PieChart className="w-4 h-4" />,
+        title: "Portfolio Performance",
+        desc: "Real-time P&L analytics, asset allocation tracking, and market history.",
+      },
+    ];
+  }
+
+  if (slug.includes("study") || text.includes("session") || text.includes("task")) {
+    return [
+      {
+        icon: <Calendar className="w-4 h-4" />,
+        title: "Study Schedule Manager",
+        desc: "Organize subjects, prioritize tasks with due dates, and track milestones.",
+      },
+      {
+        icon: <Timer className="w-4 h-4" />,
+        title: "Integrated Focus Timer",
+        desc: "Track active study hours, break intervals, and session duration logs.",
+      },
+      {
+        icon: <BarChart2 className="w-4 h-4" />,
+        title: "Progress Analytics",
+        desc: "Visual charts detailing weekly study hours and subject completion rate.",
+      },
+    ];
+  }
+
+  if (slug.includes("guardian") || text.includes("sos") || text.includes("safety")) {
+    return [
+      {
+        icon: <ShieldAlert className="w-4 h-4" />,
+        title: "Instant SOS Emergency Alert",
+        desc: "One-tap emergency trigger notifying designated emergency contacts.",
+      },
+      {
+        icon: <Navigation className="w-4 h-4" />,
+        title: "Live GPS Location Sharing",
+        desc: "Continuous real-time location broadcast with encrypted position data.",
+      },
+      {
+        icon: <Mic className="w-4 h-4" />,
+        title: "Ambient Audio Recorder",
+        desc: "Automatic background audio capture during critical alert states.",
+      },
+    ];
+  }
+
+  return [
+    {
+      icon: <Cpu className="w-4 h-4" />,
+      title: "Responsive Architecture",
+      desc: "Built with modern framework standards for maximum speed and accessibility.",
+    },
+    {
+      icon: <Sparkles className="w-4 h-4" />,
+      title: "Intuitive Experience",
+      desc: "Polished user interface with clean layout rhythm and micro-interactions.",
+    },
+    {
+      icon: <Terminal className="w-4 h-4" />,
+      title: "Production Engineering",
+      desc: "Structured component state, fast API routing, and optimized delivery.",
+    },
+  ];
 }
 
 export default function ProjectDetailPage() {
@@ -92,7 +374,6 @@ export default function ProjectDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center font-['Outfit']">
-        <ProjectPageBackground />
         <div className="w-12 h-12 border-4 border-[var(--border)] border-t-[var(--text-primary)] rounded-full animate-spin relative z-10" />
       </div>
     );
@@ -101,11 +382,13 @@ export default function ProjectDetailPage() {
   if (error || !project) {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center font-['Outfit'] text-[var(--text-primary)]">
-        <ProjectPageBackground />
         <div className="text-center relative z-10">
           <h1 className="text-4xl font-black mb-4">Project Not Found</h1>
           <p className="text-[var(--text-secondary)] mb-8">{error || "The requested project could not be found."}</p>
-          <Link href="/projects" className="px-6 py-3 rounded-xl bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-80 transition-all">
+          <Link
+            href="/projects"
+            className="px-6 py-3 rounded-xl bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-80 transition-all"
+          >
             ← Back to Projects
           </Link>
         </div>
@@ -114,153 +397,172 @@ export default function ProjectDetailPage() {
   }
 
   const fallbackImage = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200";
+  const heroImage = project.thumbnailImage || project.image || fallbackImage;
+  const domainName = getDomainFromUrl(project.liveDemoUrl);
+  const theme = getProjectTheme(project.slug || project.id || slug);
+  const features = getKeyFeatures(project);
 
   return (
-    <main className="min-h-screen bg-transparent text-[var(--text-primary)] font-['Outfit'] pt-32 pb-24 relative overflow-hidden">
-      <ProjectPageBackground />
-      <div className="max-w-5xl mx-auto px-6 relative z-10">
+    <main className="min-h-screen bg-transparent text-[var(--text-primary)] font-['Outfit'] pt-28 pb-24 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Back Button */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-          <Link href="/projects" className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-sm mb-10 transition-colors group">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold text-sm mb-6 transition-colors group"
+          >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Projects
           </Link>
         </motion.div>
 
-        {/* Hero Image */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="relative w-full h-[300px] md:h-[450px] rounded-3xl md:rounded-[2.5rem] overflow-hidden mb-8 md:mb-12 bg-[var(--shape-bg)] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-[var(--card-border)]"
-        >
-          <img
-            src={project.thumbnailImage || project.image || fallbackImage}
-            alt={project.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-white/10" />
+        {/* Project Title (Placed above the grid so the top of screenshot & top of tech stack align perfectly) */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[var(--text-primary)]">
+            {project.title}
+          </h1>
         </motion.div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Main Content */}
-          <div className="md:col-span-2">
-            <motion.h1
+        {/* 2-Column Desktop Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          {/* Main Column (~68% width for larger, prominent screenshot) */}
+          <div className="lg:col-span-8 space-y-10">
+            {/* Framed Browser Screenshot Container with Brand Accent Glow */}
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="relative group"
+            >
+              {/* Subtle Brand Accent Glow Behind Screenshot */}
+              <div className={`absolute -inset-4 bg-gradient-to-r ${theme.glowGradient} blur-3xl opacity-35 rounded-3xl -z-10 group-hover:opacity-50 transition-opacity duration-300`} />
+
+              {/* Browser Frame */}
+              <div className="rounded-2xl md:rounded-3xl overflow-hidden bg-[var(--card-bg)] border border-[var(--card-border)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
+                {/* Browser Chrome Header */}
+                <div className="flex items-center px-4 py-3 bg-[var(--card-bg)] border-b border-[var(--card-border)] gap-3">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="w-3 h-3 rounded-full bg-red-500/70" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
+                    <div className="w-3 h-3 rounded-full bg-green-500/70" />
+                  </div>
+                  <div className="flex-1 max-w-sm mx-auto bg-[var(--border)]/30 rounded-lg px-3 py-1 text-center text-xs font-mono text-[var(--text-secondary)] truncate border border-[var(--card-border)]">
+                    {domainName}
+                  </div>
+                  <div className="w-12" />
+                </div>
+
+                {/* Main Screenshot Image (Increased height/aspect presence) */}
+                <div className="relative aspect-[16/10] sm:aspect-[16/9.5] w-full overflow-hidden bg-black/5">
+                  <img
+                    src={heroImage}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-500"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Intro Description */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-4 md:mb-6"
+              transition={{ delay: 0.25 }}
             >
-              {project.title}
-            </motion.h1>
+              <p className="text-[var(--text-secondary)] font-medium leading-relaxed text-base md:text-lg">
+                {project.description}
+              </p>
+            </motion.div>
 
-            <motion.p
+            {/* Key Features Section */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-[var(--text-secondary)] font-medium leading-relaxed text-base md:text-lg mb-8 md:mb-10"
+              transition={{ delay: 0.35 }}
+              className="space-y-5 pt-2"
             >
-              {project.description}
-            </motion.p>
+              <h2 className={`text-xl font-black text-[var(--text-primary)] tracking-tight flex items-center gap-2`}>
+                <Layers className={`w-5 h-5 ${theme.textClass}`} />
+                <span>Key Features</span>
+              </h2>
 
-            {/* Tech Stack Section */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {features.map((feat, idx) => (
+                  <div
+                    key={idx}
+                    className={`bg-[var(--card-bg)] backdrop-blur-xl rounded-2xl border border-[var(--card-border)] p-5 shadow-sm space-y-3 hover:${theme.borderClass} transition-colors`}
+                  >
+                    <div className={`w-9 h-9 rounded-xl ${theme.bgClass} ${theme.textClass} border ${theme.borderClass} flex items-center justify-center`}>
+                      {feat.icon}
+                    </div>
+                    <h3 className="font-bold text-sm text-[var(--text-primary)]">{feat.title}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed">{feat.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Sidebar Column (~32% width, top aligned with the screenshot image) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-4 lg:sticky lg:top-28 space-y-8"
+          >
+            {/* 1. Tech Stack (at top, aligned with top of screenshot image) */}
             {project.technologies && project.technologies.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mb-10"
-              >
-                <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Tech Stack</h3>
-                <div className="flex flex-wrap gap-4">
+              <div className="space-y-4 px-1">
+                <h3 className="text-xs font-black text-[var(--text-secondary)] uppercase tracking-wider">
+                  Tech Stack
+                </h3>
+                <div className="flex flex-wrap gap-2.5">
                   {project.technologies.map((tech: string, i: number) => {
                     const icon = getTechIcon(tech);
                     return (
                       <div
                         key={i}
-                        className="flex items-center gap-3 px-5 py-3 bg-[var(--card-bg)] backdrop-blur-xl rounded-2xl border border-[var(--card-border)] shadow-sm hover:bg-[var(--card-hover-bg)] hover:shadow-md transition-all group"
+                        className={`flex items-center gap-2.5 px-4 py-2.5 bg-[var(--card-bg)] backdrop-blur-md rounded-xl border border-[var(--card-border)] shadow-xs hover:${theme.borderClass} hover:${theme.bgClass} hover:-translate-y-0.5 transition-all duration-150 group cursor-default`}
                       >
                         {icon ? (
-                          <img src={icon} alt={tech} className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                          <img
+                            src={icon}
+                            alt={tech}
+                            className="w-4 h-4 group-hover:scale-110 transition-transform"
+                          />
                         ) : (
-                          <div className="w-6 h-6 rounded-md bg-[var(--border)] flex items-center justify-center text-xs font-black text-[var(--text-secondary)]">
+                          <div className="w-4 h-4 rounded bg-[var(--border)] flex items-center justify-center text-[10px] font-black text-[var(--text-secondary)]">
                             {tech.charAt(0).toUpperCase()}
                           </div>
                         )}
-                        <span className="font-bold text-sm text-[var(--text-primary)]">{tech}</span>
+                        <span className={`font-bold text-xs text-[var(--text-primary)] group-hover:${theme.textClass} transition-colors`}>
+                          {tech}
+                        </span>
                       </div>
                     );
                   })}
                 </div>
-              </motion.div>
+              </div>
             )}
-          </div>
 
-          {/* Sidebar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="space-y-6"
-          >
-            {/* Links Card */}
-            <div className="bg-[var(--card-bg)] backdrop-blur-2xl rounded-[2rem] border border-[var(--card-border)] p-6 shadow-sm">
-              <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Links</h3>
-              <div className="space-y-3">
-                {project.repositoryUrl && (
-                  <a
-                    href={project.repositoryUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-80 transition-all group w-full"
-                  >
-                    <GitBranch className="w-5 h-5" />
-                    <span className="flex-1">GitHub Repository</span>
-                    <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                  </a>
-                )}
-                {project.liveDemoUrl && (
-                  <a
-                    href={project.liveDemoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] font-bold text-sm hover:bg-[var(--border)] transition-all group shadow-inner w-full"
-                  >
-                    <Globe className="w-5 h-5" />
-                    <span className="flex-1">Live Demo</span>
-                    <ExternalLink className="w-4 h-4 opacity-30 group-hover:opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                  </a>
-                )}
-                {!project.repositoryUrl && !project.liveDemoUrl && (
-                  <p className="text-[var(--text-secondary)] text-sm font-medium">No links available.</p>
-                )}
+            {/* 2. Project Links Button (Placed below Tech Stack) */}
+            {project.liveDemoUrl && (
+              <div className="bg-[var(--card-bg)] backdrop-blur-xl rounded-3xl border border-[var(--card-border)] p-6 shadow-sm">
+                <h3 className="text-xs font-black text-[var(--text-secondary)] uppercase tracking-wider mb-4">
+                  Project Links
+                </h3>
+                <a
+                  href={project.liveDemoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-85 transition-all group w-full shadow-md"
+                >
+                  <Globe className="w-5 h-5" />
+                  <span className="flex-1">Live Demo</span>
+                  <ExternalLink className="w-4 h-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                </a>
               </div>
-            </div>
-
-            <div className="bg-[var(--card-bg)] backdrop-blur-2xl rounded-[2rem] border border-[var(--card-border)] p-6 shadow-sm">
-              <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Made By</h3>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-[var(--border)] flex items-center justify-center shadow-inner">
-                  <User className="w-6 h-6 text-[var(--text-secondary)]" />
-                </div>
-                <div>
-                  <p className="font-black text-[var(--text-primary)]">{project.submittedByName || "MMIL Member"}</p>
-                  <p className="text-xs text-[var(--text-secondary)] font-medium">Community Contributor</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Date Card */}
-            <div className="bg-[var(--card-bg)] backdrop-blur-2xl rounded-[2rem] border border-[var(--card-border)] p-6 shadow-sm">
-              <h3 className="text-sm font-black text-[var(--text-secondary)] uppercase tracking-wider mb-5">Submitted</h3>
-              <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-[var(--text-secondary)]" />
-                <span className="font-bold text-[var(--text-primary)]">
-                  {project.createdAt ? new Date(project.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "Unknown"}
-                </span>
-              </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>

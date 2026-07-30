@@ -38,12 +38,13 @@ export default class InfiniteSlider {
       1000,
     );
     const isMobile = window.innerWidth <= 768;
-    this.camera.position.set(0, 0, isMobile ? 9 : 5);
+    this.camera.position.set(0, 0, isMobile ? 8.0 : 4.8);
 
     const ambient = new THREE.AmbientLight(0xffffff, 1);
     this.scene.add(ambient);
 
     this.loader = new THREE.TextureLoader();
+    this.loader.crossOrigin = 'anonymous';
     this.gltfLoader = new GLTFLoader();
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -90,7 +91,7 @@ export default class InfiniteSlider {
         spiralHeight: { value: 0 },
         texture1: { value: null },
         uRadius: { value: 1 },
-        uPlaneAspect: { value: 1.0 },
+        uPlaneAspect: { value: 2.0 / 1.5 },
         uTextureAspect: { value: 1.0 },
         uDeform: { value: 0.0 },
         opacity: { value: 1.0 },
@@ -110,14 +111,27 @@ export default class InfiniteSlider {
       const group = new THREE.Group();
 
       this.loader.load(im.image, (texture) => {
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearFilter;
         mat.uniforms.texture1.value = texture;
         const imgW = texture.image.width;
         const imgH = texture.image.height;
         mat.uniforms.uTextureAspect.value = imgW / imgH;
+        mat.uniforms.uPlaneAspect.value = 2.20 / 1.30;
+      }, undefined, (err) => {
+        console.warn('Texture failed to load:', im.image, err);
+        // Create a fallback 1x1 gray texture so the mesh is at least visible
+        const canvas = document.createElement('canvas');
+        canvas.width = 4; canvas.height = 4;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#444';
+        ctx.fillRect(0, 0, 4, 4);
+        const fallback = new THREE.CanvasTexture(canvas);
+        mat.uniforms.texture1.value = fallback;
       });
 
-      // const geo = new THREE.PlaneGeometry(0.77, 1.5, 20, 20);
-      const geo = new THREE.PlaneGeometry(1.0, 1.95, 100, 100);
+      const geo = new THREE.PlaneGeometry(2.20, 1.30, 100, 100);
       const mesh = new THREE.Mesh(geo, mat);
       mesh.userData.slug = im.id;
 
@@ -200,7 +214,7 @@ export default class InfiniteSlider {
 
       const d = Math.abs(delta);
       mesh.material.uniforms.distanceFromCenter.value =
-        t * Math.exp(-d * d * 1.0);
+        t * Math.exp(-d * d * 3.0);
       mesh.material.uniforms.spiralHeight.value = spiralY * t;
     });
   }
@@ -231,7 +245,7 @@ export default class InfiniteSlider {
         this.composer.setSize(this.width, this.height);
       }
       const isMobile = window.innerWidth <= 768;
-      this.camera.position.z = isMobile ? 9 : 5;
+      this.camera.position.z = isMobile ? 8.0 : 4.8;
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
     });
@@ -257,9 +271,7 @@ export default class InfiniteSlider {
 
     const mesh = this._findMeshAtNDC(new THREE.Vector2(x, y));
     const slug = mesh?.userData.slug ?? null;
-    if (slug) {
-      this.onHover?.(slug);
-    }
+    this.onHover?.(slug);
   }
 
   _handleMouseLeave() {
@@ -283,8 +295,8 @@ export default class InfiniteSlider {
   _findMeshAtNDC(mouseNDC) {
     if (!this.meshes.length) return null;
 
-    // Mesh half-diagonal in local space (PlaneGeometry 1.0 x 1.95)
-    const meshHalfDiag = Math.hypot(0.5, 0.975);
+    // Mesh half-diagonal in local space (PlaneGeometry 1.10 x 0.685)
+    const meshHalfDiag = Math.hypot(1.10, 0.685);
     const halfTanFov = Math.tan((this.camera.fov * Math.PI) / 180 / 2);
 
     const candidates = [];

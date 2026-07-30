@@ -8,17 +8,26 @@ export default async function GalleryPage() {
   let imageUrls: string[] = [];
 
   try {
-    const galleryPath = path.join(process.cwd(), "public", "galleryimages");
-    
-    if (fs.existsSync(galleryPath)) {
-      const files = fs.readdirSync(galleryPath);
-      
-      const imageFiles = files.filter(file => {
-        const ext = path.extname(file).toLowerCase();
-        return ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(ext);
-      });
+    const possibleLocations = [
+      { disk: path.join(process.cwd(), "public", "images", "gallery"), urlPrefix: "/images/gallery" },
+      { disk: path.join(process.cwd(), "public", "images", "galleryimages"), urlPrefix: "/images/galleryimages" },
+      { disk: path.join(process.cwd(), "public", "gallery"), urlPrefix: "/gallery" },
+      { disk: path.join(process.cwd(), "public", "galleryimages"), urlPrefix: "/galleryimages" },
+    ];
 
-      imageUrls = imageFiles.map(file => `/galleryimages/${file}`);
+    for (const loc of possibleLocations) {
+      if (fs.existsSync(loc.disk)) {
+        const files = fs.readdirSync(loc.disk);
+        const imageFiles = files.filter(file => {
+          const ext = path.extname(file).toLowerCase();
+          return ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(ext);
+        });
+
+        if (imageFiles.length > 0) {
+          imageUrls = imageFiles.map(file => `${loc.urlPrefix}/${file}`);
+          break;
+        }
+      }
     }
   } catch (error) {
     console.error("Error reading gallery images:", error);

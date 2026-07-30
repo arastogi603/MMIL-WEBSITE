@@ -105,9 +105,9 @@ export const BentoGrid = () => {
           <div className="my-4 space-y-2.5">
             <div className="space-y-1.5 p-2.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/10">
               {[
-                { name: "DevHub Platform", label: "Shipped", dot: "bg-emerald-500" },
-                { name: "Campus Connect", label: "Shipped", dot: "bg-emerald-500" },
-                { name: "AI Code Canvas", label: "In Progress", dot: "bg-amber-500" },
+                { name: "VoxTrace.AI", label: "Shipped", dot: "bg-emerald-500" },
+                { name: "VaultMeet", label: "Shipped", dot: "bg-emerald-500" },
+                { name: "ClientFlow", label: "Shipped", dot: "bg-emerald-500" },
               ].map((proj) => (
                 <div key={proj.name} className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-white/80 dark:bg-white/5 border border-black/5 dark:border-white/5">
                   <div className="flex items-center gap-2">
@@ -155,7 +155,7 @@ export const BentoGrid = () => {
             {/* Photo 1 (Left, rotated -6 deg) */}
             <div className="absolute left-6 sm:left-12 top-1 w-24 sm:w-28 h-20 sm:h-24 rounded-2xl overflow-hidden border border-black/10 dark:border-white/20 shadow-md transform -rotate-6">
               <img
-                src="/galleryimages/WhatsApp Image 2026-07-25 at 4.07.40 PM.jpeg"
+                src="/images/gallery/WhatsApp Image 2026-07-25 at 4.07.40 PM.jpeg"
                 alt="MMIL Event Photo 1"
                 className="w-full h-full object-cover"
               />
@@ -173,7 +173,7 @@ export const BentoGrid = () => {
             {/* Photo 3 (Right, rotated 6 deg) */}
             <div className="absolute right-6 sm:right-12 top-2 w-24 sm:w-28 h-20 sm:h-24 rounded-2xl overflow-hidden border border-black/10 dark:border-white/20 shadow-md transform rotate-6">
               <img
-                src="/galleryimages/WhatsApp Image 2026-07-25 at 3.36.46 PM.jpeg"
+                src="/images/gallery/WhatsApp Image 2026-07-25 at 3.36.46 PM.jpeg"
                 alt="MMIL Event Photo 2"
                 className="w-full h-full object-cover"
               />
