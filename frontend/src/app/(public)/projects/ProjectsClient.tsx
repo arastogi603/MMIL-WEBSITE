@@ -281,17 +281,17 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   return (
     <div className={styles.page} style={{ color: '#fff' }}>
       {/* Hero Text that scrolls away naturally */}
-      <div ref={heroTitleRef} className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-50 pointer-events-none transition-all duration-75">
-        <h1
-          className="hero-title drop-shadow-2xl"
-          style={{
-            color: '#fff',
-            WebkitTextFillColor: '#fff',
-            WebkitTextStroke: '0px',
-            fontFamily: "var(--font-josefin), sans-serif",
-            fontSize: "clamp(4rem, 15vw, 12rem)",
-            fontWeight: 900,
-            whiteSpace: "nowrap"
+      <div className="absolute top-0 left-0 w-full h-[100vh] flex flex-col items-center justify-center z-40 pointer-events-none px-4 mt-8 md:mt-0">
+        <h1 
+          className="hero-title drop-shadow-2xl text-center leading-[1.1]"
+          style={{ 
+             color: '#fff',
+             WebkitTextFillColor: '#fff',
+             WebkitTextStroke: '0px',
+             fontFamily: "var(--font-josefin), sans-serif",
+             fontSize: "clamp(2.5rem, 10vw, 12rem)",
+             fontWeight: 900,
+             wordBreak: "break-word"
           }}
         >
           OUR PROJECTS
