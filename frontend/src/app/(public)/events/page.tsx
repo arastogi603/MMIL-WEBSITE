@@ -175,18 +175,18 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
                   rotate: props.rotate,
                   opacity: props.opacity,
                 }}
-                transition={{ duration: 0.38, ease: "easeInOut" }}
+                transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
                 style={{
                   zIndex: props.zIndex,
                   pointerEvents: props.pointerEvents,
+                  willChange: "transform, opacity",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
                 }}
-                className={`absolute w-[300px] sm:w-[440px] md:w-[540px] lg:w-[560px] h-[400px] sm:h-[500px] md:h-[580px] lg:h-[600px] rounded-2xl bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 overflow-hidden flex flex-col cursor-pointer ${props.isCenter
-                    ? "shadow-[0_12px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
-                    : "shadow-none"
-                  }`}
+                className="absolute w-[300px] sm:w-[440px] md:w-[540px] lg:w-[560px] h-[400px] sm:h-[500px] md:h-[580px] lg:h-[600px] rounded-2xl bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 overflow-hidden flex flex-col cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
               >
-                {/* Poster Image / Fallback */}
-                <div className={`relative w-full overflow-hidden shrink-0 border-b border-black/5 dark:border-white/10 ${props.isCenter ? 'h-[76%]' : 'h-full'}`}>
+                {/* Poster Image / Fallback — Fixed Height for smooth layout stability */}
+                <div className="relative w-full h-[76%] overflow-hidden shrink-0 border-b border-black/5 dark:border-white/10">
                   {evt.posterUrl ? (
                     <Image
                       src={evt.posterUrl}
@@ -200,19 +200,20 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
                   )}
                 </div>
 
-                {/* Title & Info - Center Card Only */}
-                {props.isCenter && (
-                  <div className="p-4 sm:p-6 flex-1 flex flex-col justify-center bg-white dark:bg-[#18181b]">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest rounded bg-black/5 dark:bg-white/10 text-[var(--text-secondary)]">
-                        {evt.type || "Event"}
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-2xl text-[var(--text-primary)] leading-snug line-clamp-1">
-                      {evt.title}
-                    </h3>
+                {/* Title & Info — Always rendered to eliminate layout shift jitter */}
+                <div
+                  className="p-4 sm:p-6 flex-1 flex flex-col justify-center bg-white dark:bg-[#18181b] transition-opacity duration-300"
+                  style={{ opacity: props.isCenter ? 1 : 0 }}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest rounded bg-black/5 dark:bg-white/10 text-[var(--text-secondary)]">
+                      {evt.type || "Event"}
+                    </span>
                   </div>
-                )}
+                  <h3 className="font-bold text-lg sm:text-2xl text-[var(--text-primary)] leading-snug line-clamp-1">
+                    {evt.title}
+                  </h3>
+                </div>
               </motion.div>
             );
           })}
@@ -236,7 +237,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
       </div>
 
       {/* Pagination Dot Indicators */}
-      <div className="flex items-center gap-2 mt-4 mb-5">
+      <div className="flex items-center gap-2 mt-2 mb-1">
         {events.map((_, idx) => (
           <button
             key={`dot-${idx}`}
@@ -249,16 +250,6 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
           />
         ))}
       </div>
-
-      {/* View Details Button tied to centered event */}
-      {activeEvent && (
-        <Link
-          href={`/events/${activeEvent.slug}`}
-          className="px-8 py-3.5 rounded-full bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm sm:text-base hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg"
-        >
-          View details <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-        </Link>
-      )}
     </div>
   );
 }
@@ -328,10 +319,10 @@ export default function EventsPage() {
   const ongoingEvents = events.filter(e => e.status !== "completed" && e.status !== "draft");
 
   return (
-    <main className="min-h-screen pt-36 md:pt-40 pb-20 px-6 max-w-7xl mx-auto w-full font-['Outfit'] bg-transparent relative z-10">
+    <main className="pt-28 md:pt-32 pb-4 px-6 max-w-7xl mx-auto w-full font-['Outfit'] bg-transparent relative z-10">
 
       {/* Hero Header Section */}
-      <div className="mb-12 text-center relative z-10">
+      <div className="mb-6 md:mb-8 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -363,7 +354,7 @@ export default function EventsPage() {
       </div>
 
       {/* Featured Coverflow Carousel Section */}
-      <section className="mb-20 relative z-10">
+      <section className="mb-4 relative z-10">
         <CoverflowCarousel events={featuredEvents} />
       </section>
 
@@ -410,7 +401,7 @@ export default function EventsPage() {
                         </div>
                         <div className="flex items-center gap-2 text-[var(--text-primary)] font-semibold bg-black/5 dark:bg-white/10 px-6 py-3 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
                           {registeredEvents[evt.slug] ? (
-                            evt.isTeamEvent ? "Team Dashboard" : "View Details"
+                            evt.isTeamEvent ? "Team Dashboard" : "Registered"
                           ) : "Register Now"} <ChevronRight className="w-4 h-4" />
                         </div>
                       </div>
@@ -458,7 +449,7 @@ export default function EventsPage() {
                           </div>
                           <div className="flex items-center gap-2 text-white font-black bg-emerald-600 px-4 py-3 rounded-xl justify-center shadow-lg shadow-emerald-500/20">
                             {registeredEvents[evt.slug] ? (
-                              evt.isTeamEvent ? "Team Dashboard" : "View Details"
+                              evt.isTeamEvent ? "Team Dashboard" : "Registered"
                             ) : "Register Now"} <ChevronRight className="w-4 h-4" />
                           </div>
                         </div>

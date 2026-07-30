@@ -116,7 +116,7 @@ const ScrollStack = ({
     const lastCard = cardsRef.current[lastCardIndex];
     const lastCardTop = lastCard ? getElementOffset(lastCard, lastCardIndex) : 0;
     const lastPinStart = lastCardTop - stackPositionPx - itemStackDistance * lastCardIndex;
-    const pinEnd = lastPinStart + 200;
+    const pinEnd = lastPinStart + 180;
 
     cardsRef.current.forEach((card, i) => {
       if (!card) return;

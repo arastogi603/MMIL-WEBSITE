@@ -148,96 +148,96 @@ export default function DomainsPage() {
       </section>
 
       {/* Scroll Stack Container */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6">
         <ScrollStack
           useWindowScroll={true}
-          itemDistance={140}
-          itemStackDistance={35}
-          stackPosition="12%"
-          baseScale={0.88}
-          itemScale={0.03}
+          itemDistance={360}
+          itemStackDistance={28}
+          stackPosition="80px"
+          baseScale={0.92}
+          itemScale={0.025}
         >
           {domainData.map((domain) => (
             <ScrollStackItem key={domain.id}>
               <div
-                className="w-full rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-14 lg:p-16 flex flex-col relative shadow-[0_30px_70px_rgba(0,0,0,0.14)] border border-[var(--border)] overflow-hidden"
+                className="w-full rounded-[1.75rem] sm:rounded-[2.5rem] md:rounded-[4rem] p-4 sm:p-8 md:p-14 lg:p-16 flex flex-col relative shadow-[0_30px_70px_rgba(0,0,0,0.14)] border border-[var(--border)] overflow-hidden"
                 style={{
                   background: "linear-gradient(135deg, color-mix(in srgb, var(--background) 94%, transparent) 0%, color-mix(in srgb, var(--background) 99%, transparent) 100%)",
                   backdropFilter: "blur(25px)"
                 }}
               >
                 {/* Glossy top highlight */}
-                <div className="absolute top-0 left-0 w-full h-[35%] bg-gradient-to-b from-[var(--text-primary)]/5 to-transparent pointer-events-none rounded-t-[2.5rem] md:rounded-t-[4rem]" />
+                <div className="absolute top-0 left-0 w-full h-[35%] bg-gradient-to-b from-[var(--text-primary)]/5 to-transparent pointer-events-none rounded-t-[1.75rem] sm:rounded-t-[2.5rem] md:rounded-t-[4rem]" />
 
-                <div className="relative z-10 flex flex-col h-full gap-8 md:gap-10">
+                <div className="relative z-10 flex flex-col h-full gap-5 sm:gap-8 md:gap-10">
                   {/* Domain Header */}
-                  <div className="flex items-center gap-5 md:gap-8">
+                  <div className="flex items-center gap-3.5 sm:gap-6 md:gap-8">
                     {/* Icon with accent tint background */}
                     <div
-                      className="w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-[2rem] flex items-center justify-center shrink-0"
+                      className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24 rounded-xl sm:rounded-2xl md:rounded-[2rem] flex items-center justify-center shrink-0"
                       style={{ backgroundColor: domain.accent.bg }}
                     >
                       <domain.icon
-                        className="w-8 h-8 md:w-12 md:h-12"
+                        className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12"
                         style={{ color: domain.accent.color }}
                       />
                     </div>
-                    <div>
-                      <span className="text-xs font-mono font-bold uppercase tracking-widest block mb-1" style={{ color: domain.accent.color }}>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest block mb-0.5 sm:mb-1 truncate" style={{ color: domain.accent.color }}>
                         DOMAIN INITIATIVE
                       </span>
-                      <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-[var(--text-primary)] leading-none">
+                      <h2 className="text-2xl sm:text-4xl md:text-6xl font-black tracking-tight text-[var(--text-primary)] leading-tight break-words">
                         {domain.name}
                       </h2>
                     </div>
                   </div>
 
-                  {/* Body Content — left-border accent blocks, no box */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                  {/* Body Content — left-border accent blocks */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                     {/* The Need */}
                     <div
-                      className="pl-5 py-1 flex flex-col justify-center"
+                      className="pl-3.5 sm:pl-5 py-0.5 sm:py-1 flex flex-col justify-center"
                       style={{ borderLeft: `3px solid ${domain.accent.border}` }}
                     >
-                      <h3 className="font-bold mb-3 tracking-widest text-xs md:text-sm uppercase flex items-center gap-2.5" style={{ color: domain.accent.color }}>
+                      <h3 className="font-bold mb-1.5 sm:mb-3 tracking-widest text-[11px] sm:text-xs md:text-sm uppercase flex items-center gap-2" style={{ color: domain.accent.color }}>
                         <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: domain.accent.color }}
                         />
                         The Need
                       </h3>
-                      <p className="text-[var(--text-secondary)] text-base sm:text-lg md:text-xl font-light leading-relaxed">
+                      <p className="text-[var(--text-secondary)] text-xs sm:text-base md:text-xl font-light leading-relaxed">
                         {domain.need}
                       </p>
                     </div>
 
                     {/* How We Help */}
                     <div
-                      className="pl-5 py-1 flex flex-col justify-center"
+                      className="pl-3.5 sm:pl-5 py-0.5 sm:py-1 flex flex-col justify-center"
                       style={{ borderLeft: `3px solid ${domain.accent.border}` }}
                     >
-                      <h3 className="font-bold mb-3 tracking-widest text-xs md:text-sm uppercase flex items-center gap-2.5" style={{ color: domain.accent.color }}>
+                      <h3 className="font-bold mb-1.5 sm:mb-3 tracking-widest text-[11px] sm:text-xs md:text-sm uppercase flex items-center gap-2" style={{ color: domain.accent.color }}>
                         <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: domain.accent.color }}
                         />
                         How We Help
                       </h3>
-                      <p className="text-[var(--text-secondary)] text-base sm:text-lg md:text-xl font-light leading-relaxed">
+                      <p className="text-[var(--text-secondary)] text-xs sm:text-base md:text-xl font-light leading-relaxed">
                         {domain.societyHelp}
                       </p>
                     </div>
                   </div>
 
                   {/* Lead & Apply Button Footer */}
-                  <div className="pt-6 border-t border-[var(--border)] flex flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-4 md:gap-6">
-                      <div className="w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden border-2 md:border-[3px] border-[var(--background)] relative shadow-lg shrink-0">
+                  <div className="pt-4 sm:pt-6 border-t border-[var(--border)] flex flex-row items-center justify-between gap-3 sm:gap-6">
+                    <div className="flex items-center gap-3 sm:gap-4 md:gap-6 min-w-0">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20 rounded-full overflow-hidden border-2 md:border-[3px] border-[var(--background)] relative shadow-lg shrink-0">
                         <Image src={domain.lead.avatar} alt={domain.lead.name} fill className="object-cover" />
                       </div>
-                      <div>
-                        <p className="font-extrabold text-lg md:text-2xl text-[var(--text-primary)] leading-tight">{domain.lead.name}</p>
-                        <p className="text-xs md:text-sm text-[var(--text-secondary)] font-bold tracking-wide uppercase mt-1">{domain.lead.role}</p>
+                      <div className="min-w-0">
+                        <p className="font-extrabold text-sm sm:text-lg md:text-2xl text-[var(--text-primary)] leading-tight truncate">{domain.lead.name}</p>
+                        <p className="text-[10px] sm:text-xs md:text-sm text-[var(--text-secondary)] font-bold tracking-wide uppercase mt-0.5 sm:mt-1 truncate">{domain.lead.role}</p>
                       </div>
                     </div>
 
@@ -246,11 +246,11 @@ export default function DomainsPage() {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleApplyClick(domain.id)}
                       disabled={isLoading}
-                      className="px-6 py-3.5 md:px-10 md:py-5 rounded-full bg-[var(--text-primary)] text-[var(--background)] hover:opacity-85 transition-opacity flex items-center gap-3 font-bold text-sm md:text-lg justify-center disabled:opacity-50 shadow-xl shrink-0"
+                      className="px-4 py-2.5 sm:px-6 sm:py-3.5 md:px-10 md:py-5 rounded-full bg-[var(--text-primary)] text-[var(--background)] hover:opacity-85 transition-opacity flex items-center gap-2 sm:gap-3 font-bold text-xs sm:text-sm md:text-lg justify-center disabled:opacity-50 shadow-xl shrink-0"
                     >
                       <span className="hidden sm:inline">Join Domain</span>
                       <span className="inline sm:hidden">Join</span>
-                      <ArrowRight className="w-4 h-4 md:w-6 md:h-6" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-6 md:h-6" />
                     </motion.button>
                   </div>
                 </div>

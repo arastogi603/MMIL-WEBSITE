@@ -38,7 +38,7 @@ export default class InfiniteSlider {
       1000,
     );
     const isMobile = window.innerWidth <= 768;
-    this.camera.position.set(0, 0, isMobile ? 8.0 : 4.8);
+    this.camera.position.set(0, 0, isMobile ? 5.2 : 4.8);
 
     const ambient = new THREE.AmbientLight(0xffffff, 1);
     this.scene.add(ambient);
@@ -245,7 +245,7 @@ export default class InfiniteSlider {
         this.composer.setSize(this.width, this.height);
       }
       const isMobile = window.innerWidth <= 768;
-      this.camera.position.z = isMobile ? 8.0 : 4.8;
+      this.camera.position.z = isMobile ? 5.2 : 4.8;
       this.camera.aspect = this.width / this.height;
       this.camera.updateProjectionMatrix();
     });
