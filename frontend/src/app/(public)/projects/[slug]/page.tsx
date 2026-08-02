@@ -29,6 +29,7 @@ import {
   Navigation,
   Cpu,
   Terminal,
+  Code,
 } from "lucide-react";
 import { projectsApi } from "@/lib/api/projects";
 
@@ -207,10 +208,9 @@ interface FeatureItem {
 }
 
 function getKeyFeatures(project: any): FeatureItem[] {
-  const text = (project.description || "").toLowerCase();
   const slug = (project.slug || project.id || "").toLowerCase();
 
-  if (slug.includes("vaultmeet") || text.includes("virtual") || text.includes("2d")) {
+  if (slug.includes("vaultmeet")) {
     return [
       {
         icon: <MapPin className="w-4 h-4" />,
@@ -230,7 +230,7 @@ function getKeyFeatures(project: any): FeatureItem[] {
     ];
   }
 
-  if (slug.includes("voxtrace") || text.includes("voice") || text.includes("ai")) {
+  if (slug.includes("voxtrace")) {
     return [
       {
         icon: <Mic className="w-4 h-4" />,
@@ -250,7 +250,7 @@ function getKeyFeatures(project: any): FeatureItem[] {
     ];
   }
 
-  if (slug.includes("clientflow") || text.includes("whatsapp") || text.includes("inbox")) {
+  if (slug.includes("clientflow")) {
     return [
       {
         icon: <MessageSquare className="w-4 h-4" />,
@@ -270,7 +270,7 @@ function getKeyFeatures(project: any): FeatureItem[] {
     ];
   }
 
-  if (slug.includes("vaultrade") || text.includes("trading") || text.includes("fintech")) {
+  if (slug.includes("vaultrade")) {
     return [
       {
         icon: <TrendingUp className="w-4 h-4" />,
@@ -290,7 +290,67 @@ function getKeyFeatures(project: any): FeatureItem[] {
     ];
   }
 
-  if (slug.includes("study") || text.includes("session") || text.includes("task")) {
+  if (slug.includes("tech-taste-foods")) {
+    return [
+      {
+        icon: <LayoutGrid className="w-4 h-4" />,
+        title: "Interactive Food Menu & Checkout",
+        desc: "Dynamic food item selection, customization, and seamless cart order processing.",
+      },
+      {
+        icon: <Sparkles className="w-4 h-4" />,
+        title: "Cloudinary Media Delivery",
+        desc: "High-performance image optimization for catering packages and dish galleries.",
+      },
+      {
+        icon: <Terminal className="w-4 h-4" />,
+        title: "Full-Stack Order System",
+        desc: "Built with React, Express, Node.js, and MongoDB for scalable food catering operations.",
+      },
+    ];
+  }
+
+  if (slug.includes("parthdev-portfolio")) {
+    return [
+      {
+        icon: <Sparkles className="w-4 h-4" />,
+        title: "Interactive UI & Micro-Animations",
+        desc: "Showcasing modern interactive web applications and fluid UI design principles.",
+      },
+      {
+        icon: <LayoutGrid className="w-4 h-4" />,
+        title: "Full-Stack Project Showcase",
+        desc: "Curated collection of web applications, frontend tools, and design system components.",
+      },
+      {
+        icon: <Cpu className="w-4 h-4" />,
+        title: "Performance & Responsive Layouts",
+        desc: "Fast page load speeds, mobile-first design, and clean component-based architecture.",
+      },
+    ];
+  }
+
+  if (slug.includes("kuldeep-pandit-portfolio")) {
+    return [
+      {
+        icon: <Cpu className="w-4 h-4" />,
+        title: "Full-Stack Web Development",
+        desc: "Showcase of production web applications, open-source software, and full-stack software architecture.",
+      },
+      {
+        icon: <LayoutGrid className="w-4 h-4" />,
+        title: "Featured Projects Showcase",
+        desc: "Interactive display of developer tools, API systems, and software engineering achievements.",
+      },
+      {
+        icon: <Sparkles className="w-4 h-4" />,
+        title: "Modern Next.js Architecture",
+        desc: "Sleek dark-mode interface built with Next.js, TypeScript, React, and Tailwind CSS for fast performance.",
+      },
+    ];
+  }
+
+  if (slug.includes("study")) {
     return [
       {
         icon: <Calendar className="w-4 h-4" />,
@@ -310,7 +370,7 @@ function getKeyFeatures(project: any): FeatureItem[] {
     ];
   }
 
-  if (slug.includes("guardian") || text.includes("sos") || text.includes("safety")) {
+  if (slug.includes("guardian")) {
     return [
       {
         icon: <ShieldAlert className="w-4 h-4" />,
@@ -416,11 +476,17 @@ export default function ProjectDetailPage() {
           </Link>
         </motion.div>
 
-        {/* Project Title (Placed above the grid so the top of screenshot & top of tech stack align perfectly) */}
+        {/* Project Title & Author */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-[var(--text-primary)]">
             {project.title}
           </h1>
+          {project.submittedByName && (
+            <p className="text-sm font-semibold text-[var(--text-secondary)] mt-2 flex items-center gap-1.5">
+              <span>Built by</span>
+              <span className="text-[var(--text-primary)] font-bold">{project.submittedByName}</span>
+            </p>
+          )}
         </motion.div>
 
         {/* 2-Column Desktop Grid Layout */}
@@ -545,7 +611,7 @@ export default function ProjectDetailPage() {
               </div>
             )}
 
-            {/* 2. Project Links Button (Placed below Tech Stack) */}
+            {/* 2. Project Links Buttons (Placed below Tech Stack) */}
             {project.liveDemoUrl && (
               <div className="bg-[var(--card-bg)] backdrop-blur-xl rounded-3xl border border-[var(--card-border)] p-6 shadow-sm">
                 <h3 className="text-xs font-black text-[var(--text-secondary)] uppercase tracking-wider mb-4">

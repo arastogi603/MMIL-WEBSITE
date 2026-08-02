@@ -281,15 +281,15 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   return (
     <div className={styles.page} style={{ color: '#fff' }}>
       {/* Hero Text that scrolls away naturally */}
-      <div ref={heroTitleRef} className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-50 pointer-events-none transition-all duration-75">
+      <div ref={heroTitleRef} className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-50 pointer-events-none transition-all duration-75 px-4">
         <h1
-          className="hero-title drop-shadow-2xl"
+          className="hero-title drop-shadow-2xl text-center max-w-full"
           style={{
             color: '#fff',
             WebkitTextFillColor: '#fff',
             WebkitTextStroke: '0px',
             fontFamily: "var(--font-josefin), sans-serif",
-            fontSize: "clamp(4rem, 15vw, 12rem)",
+            fontSize: "clamp(2rem, 11vw, 12rem)",
             fontWeight: 900,
             whiteSpace: "nowrap"
           }}
@@ -340,9 +340,9 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed left-8 md:left-14 top-1/2 -translate-y-1/2 z-40 pointer-events-none max-w-sm md:max-w-md"
+            className="fixed left-4 md:left-14 top-1/2 -translate-y-1/2 z-40 pointer-events-none max-w-[calc(100vw-2rem)] md:max-w-md"
           >
-            <p className="text-2xl md:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-lg">
+            <p className="text-xl md:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-lg break-words">
               {hoveredTitle}
             </p>
           </motion.div>

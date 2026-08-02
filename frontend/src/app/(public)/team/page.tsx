@@ -37,36 +37,31 @@ const executiveBoard: Member[] = [
   {
     name: "Vaishnavi Bhati",
     role: "Vice President",
-    avatar:
-      "https://media.licdn.com/dms/image/v2/D5603AQF1SKuMrt1lQg/profile-displayphoto-crop_800_800/B56Z8s1cA6H4AI-/0/1783163634727?e=1786579200&v=beta&t=9X6c-4dQFZS3Jco5Mq4KWGyZ527MMgRB-DemLD3SUss",
+    avatar: "/images/members/vaishnavi.jpg",
     linkedin: "https://www.linkedin.com/in/vaishnavi-bhati-15vb2004/",
   },
   {
     name: "Ayan Khan",
     role: "CTC",
-    avatar:
-      "https://media.licdn.com/dms/image/v2/D5603AQEQIdKNKZmL0w/profile-displayphoto-crop_800_800/B56ZsNy8hqJEAM-/0/1765463019838?e=1786579200&v=beta&t=YkAg5vd9_kSQh8sqo3386pBGyrc6BH-kQPcVrBEF5Z0",
+    avatar: "/images/members/ayan.jpeg",
     linkedin: "https://www.linkedin.com/in/ayankhan28/",
   },
   {
     name: "Parth Chaturvedi",
     role: "Co-CTC",
-    avatar:
-      "https://media.licdn.com/dms/image/v2/D5635AQH3VxIR1jBbxQ/profile-framedphoto-shrink_800_800/B56Zy3.rUJIcAk-/0/1772613187180?e=1785312000&v=beta&t=hi-JuAlYQBa9SGVG6UllE3RQ2f-GrLVN1NS14C2pi08",
+    avatar: "/images/members/parth.jpg.jpeg",
     linkedin: "https://www.linkedin.com/in/parth-chaturvedi-dev/",
   },
   {
     name: "Anurag Maurya",
     role: "Management Head",
-    avatar:
-      "https://media.licdn.com/dms/image/v2/D5635AQF4ZENwk1HXeA/profile-framedphoto-shrink_800_800/B56Z1zrfCqJgAk-/0/1775762272717?e=1785312000&v=beta&t=I5A3S9RhH-oBZjbPJNWFHgYAlm28oBZ3pd0ijRqNjHk",
+    avatar: "/images/members/anurag.jpg.jpeg",
     linkedin: "https://www.linkedin.com/in/anuragg28/",
   },
   {
     name: "Sanya Pandey",
     role: "General Secretary",
-    avatar:
-      "https://media.licdn.com/dms/image/v2/D5635AQF73kSRx_Goaw/profile-framedphoto-shrink_800_800/B56Z7VJeM2IgAY-/0/1781692492487?e=1785312000&v=beta&t=hfnRJbe0WIahTLbN3PFS7E2HS-43QUhgtH7lItDHyjs",
+    avatar: "/images/members/sanya.jpeg",
     linkedin: "https://www.linkedin.com/in/sanya-pandey08/",
   },
 ];
@@ -80,8 +75,7 @@ const domains: DomainData[] = [
     lead: {
       name: "Tanmay Kalra",
       role: "Programming Lead",
-      avatar:
-        "https://media.licdn.com/dms/image/v2/D5603AQHdOVvvjrtoaQ/profile-displayphoto-crop_800_800/B56Z.U0t6jHYAI-/0/1784908276336?e=1786579200&v=beta&t=lgOoi4ELPSBTYkEPfRQ357XNpbdbZveqlnaOOyHdNOU",
+      avatar: "/images/members/tanmay.jpeg",
       linkedin: "https://www.linkedin.com/in/tanmay-kalra-09oct/",
     },
     students: [
@@ -95,7 +89,7 @@ const domains: DomainData[] = [
       {
         name: "Vansh Bhaskar",
         role: "Programmer",
-        avatar: "https://drive.google.com/uc?export=view&id=1HdKkr7oydmReVpZB8_9beePEP2oX43ka",
+        avatar: "/images/members/vansh.jpg",
         linkedin: "https://www.linkedin.com/in/vanshbhaskar/",
       },
       {
@@ -121,13 +115,13 @@ const domains: DomainData[] = [
       {
         name: "Sanskar Mittal",
         role: "Programmer",
-        avatar: "https://drive.google.com/uc?export=view&id=1SSmiD2QlZ0Zt4baq2LxD4jX_a6dPJ7gK",
+        avatar: "/images/members/sanskar.jpg",
         linkedin: "https://www.linkedin.com/in/sanskarmittal/",
       },
       {
         name: "Prashasti Jha",
         role: "Programmer",
-        avatar: "https://drive.google.com/uc?export=view&id=1VHi80z8fJDApwnBbb7t_5a1F98DRZrJn",
+        avatar: "/images/members/Prashasthi.jpg",
         linkedin: "https://www.linkedin.com/in/prashasti-jha-391109381/",
       },
       {
@@ -146,8 +140,7 @@ const domains: DomainData[] = [
     lead: {
       name: "Disha Agrawal",
       role: "Web Dev Lead",
-      avatar:
-        "https://media.licdn.com/dms/image/v2/D5635AQEkSyHkUmXTSw/profile-framedphoto-shrink_800_800/B56Z0VRC_bJwAg-/0/1774178283808?e=1785312000&v=beta&t=pI0HI6feLSv6M8OPfv4usOXa31jef0C2wt1qIZzO-eg",
+      avatar: "/images/members/disha.jpeg",
       linkedin: "https://www.linkedin.com/in/disha-agrawal-0438062a5/",
     },
     students: [
@@ -196,8 +189,7 @@ const domains: DomainData[] = [
     lead: {
       name: "Vaishnav Gupta",
       role: "Technical Lead",
-      avatar:
-        "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785312000&v=beta&t=fibyE81Q5lfLA3xttPyyCXqzLipX02VbkeO1ZX2MinA",
+      avatar: "/images/members/VaishnavGupta.jpg.jpeg",
       linkedin: "https://www.linkedin.com/in/vaishnavgupta/",
     },
     students: [
@@ -210,7 +202,7 @@ const domains: DomainData[] = [
       {
         name: "Shivanshu Kushwaha",
         role: "Technical Member",
-        avatar: "https://drive.google.com/uc?export=view&id=1P1PzDOag-xV34vRgnfrKVkG8FN7Ia_Td",
+        avatar: "/images/members/shivanshu.jpg",
         linkedin: "https://www.linkedin.com/in/shivanshu-kushwaha-12572b345/",
       },
       {
@@ -223,7 +215,7 @@ const domains: DomainData[] = [
       {
         name: "Mahi Gupta",
         role: "Technical Member",
-        avatar: "https://drive.google.com/uc?export=view&id=1w6V2va73iu2Ns8ya-WtQE4z_uMzuhHPU",
+        avatar: "/images/members/mahi.jpeg",
         linkedin: "https://www.linkedin.com/in/mahi-gupta-8623b4364/",
       },
     ],
@@ -236,15 +228,14 @@ const domains: DomainData[] = [
     lead: {
       name: "Aarsh Upadhyay",
       role: "Design Lead",
-      avatar:
-        "https://media.licdn.com/dms/image/v2/D4D03AQFc7G8FNXP2Cw/profile-displayphoto-shrink_800_800/B4DZXWd3q2HwAc-/0/1743059910043?e=1786579200&v=beta&t=gngRgGef8mSj5cJYciKYSDny_u6J4jhxFIsfMCTwavs",
+      avatar: "/images/members/aarsh.jpg.jpeg",
       linkedin: "https://www.linkedin.com/in/aarsh-upadhyay-66010a359/",
     },
     students: [
       {
         name: "Arnav",
         role: "Designer",
-        avatar: "https://drive.google.com/uc?export=view&id=1jAh7Y1YnUVf7n-q1TlEWft1e37Owp_5H",
+        avatar: "/images/members/arnav.jpg",
         linkedin: "https://www.linkedin.com/in/arnav2k5/",
       },
       {
@@ -256,14 +247,8 @@ const domains: DomainData[] = [
       {
         name: "Ankita Singh",
         role: "Designer",
-        avatar: "https://drive.google.com/uc?export=view&id=1Hru4uuqfaDU03i6Q-66AM8MDYtxOMxxf",
+        avatar: "/images/members/ankita.jpg",
         linkedin: "https://www.linkedin.com/in/ankita-singh-566007385/",
-      },
-      {
-        name: "Placeholder Name",
-        role: "Designer",
-        avatar: "",
-        linkedin: "#",
       },
     ],
   },

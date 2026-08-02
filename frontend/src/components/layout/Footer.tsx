@@ -37,11 +37,7 @@ const GithubIcon = ({ className }: { className?: string }) => (
 );
 
 // Behance SVG Glyph Icon
-const BehanceIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M22 7h-7v-2h7v2zm1.726 10c0 2.174-1.63 3.75-4.101 3.75-2.784 0-4.331-1.944-4.331-4.707 0-2.825 1.609-4.793 4.225-4.793 2.738 0 4.207 1.9 4.207 4.542v.784h-6.222c.074 1.408.971 2.222 2.235 2.222.955 0 1.62-.439 1.841-1.074h2.146zm-2.091-2.457c-.063-1.096-.759-1.841-1.916-1.841-1.127 0-1.884.735-1.989 1.841h3.905zm-14.887 5.707h-6.748v-14.5h6.643c2.729 0 4.197 1.304 4.197 3.393 0 1.488-.735 2.502-1.9 3.018 1.493.447 2.457 1.589 2.457 3.42 0 2.417-1.802 4.669-4.649 4.669zm-4.548-12.336v3.834h4.101c1.235 0 2.051-.557 2.051-1.908 0-1.32-.78-1.926-2.051-1.926h-4.101zm0 5.864v4.308h4.298c1.378 0 2.253-.615 2.253-2.146 0-1.521-.865-2.162-2.253-2.162h-4.298z" />
-  </svg>
-);
+
 
 export function Footer() {
   const { theme } = useTheme();
@@ -53,9 +49,8 @@ export function Footer() {
 
   return (
     <footer
-      className={`w-full mt-20 md:mt-24 bg-[#FAFAFA] dark:bg-[#0b0c0e] text-[var(--text-primary)] font-['Outfit'] relative z-10 ${
-        isAdmin ? "md:pl-72 pb-16 md:pb-0" : ""
-      }`.trim()}
+      className={`w-full mt-20 md:mt-24 bg-[#FAFAFA] dark:bg-[#0b0c0e] text-[var(--text-primary)] font-['Outfit'] relative z-10 ${isAdmin ? "md:pl-72 pb-16 md:pb-0" : ""
+        }`.trim()}
     >
       <div className="max-w-[1300px] mx-auto px-6 pt-16 md:pt-20 pb-10 md:pb-12">
         {/* Main 4-Column Layout */}
@@ -177,15 +172,6 @@ export function Footer() {
                 className="w-10 h-10 rounded-xl bg-pink-500/5 dark:bg-pink-500/10 border border-black/10 dark:border-white/10 flex items-center justify-center text-[var(--text-primary)] hover:text-pink-500 hover:bg-pink-500/15 hover:border-pink-500/50 hover:scale-105 transition-all duration-150 shadow-2xs"
               >
                 <GithubIcon className="w-4.5 h-4.5" />
-              </a>
-              <a
-                href="https://behance.net"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Behance"
-                className="w-10 h-10 rounded-xl bg-pink-500/5 dark:bg-pink-500/10 border border-black/10 dark:border-white/10 flex items-center justify-center text-[var(--text-secondary)] hover:text-pink-500 hover:bg-pink-500/15 hover:border-pink-500/50 hover:scale-105 transition-all duration-150 shadow-2xs"
-              >
-                <BehanceIcon className="w-4.5 h-4.5" />
               </a>
             </div>
           </div>
