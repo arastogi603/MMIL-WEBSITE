@@ -59,11 +59,18 @@ export function Footer() {
           <div className="space-y-3 sm:col-span-2 md:col-span-1">
             <Link href="/" className="inline-flex items-center gap-3 group">
               <Image
-                src="/favicon.png"
+                src="/logo-light.png"
                 alt="MMIL Logo"
-                width={38}
-                height={38}
-                className="group-hover:scale-105 transition-transform"
+                width={140}
+                height={70}
+                className="h-12 w-auto object-contain group-hover:scale-105 transition-transform dark:hidden"
+              />
+              <Image
+                src="/logo-dark.png"
+                alt="MMIL Logo"
+                width={140}
+                height={70}
+                className="h-12 w-auto object-contain group-hover:scale-105 transition-transform hidden dark:block"
               />
               <span className="font-extrabold text-xl tracking-tight text-[var(--text-primary)]">
                 MMIL
@@ -183,7 +190,7 @@ export function Footer() {
         {/* Bottom Row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-[var(--text-secondary)]">
           <p className="flex items-center gap-1">
-            © 2026 MMIL. Designed with <span className="text-pink-500">♥</span> by the MMIL Team.
+            © 2026 MMIL. Designed with by the MMIL Team.
           </p>
         </div>
       </div>

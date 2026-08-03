@@ -10,7 +10,8 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-40 pb-24 relative font-['Outfit']">
       {/* Hide the global background shapes on this page */}
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .bg-shapes-layer { display: none !important; }
       `}} />
 
@@ -40,7 +41,7 @@ export default function AboutPage() {
             <Code className="w-6 h-6 text-[#eb4d6d] mb-5" />
             <h3 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">Our Mission</h3>
             <div className="w-full h-[2px] mb-4" style={{ background: "#eb4d6d" }} />
-            <p className="text-[var(--text-secondary)] font-light leading-relaxed">To equip student developers and designers with industry-relevant skills through hackathons, open-source projects, and peer-led mentorship — building careers before graduation.</p>
+            <p className="text-[var(--text-secondary)] font-light leading-relaxed">To equip student developers and designers with industry relevant skills through hackathons, open source projects, and peer led mentorship building careers before graduation.</p>
           </motion.div>
 
           {/* Vision — white */}
@@ -70,7 +71,7 @@ export default function AboutPage() {
             <Award className="w-6 h-6 text-[#eb4d6d] mb-5" />
             <h3 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">Our Values</h3>
             <div className="w-full h-[2px] mb-4" style={{ background: "#eb4d6d" }} />
-            <p className="text-[var(--text-secondary)] font-light leading-relaxed">Inclusivity, technical excellence, open-source contribution, and continuous iteration — we build together, ship together, and grow together.</p>
+            <p className="text-[var(--text-secondary)] font-light leading-relaxed">Inclusivity, technical excellence, open source contribution, and continuous iteration  we build together, ship together, and grow together.</p>
           </motion.div>
         </div>
 
@@ -103,7 +104,7 @@ export default function AboutPage() {
               </ul>
             </div>
             <div className="w-full md:w-1/2 border-t md:border-t-0 md:border-l border-[var(--text-primary)]/10 relative min-h-[300px] md:min-h-[400px]">
-               <img src="/community.jpg" alt="MMIL Community" className="absolute inset-0 w-full h-full object-cover" />
+              <img src="/orientation.jpg" alt="MMIL Orientation" className="absolute inset-0 w-full h-full object-cover" />
             </div>
           </div>
         </FadeIn>

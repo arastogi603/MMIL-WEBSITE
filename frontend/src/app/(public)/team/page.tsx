@@ -29,15 +29,14 @@ const executiveBoard: Member[] = [
   {
     name: "Kuldeep Pandit",
     role: "President",
-    avatar:
-      "https://media.licdn.com/dms/image/v2/D4D03AQHa7qL5i8RgmA/profile-displayphoto-shrink_800_800/B4DZT7vmRvGcAc-/0/1739390346803?e=1786579200&v=beta&t=rcPlW5QrZFVDXcpLm7Iee3m3xi7Qfg5RxLPaGicfgMc",
+    avatar: "/images/members/kuldeep.jpeg",
     linkedin: "https://www.linkedin.com/in/kuldeepk-pandit/",
     isPresident: true,
   },
   {
     name: "Vaishnavi Bhati",
     role: "Vice President",
-    avatar: "/images/members/vaishnavi.jpg",
+    avatar: "/images/members/vaisnavi.png",
     linkedin: "https://www.linkedin.com/in/vaishnavi-bhati-15vb2004/",
   },
   {

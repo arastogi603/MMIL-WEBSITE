@@ -54,14 +54,16 @@ export function Navbar() {
         // { label: "Sign In", href: "/login", icon: LogIn },
         // { label: "Join Now", href: "/register", icon: UserPlus }
       ]),
-    {
-      label: "", // Remove text label so it looks clean like before
-      href: "#theme",
-      icon: theme === "dark" ? Sun : Moon,
-      isAction: true, // This flag ensures GooeyNav doesn't assign the pill to this button!
-      onClick: (e: React.MouseEvent) => { e.preventDefault(); toggleTheme(); }
-    }
+    // Theme toggle removed from here — it lives in the mobile menu panel now
   ];
+
+  // Determine which logo to show based on viewport + theme
+  // Desktop light mode: dark notch (#050505) → white text logo
+  // Desktop dark mode: light notch (#F4EBE1) → dark text logo
+  // Mobile: light top bar (#f4f4f6) → dark text logo
+  // We use theme state for desktop; mobile always gets dark-text logo
+  const desktopLogoSrc = theme === "dark" ? "/logo-light.png" : "/logo-dark.png";
+  const mobileLogoSrc = "/logo-light.png";
 
   return (
     <>
@@ -77,10 +79,27 @@ export function Navbar() {
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
-            {/* Logo + MMIL Wordmark (Centered Horizontally on Mobile) */}
+            {/* Logo - single image, chosen by React state */}
             <Link href="/" className="navbar-logo">
-              <Image src="/favicon.png" alt="MMIL Logo" width={28} height={28} className="navbar-logo-img" />
-              <span className="navbar-logo-text font-black text-lg text-neutral-900 tracking-tight">
+              {/* Desktop logo (hidden on mobile via CSS) */}
+              <Image
+                src={desktopLogoSrc}
+                alt="MMIL Logo"
+                width={120}
+                height={60}
+                className="navbar-logo-img navbar-logo-desktop"
+                priority
+              />
+              {/* Mobile logo (shown only on mobile via CSS) */}
+              <Image
+                src={mobileLogoSrc}
+                alt="MMIL Logo"
+                width={120}
+                height={60}
+                className="navbar-logo-img navbar-logo-mobile"
+                priority
+              />
+              <span className="navbar-logo-text font-black text-xl text-neutral-900 tracking-tight">
                 MMIL
               </span>
             </Link>
@@ -165,15 +184,13 @@ export function Navbar() {
                   e.preventDefault();
                   toggleTheme();
                 }}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${
-                  theme === "dark" ? "bg-blue-600" : "bg-zinc-700"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${theme === "dark" ? "bg-blue-600" : "bg-zinc-700"
+                  }`}
                 aria-label="Toggle Dark Mode"
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 ease-in-out ${
-                    theme === "dark" ? "translate-x-6" : "translate-x-1"
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 ease-in-out ${theme === "dark" ? "translate-x-6" : "translate-x-1"
+                    }`}
                 />
               </button>
             </div>

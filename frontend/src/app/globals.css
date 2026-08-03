@@ -206,7 +206,7 @@ h1, h2, h3, h4, h5, h6 {
   width: auto;
   min-width: 400px;
   max-width: 1313px;
-  height: 60px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -258,8 +258,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .navbar-logo-img {
   width: auto;
-  height: 47px;
+  height: 58px;
+  max-height: 58px;
   object-fit: contain;
+}
+
+/* Desktop: show desktop logo, hide mobile logo */
+.navbar-logo-desktop {
+  display: block;
+}
+
+.navbar-logo-mobile {
+  display: none;
 }
 
 .navbar-logo-text {
@@ -908,7 +918,7 @@ h1, h2, h3, h4, h5, h6 {
     border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
     padding: 0 16px !important;
-    height: 52px !important;
+    height: 60px !important;
     top: 0 !important;
     min-width: unset !important;
   }
@@ -963,9 +973,19 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .navbar-logo-img {
-    height: 28px !important;
-    width: 28px !important;
+    height: 42px !important;
+    width: auto !important;
+    max-height: 42px !important;
     object-fit: contain !important;
+  }
+
+  /* Mobile: hide desktop logo, show mobile logo */
+  .navbar-logo-desktop {
+    display: none !important;
+  }
+
+  .navbar-logo-mobile {
+    display: block !important;
   }
 
   .navbar-logo-text {

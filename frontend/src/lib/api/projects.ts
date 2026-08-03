@@ -84,7 +84,7 @@ export const REAL_PROJECTS = [
     slug: 'kuldeep-pandit-portfolio',
     title: 'Kuldeep Pandit Portfolio',
     description: 'Personal developer portfolio highlighting full-stack web development, open-source software engineering, and interactive web projects.',
-    liveDemoUrl: 'https://kuldeeppandit-portfolio.vercel.app/',
+    liveDemoUrl: 'https://kuldeepandit-portfolio.vercel.app/',
     repositoryUrl: 'https://github.com/kuldeeppandit75',
     thumbnailImage: '/images/projects/PortfolioKuldeep.jpg',
     image: '/images/projects/PortfolioKuldeep.jpg',
