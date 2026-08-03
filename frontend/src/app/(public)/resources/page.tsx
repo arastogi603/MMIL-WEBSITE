@@ -32,9 +32,16 @@ export default function ResourcesPage() {
   const [selectedItem, setSelectedItem] = useState<ResourceItem | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     setIsHydrated(true);
-    resourcesApi.getAllFolders().then(setFolders).catch(err => console.error("Failed to load resource folders", err));
+    resourcesApi.getAllFolders().then(data => {
+      if (!controller.signal.aborted) setFolders(data);
+    }).catch(err => {
+      if (!controller.signal.aborted) console.error("Failed to load resource folders", err);
+    });
+    return () => controller.abort();
   }, []);
+
 
   const handleFolderClick = async (folder: ResourceFolder) => {
     setItems([]); // Clear previous items immediately

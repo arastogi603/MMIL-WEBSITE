@@ -6,6 +6,7 @@ import { ArrowLeft, Copy, UserMinus, ShieldAlert, CheckCircle, Users, Lock, Link
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
 import { apiClient } from "@/lib/api/client";
+import toast from "react-hot-toast";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -93,7 +94,7 @@ export default function TeamDashboardPage() {
         members: team.members.filter((m: any) => m.registrationId !== registrationId)
       });
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to remove member.");
+      toast.error(err.response?.data?.message || "Failed to remove member.");
     }
   };
 
@@ -104,7 +105,7 @@ export default function TeamDashboardPage() {
       await apiClient.post(`/events/${slug}/teams/my/lock`);
       setTeam({ ...team, isLocked: true });
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to lock team.");
+      toast.error(err.response?.data?.message || "Failed to lock team.");
     } finally {
       setIsLocking(false);
     }
@@ -116,9 +117,9 @@ export default function TeamDashboardPage() {
     try {
       await apiClient.put(`/events/${slug}/teams/my/ppt`, { pptLink: pptLinkInput });
       setTeam({ ...team, pptLink: pptLinkInput });
-      alert("PPT Link updated successfully!");
+      toast.success("PPT Link updated successfully!");
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to submit PPT.");
+      toast.error(err.response?.data?.message || "Failed to submit PPT.");
     } finally {
       setIsSubmittingPpt(false);
     }
@@ -133,7 +134,7 @@ export default function TeamDashboardPage() {
       const res = await apiClient.get(`/events/${slug}/teams/my`);
       setTeam(res.data);
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to approve request.");
+      toast.error(err.response?.data?.message || "Failed to approve request.");
     } finally {
       setIsProcessingRequest(false);
     }
@@ -145,7 +146,7 @@ export default function TeamDashboardPage() {
       await apiClient.post(`/events/${slug}/teams/requests/${requestId}/reject`);
       setJoinRequests(joinRequests.filter(r => r.id !== requestId));
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to reject request.");
+      toast.error(err.response?.data?.message || "Failed to reject request.");
     } finally {
       setIsProcessingRequest(false);
     }

@@ -98,18 +98,22 @@ export default function DomainsPage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function checkRecruitment() {
       try {
         const cycles = await recruitmentApi.getActiveCycles();
+        if (controller.signal.aborted) return;
         setActiveCycles(cycles);
       } catch (error) {
-        console.error("Failed to load recruitment cycles", error);
+        if (!controller.signal.aborted) console.error("Failed to load recruitment cycles", error);
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
     checkRecruitment();
+    return () => controller.abort();
   }, []);
+
 
   const handleApplyClick = (domainId: string) => {
     if (activeCycles.length > 0) {

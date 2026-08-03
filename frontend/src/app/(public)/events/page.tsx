@@ -4,36 +4,15 @@ import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { eventsApi, Event } from "@/lib/api/events";
+import { getEventPoster } from "@/lib/events/getEventPoster";
 import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
 import { Calendar, Users, ChevronRight, ChevronLeft, ExternalLink, Code, Lightbulb, Palette, Trophy } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { apiClient } from "@/lib/api/client";
 
-// Poster images mapping for uploaded event cards
-const DEFAULT_EVENT_POSTERS: Record<string, string> = {
-  "logocon": "/images/events/Logocon.png",
-  "code-in-pair": "/images/events/CodeInPair.png",
-  "decode": "/images/events/deencode.png",
-  "deencode": "/images/events/deencode.png",
-  "valorant": "/images/events/valorant.png",
-};
-
-export function getEventPoster(evt?: Event | null): string | undefined {
-  if (!evt) return undefined;
-  if (evt.posterUrl && evt.posterUrl.trim() !== "") return evt.posterUrl;
-
-  const slug = (evt.slug || "").toLowerCase();
-  if (DEFAULT_EVENT_POSTERS[slug]) return DEFAULT_EVENT_POSTERS[slug];
-
-  const title = (evt.title || "").toLowerCase();
-  if (title.includes("logocon")) return "/images/events/Logocon.png";
-  if (title.includes("code-in-pair") || title.includes("code in pair")) return "/images/events/CodeInPair.png";
-  if (title.includes("decode") || title.includes("deencode")) return "/images/events/deencode.png";
-  if (title.includes("valorant")) return "/images/events/valorant.png";
-
-  return undefined;
-}
+// Re-export so any consumer that imported getEventPoster from this file keeps working.
+export { getEventPoster } from "@/lib/events/getEventPoster";
 
 // Fallback events with uploaded images mapped to cards
 const fallbackEvents: Event[] = [
@@ -282,8 +261,10 @@ export default function EventsPage() {
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
+    const controller = new AbortController();
     setIsHydrated(true);
     eventsApi.getPublishedEvents().then(data => {
+      if (controller.signal.aborted) return;
       if (data && data.length > 0) {
         const filtered = data.filter(e => e.slug !== "hack-o-code" && e.slug !== "github-workshop" && e.slug !== "resume-workshop");
         setEvents(filtered.length > 0 ? filtered : fallbackEvents);
@@ -291,29 +272,33 @@ export default function EventsPage() {
         setEvents(fallbackEvents);
       }
     }).catch(() => {
-      setEvents(fallbackEvents);
+      if (!controller.signal.aborted) setEvents(fallbackEvents);
     });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && events.length > 0) {
-      const ongoing = events.filter(e => e.status !== "completed" && e.status !== "draft");
-      Promise.all(
-        ongoing.map(async (e) => {
-          try {
-            const res = await apiClient.get(`/events/${e.slug}/registration-status`);
-            return { slug: e.slug, isRegistered: res.data.isRegistered };
-          } catch (err) {
-            return { slug: e.slug, isRegistered: false };
-          }
-        })
-      ).then(results => {
-        const statuses: Record<string, boolean> = {};
-        results.forEach(r => statuses[r.slug] = r.isRegistered);
-        setRegisteredEvents(statuses);
-      });
-    }
+    if (!isAuthenticated || events.length === 0) return;
+    const controller = new AbortController();
+    const ongoing = events.filter(e => e.status !== "completed" && e.status !== "draft");
+    Promise.all(
+      ongoing.map(async (e) => {
+        try {
+          const res = await apiClient.get(`/events/${e.slug}/registration-status`, { signal: controller.signal });
+          return { slug: e.slug, isRegistered: res.data.isRegistered };
+        } catch {
+          return { slug: e.slug, isRegistered: false };
+        }
+      })
+    ).then(results => {
+      if (controller.signal.aborted) return;
+      const statuses: Record<string, boolean> = {};
+      results.forEach(r => statuses[r.slug] = r.isRegistered);
+      setRegisteredEvents(statuses);
+    });
+    return () => controller.abort();
   }, [isAuthenticated, events]);
+
 
   const categories = useMemo(() => {
     const cats = new Set(events.map(e => e.type || "Event"));

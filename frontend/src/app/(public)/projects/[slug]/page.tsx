@@ -418,18 +418,22 @@ export default function ProjectDetailPage() {
 
   useEffect(() => {
     if (!slug) return;
+    const controller = new AbortController();
     async function fetchProject() {
       try {
         const data = await projectsApi.getProjectBySlug(slug);
+        if (controller.signal.aborted) return;
         setProject(data);
-      } catch (err: any) {
-        setError("Project not found.");
+      } catch {
+        if (!controller.signal.aborted) setError("Project not found.");
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
     fetchProject();
+    return () => controller.abort();
   }, [slug]);
+
 
   if (isLoading) {
     return (

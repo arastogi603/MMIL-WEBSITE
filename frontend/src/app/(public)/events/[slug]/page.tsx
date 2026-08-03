@@ -6,30 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, MapPin, Users, ArrowLeft, CheckCircle, X } from "lucide-react";
 import Link from "next/link";
 import { eventsApi } from "@/lib/api/events";
+import { getEventPoster } from "@/lib/events/getEventPoster";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { apiClient } from "@/lib/api/client";
 import Image from "next/image";
-
-const DEFAULT_EVENT_POSTERS: Record<string, string> = {
-  "logocon": "/images/events/Logocon.png",
-  "code-in-pair": "/images/events/CodeInPair.png",
-  "decode": "/images/events/deencode.png",
-  "deencode": "/images/events/deencode.png",
-  "valorant": "/images/events/valorant.png",
-};
-
-function getEventPoster(evt: any): string | undefined {
-  if (!evt) return undefined;
-  if (evt.posterUrl && evt.posterUrl.trim() !== "") return evt.posterUrl;
-  const slug = (evt.slug || "").toLowerCase();
-  if (DEFAULT_EVENT_POSTERS[slug]) return DEFAULT_EVENT_POSTERS[slug];
-  const title = (evt.title || "").toLowerCase();
-  if (title.includes("logocon")) return "/images/events/Logocon.png";
-  if (title.includes("code-in-pair") || title.includes("code in pair")) return "/images/events/CodeInPair.png";
-  if (title.includes("decode") || title.includes("deencode")) return "/images/events/deencode.png";
-  if (title.includes("valorant")) return "/images/events/valorant.png";
-  return undefined;
-}
 
 export default function EventDetailsPage() {
   const { slug } = useParams();
@@ -60,32 +40,38 @@ export default function EventDetailsPage() {
   const [joinSuccessMsg, setJoinSuccessMsg] = useState("");
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function loadEvent() {
       try {
         const data = await eventsApi.getEventBySlug(slug as string);
+        if (controller.signal.aborted) return;
         setEvent(data);
 
         if (isAuthenticated) {
           try {
-            const statusRes = await apiClient.get(`/events/${slug}/registration-status`);
+            const statusRes = await apiClient.get(`/events/${slug}/registration-status`, { signal: controller.signal });
             if (statusRes.data.isRegistered) {
               setIsRegistered(true);
               if (statusRes.data.teamId) {
                 setHasTeam(true);
               }
             }
-          } catch (e) {
-            console.error("Failed to fetch registration status");
+          } catch {
+            // Registration status is non-critical; silently ignore on abort/error.
           }
         }
       } catch (err) {
-        console.error("Failed to load event", err);
+        if (!controller.signal.aborted) setError("not-found");
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
+
     loadEvent();
+    return () => controller.abort();
   }, [slug, isAuthenticated]);
+
 
   const handleRegisterClick = () => {
     if (!isAuthenticated) {
@@ -167,7 +153,37 @@ export default function EventDetailsPage() {
     );
   }
 
-  if (!event) return null;
+  if (error === "not-found" || (!isLoading && !event)) {
+    return (
+      <main className="min-h-screen bg-transparent text-[var(--text-primary)] pt-32 pb-24 relative overflow-hidden font-['Outfit']">
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <Link href="/events" className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold transition-colors mb-8 w-fit bg-[var(--background)]/50 backdrop-blur-md px-4 py-2 rounded-full border border-[var(--border)] shadow-sm">
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Events</span>
+          </Link>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[var(--card-bg)] backdrop-blur-md md:backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-[var(--card-border)] p-12 text-center"
+          >
+            <div className="text-6xl mb-6">🔍</div>
+            <h1 className="text-4xl font-black tracking-tighter text-[var(--text-primary)] mb-4">Event Not Found</h1>
+            <p className="text-[var(--text-secondary)] text-lg font-medium mb-8">
+              We couldn&apos;t find an event matching <span className="font-black text-[var(--text-primary)]">&quot;{slug}&quot;</span>.
+              It may have been removed or the link might be incorrect.
+            </p>
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--text-primary)] text-[var(--background)] font-bold text-sm hover:opacity-80 transition-opacity"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Browse All Events
+            </Link>
+          </motion.div>
+        </div>
+      </main>
+    );
+  }
 
   const seatsLeft = event.capacity - event.seatsTaken;
   const isFull = seatsLeft <= 0;

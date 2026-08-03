@@ -11,20 +11,24 @@ export default function RecruitmentLandingPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchActiveCycle = async () => {
       try {
         const cycles = await recruitmentApi.getActiveCycles();
+        if (controller.signal.aborted) return;
         if (cycles && cycles.length > 0) {
           setActiveCycle(cycles[0]);
         }
       } catch (err) {
-        console.error("Failed to fetch active recruitment cycles:", err);
+        if (!controller.signal.aborted) console.error("Failed to fetch active recruitment cycles:", err);
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     };
     fetchActiveCycle();
+    return () => controller.abort();
   }, []);
+
 
   const steps = [
     {

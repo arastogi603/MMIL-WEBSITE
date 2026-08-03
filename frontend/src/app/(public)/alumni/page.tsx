@@ -10,13 +10,17 @@ export default function AlumniPage() {
   const [activeYear, setActiveYear] = useState<number | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     alumniApi.getAllAlumni().then((data) => {
+      if (controller.signal.aborted) return;
       setAlumni(data);
       if (data.length > 0) {
         setActiveYear(data[0].batchYear);
       }
     });
+    return () => controller.abort();
   }, []);
+
 
   const batchYears = Array.from(new Set(alumni.map(a => a.batchYear))).sort((a, b) => b - a);
   const filteredAlumni = alumni.filter(a => a.batchYear === activeYear);
