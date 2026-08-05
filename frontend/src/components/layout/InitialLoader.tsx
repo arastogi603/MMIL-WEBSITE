@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function InitialLoader() {
   const [mounted, setMounted] = useState(false);
-  const [hasPlayedOnce, setHasPlayedOnce] = useState(false); 
+  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [isCarpetOpening, setIsCarpetOpening] = useState(false);
@@ -17,7 +17,7 @@ export function InitialLoader() {
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Check if the intro has already played in this session
     const played = sessionStorage.getItem("mmil_intro_played");
     if (played) {
@@ -30,14 +30,24 @@ export function InitialLoader() {
     if (mounted && !hasPlayedOnce && !isVideoFinished) {
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
+      // Also lock position to prevent iOS bounce causing white gap
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.top = "0";
     } else {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
     }
 
     return () => {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
     };
   }, [mounted, hasPlayedOnce, isVideoFinished]);
 
@@ -63,94 +73,106 @@ export function InitialLoader() {
   };
 
   if (!mounted || hasPlayedOnce || isVideoFinished) {
-    return null; 
+    return null;
   }
 
   return (
-    <div 
-      className="fixed inset-0 w-screen h-screen z-[99999] bg-transparent select-none cursor-pointer touch-none overscroll-none overflow-hidden"
+    <div
+      className="fixed inset-0 z-[99999] select-none cursor-pointer touch-none overscroll-none overflow-hidden bg-black"
+      style={{ width: "100vw", height: "100dvh" }}
       onClick={handleInteraction}
     >
       {/* Carpet Panels - Split Left & Right when ending (Background) */}
       <motion.div
-        className="absolute top-0 left-0 w-1/2 h-full bg-black z-10 pointer-events-none border-r border-white/10"
+        className="absolute top-0 left-0 w-1/2 bg-black z-10 pointer-events-none border-r border-white/10"
+        style={{ height: "100dvh" }}
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "-100%" : 0 }}
         transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
       <motion.div
-        className="absolute top-0 right-0 w-1/2 h-full bg-black z-10 pointer-events-none border-l border-white/10"
+        className="absolute top-0 right-0 w-1/2 bg-black z-10 pointer-events-none border-l border-white/10"
+        style={{ height: "100dvh" }}
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "100%" : 0 }}
         transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
 
-      {!isCarpetOpening && (
-        <div className="absolute inset-0 z-20">
-          {!hasInteracted ? (
-            /* BEFORE CLICK: Centered Elegant Script Text */
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="flex flex-col items-center w-full max-w-md"
-              >
-                <motion.p 
-                  animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.1)", "0 0 20px rgba(255,255,255,0.5)", "0 0 10px rgba(255,255,255,0.1)"] }}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                  className="text-xs md:text-sm font-medium tracking-[0.4em] uppercase text-white" 
+      {/* Content layer — fades out before carpet opens so logo doesn't fly offscreen */}
+      <AnimatePresence>
+        {!isCarpetOpening && (
+          <motion.div
+            className="absolute inset-0 z-20"
+            style={{ height: "100dvh" }}
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {!hasInteracted ? (
+              /* BEFORE CLICK: Centered Elegant Script Text */
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="flex flex-col items-center w-full max-w-md"
                 >
-                  Click anywhere to launch
-                </motion.p>
-              </motion.div>
-            </div>
-          ) : (
-            /* AFTER CLICK: Full Screen Video + Minimalist Loading Bar */
-            <div className="absolute inset-0 overflow-hidden bg-black">
-              <video
-                ref={videoRef}
-                src="/animation.mp4"
-                className="absolute inset-0 w-full h-full object-cover opacity-80"
-                playsInline
-                autoPlay
-                onEnded={handleVideoEnd}
-                onError={(e) => {
-                  console.error("Video error, skipping intro:", e);
-                  handleVideoEnd();
-                }}
-              />
-
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-4 pointer-events-none text-center p-6 z-10 w-full">
-                <motion.div 
-                  initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="text-[9px] md:text-xs font-light tracking-[0.4em] md:tracking-[0.5em] uppercase text-white/90 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-                >
-                  Experience Loading
-                </motion.div>
-                
-                {/* Responsive Width Container for Loading Bar */}
-                <div className="w-[120px] md:w-[160px] flex justify-center mt-1 md:mt-2">
-                  <motion.div 
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "100%" }}
-                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                    className="h-[1px] md:h-[2px] bg-white/10 relative overflow-hidden rounded-full"
+                  <motion.p
+                    animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.1)", "0 0 20px rgba(255,255,255,0.5)", "0 0 10px rgba(255,255,255,0.1)"] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                    className="text-xs md:text-sm font-medium tracking-[0.4em] uppercase text-white"
                   >
-                    <motion.div
-                      animate={{ x: ["-100%", "200%"] }}
-                      transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                      className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent"
-                    />
+                    Click anywhere to launch
+                  </motion.p>
+                </motion.div>
+              </div>
+            ) : (
+              /* AFTER CLICK: Full Screen Video + Minimalist Loading Bar */
+              <div className="absolute inset-0 overflow-hidden bg-black" style={{ height: "100dvh" }}>
+                <video
+                  ref={videoRef}
+                  src="/animation.mp4"
+                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  playsInline
+                  autoPlay
+                  onEnded={handleVideoEnd}
+                  onError={(e) => {
+                    console.error("Video error, skipping intro:", e);
+                    handleVideoEnd();
+                  }}
+                />
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-4 pointer-events-none text-center p-6 z-10 w-full">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="text-[9px] md:text-xs font-light tracking-[0.4em] md:tracking-[0.5em] uppercase text-white/90 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                  >
+                    Experience Loading
                   </motion.div>
+
+                  {/* Responsive Width Container for Loading Bar */}
+                  <div className="w-[120px] md:w-[160px] flex justify-center mt-1 md:mt-2">
+                    <motion.div
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "100%" }}
+                      transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                      className="h-[1px] md:h-[2px] bg-white/10 relative overflow-hidden rounded-full"
+                    >
+                      <motion.div
+                        animate={{ x: ["-100%", "200%"] }}
+                        transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                        className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent"
+                      />
+                    </motion.div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

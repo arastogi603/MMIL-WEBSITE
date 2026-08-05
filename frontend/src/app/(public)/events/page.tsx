@@ -20,6 +20,8 @@ const fallbackEvents: Event[] = [
   { id: "2", title: "Code-in-Pair", slug: "code-in-pair", description: "Two-member team coding relay contest.", type: "event", status: "completed", isTeamEvent: true, teamSizeMin: 2, teamSizeMax: 2, seatsTaken: 0, posterUrl: "/images/events/CodeInPair.png" },
   { id: "3", title: "Decode", slug: "decode", description: "Cryptic hunt and algorithmic decoding event.", type: "event", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/deencode.png" },
   { id: "4", title: "Valorant Gaming Tournament", slug: "valorant", description: "Zealicon e-sports Valorant tournament.", type: "event", status: "completed", isTeamEvent: true, teamSizeMin: 5, teamSizeMax: 5, seatsTaken: 0, posterUrl: "/images/events/valorant.png" },
+  { id: "5", title: "LinkedIn & Resume Building", slug: "resume-workshop", description: "Professional profile optimization session.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/Linkdin.jpeg" },
+  { id: "6", title: "Generative AI & Python", slug: "genai-workshop", description: "Learn prompt engineering and Python.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/GenAI.jpeg" },
 ];
 
 function StatusBadge({ status }: { status?: string }) {
@@ -141,7 +143,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
   return (
     <div className="w-full relative flex flex-col items-center">
       {/* Carousel Track Container */}
-      <div className="relative w-full max-w-6xl h-[460px] sm:h-[580px] md:h-[650px] lg:h-[680px] flex items-center justify-center overflow-hidden py-4 select-none touch-pan-y">
+      <div className="relative w-full max-w-6xl h-[520px] sm:h-[580px] md:h-[650px] lg:h-[680px] flex items-center justify-center overflow-hidden py-4 select-none">
         <motion.div
           className="relative w-full h-full flex items-center justify-center transform-gpu"
           drag="x"
@@ -179,7 +181,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
                   pointerEvents: props.pointerEvents,
                   willChange: "transform, opacity",
                 }}
-                className="transform-gpu absolute w-[260px] sm:w-[340px] md:w-[380px] lg:w-[400px] rounded-3xl bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 overflow-hidden flex flex-col cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
+                className="transform-gpu absolute w-[240px] sm:w-[320px] md:w-[380px] lg:w-[400px] rounded-3xl bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 overflow-hidden flex flex-col cursor-pointer shadow-[0_12px_32px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
               >
                 {/* Poster Image / Fallback - 640x892 exact ratio */}
                 <div className="relative w-full aspect-[640/892] overflow-hidden shrink-0 border-b border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5">
@@ -188,8 +190,8 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
                       src={poster}
                       alt={evt.title}
                       fill
-                      sizes="(max-width: 640px) 260px, (max-width: 768px) 340px, 400px"
-                      className="object-contain object-center w-full h-full transform-gpu"
+                      sizes="(max-width: 640px) 240px, (max-width: 768px) 320px, 400px"
+                      className="object-cover object-center w-full h-full transform-gpu"
                     />
                   ) : (
                     <EventFallbackImage type={evt.type || "Event"} />
@@ -222,16 +224,16 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
         <button
           onClick={handlePrev}
           aria-label="Previous event"
-          className="absolute left-2 sm:left-10 md:left-16 lg:left-24 z-40 p-3 sm:p-3.5 rounded-full bg-white/90 dark:bg-[#27272a]/90 text-[var(--text-primary)] border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-[#27272a] transition-all shadow-md active:scale-95"
+          className="absolute left-1 sm:left-10 md:left-16 lg:left-24 z-40 p-2.5 sm:p-3.5 rounded-full bg-white/90 dark:bg-[#27272a]/90 text-[var(--text-primary)] border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-[#27272a] transition-all shadow-md active:scale-95"
         >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={handleNext}
           aria-label="Next event"
-          className="absolute right-2 sm:right-10 md:right-16 lg:right-24 z-40 p-3 sm:p-3.5 rounded-full bg-white/90 dark:bg-[#27272a]/90 text-[var(--text-primary)] border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-[#27272a] transition-all shadow-md active:scale-95"
+          className="absolute right-1 sm:right-10 md:right-16 lg:right-24 z-40 p-2.5 sm:p-3.5 rounded-full bg-white/90 dark:bg-[#27272a]/90 text-[var(--text-primary)] border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-[#27272a] transition-all shadow-md active:scale-95"
         >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
         </button>
       </div>
 

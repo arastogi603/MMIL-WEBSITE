@@ -7,6 +7,12 @@ const DEFAULT_EVENT_POSTERS: Record<string, string> = {
   "decode": "/images/events/deencode.png",
   "deencode": "/images/events/deencode.png",
   "valorant": "/images/events/valorant.png",
+  "genai-workshop": "/images/events/GenAI.jpeg",
+  "genai": "/images/events/GenAI.jpeg",
+  "resume-workshop": "/images/events/Linkdin.jpeg",
+  "linkedin-workshop": "/images/events/Linkdin.jpeg",
+  "linkedin": "/images/events/Linkdin.jpeg",
+  "linkdin": "/images/events/Linkdin.jpeg",
 };
 
 /**
@@ -25,6 +31,8 @@ export function getEventPoster(evt?: Event | null): string | undefined {
   if (title.includes("code-in-pair") || title.includes("code in pair")) return "/images/events/CodeInPair.png";
   if (title.includes("decode") || title.includes("deencode")) return "/images/events/deencode.png";
   if (title.includes("valorant")) return "/images/events/valorant.png";
+  if (title.includes("genai") || title.includes("generative ai")) return "/images/events/GenAI.jpeg";
+  if (title.includes("linkedin") || title.includes("linkdin") || title.includes("resume")) return "/images/events/Linkdin.jpeg";
 
   return undefined;
 }

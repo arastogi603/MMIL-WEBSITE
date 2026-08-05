@@ -94,15 +94,13 @@ const domains: DomainData[] = [
       {
         name: "Arunima Negi",
         role: "Programmer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5603AQHk8xAMkLoX6Q/profile-displayphoto-shrink_800_800/B56ZQxgkCJH0Ac-/0/1735997414525?e=1786579200&v=beta&t=YnWVlxUAEVmLmX7XyZeSiepE5Y0bbLcsPbYMq1k8cN8",
+        avatar: "/images/members/Arunima.jpeg",
         linkedin: "https://www.linkedin.com/in/arunima-negi-90504429b/",
       },
       {
         name: "K. Anushree",
         role: "Programmer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D4E03AQGHQXpi0yR2Bg/profile-displayphoto-shrink_800_800/B4EZcFx5uKH0Ac-/0/1748148658313?e=1786579200&v=beta&t=kueb2YiIzYSZ8upDjHbJZahlNhjE43yrl4UYTmPxF3I",
+        avatar: "/images/members/Anushree.jpeg",
         linkedin: "https://www.linkedin.com/in/theanushree25/",
       },
       {
@@ -160,15 +158,13 @@ const domains: DomainData[] = [
       {
         name: "Nandini Mishra",
         role: "Web Developer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5603AQGzKnyCuA3V-Q/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1727012180946?e=1786579200&v=beta&t=CJTkR5BDprIilEeghIL368AyD-F2AhlEjbBaE4-vzKs",
+        avatar: "/images/members/nandini.jpeg",
         linkedin: "https://www.linkedin.com/in/nandini-mishra-4a5a3132a/",
       },
       {
         name: "Ayushi Tiwari",
         role: "Web Developer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5603AQF9h99beGKKcg/profile-displayphoto-crop_800_800/B56Zzy9SpMJIAQ-/0/1773602682193?e=1786579200&v=beta&t=gbBKa-FRy4VArkjedeOMFnn60K6GZb3c4Gng4FIVmiM",
+        avatar: "/images/members/Ayushi.png",
         linkedin: "https://www.linkedin.com/in/ayushi-tiwari-408a61302/",
       },
       {
@@ -207,8 +203,7 @@ const domains: DomainData[] = [
       {
         name: "Rajat Kumar",
         role: "Technical Member",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5635AQFVYMArh5ZYUA/profile-framedphoto-shrink_800_800/B56Z7q0_aUIQAY-/0/1782056220724?e=1785358800&v=beta&t=Rn4edCrF-0LmQoqTQxRicM5ZbmGLrelsIh_2A1xYu18",
+        avatar: "/images/members/rajat.jpeg",
         linkedin: "https://www.linkedin.com/in/rajat281/",
       },
       {
@@ -248,6 +243,12 @@ const domains: DomainData[] = [
         role: "Designer",
         avatar: "/images/members/ankita.jpg",
         linkedin: "https://www.linkedin.com/in/ankita-singh-566007385/",
+      },
+      {
+        name: "Himanshi",
+        role: "Designer",
+        avatar: "/images/members/himanshi.jpeg",
+        linkedin: "#",
       },
     ],
   },

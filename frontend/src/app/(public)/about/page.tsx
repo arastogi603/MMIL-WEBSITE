@@ -71,7 +71,8 @@ export default function AboutPage() {
             <Award className="w-6 h-6 text-[#eb4d6d] mb-5" />
             <h3 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">Our Values</h3>
             <div className="w-full h-[2px] mb-4" style={{ background: "#eb4d6d" }} />
-            <p className="text-[var(--text-secondary)] font-light leading-relaxed">Inclusivity, technical excellence, open source contribution, and continuous iteration  we build together, ship together, and grow together.</p>
+            <p className="text-[var(--text-secondary)] font-light leading-relaxed">Inclusivity, technical excellence, open source contribution, and continuous iteration
+              we build together, ship together, and grow together.</p>
           </motion.div>
         </div>
 
@@ -104,7 +105,14 @@ export default function AboutPage() {
               </ul>
             </div>
             <div className="w-full md:w-1/2 border-t md:border-t-0 md:border-l border-[var(--text-primary)]/10 relative min-h-[300px] md:min-h-[400px]">
-              <img src="/orientation.jpg" alt="MMIL Orientation" className="absolute inset-0 w-full h-full object-cover" />
+              <Image
+                src="/orientation.jpg"
+                alt="MMIL Orientation"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
             </div>
           </div>
         </FadeIn>

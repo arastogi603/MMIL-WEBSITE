@@ -181,23 +181,29 @@ public class DatabaseSeeder {
                 seedEventIfMissing(eventRepository, "Logocon", "logocon", "Zealicon flagship logic and coding contest.",
                                 "event", "completed", false, 1, 1, "/images/events/Logocon.png");
                 seedEventIfMissing(eventRepository, "Code-in-Pair", "code-in-pair",
-                                "Two-member team coding relay contest.", "event", "completed", true, 2, 2, "/images/events/CodeInPair.png");
+                                "Two-member team coding relay contest.", "event", "completed", true, 2, 2,
+                                "/images/events/CodeInPair.png");
                 seedEventIfMissing(eventRepository, "Decode", "decode", "Cryptic hunt and algorithmic decoding event.",
                                 "event", "completed", false, 1, 1, "/images/events/deencode.png");
                 seedEventIfMissing(eventRepository, "Valorant Gaming Tournament", "valorant",
-                                "Zealicon e-sports Valorant tournament.", "event", "completed", true, 5, 5, "/images/events/valorant.png");
+                                "Zealicon e-sports Valorant tournament.", "event", "completed", true, 5, 5,
+                                "/images/events/valorant.png");
 
                 // Society Flagship Events
                 seedEventIfMissing(eventRepository, "Hack-o-Code", "hack-o-code", "Annual Coding Contest.", "event",
                                 "completed", false, 1, 1, null);
                 seedEventIfMissing(eventRepository, "GitHub & Version Control Workshop", "github-workshop",
-                                "Learn Git basics and open-source contribution.", "workshop", "completed", false, 1, 1, null);
+                                "Learn Git basics and open-source contribution.", "workshop", "completed", false, 1, 1,
+                                null);
                 seedEventIfMissing(eventRepository, "LinkedIn & Resume Building", "resume-workshop",
-                                "Professional profile optimization session.", "workshop", "completed", false, 1, 1, null);
+                                "Professional profile optimization session.", "workshop", "completed", false, 1, 1,
+                                "/images/events/Linkdin.jpeg");
                 seedEventIfMissing(eventRepository, "Generative AI & Python", "genai-workshop",
-                                "Learn prompt engineering and Python.", "workshop", "completed", false, 1, 1, null);
+                                "Learn prompt engineering and Python.", "workshop", "completed", false, 1, 1,
+                                "/images/events/GenAI.jpeg");
                 seedEventIfMissing(eventRepository, "Web Dev & Core Programming Bootcamp", "webdev-bootcamp",
-                                "Comprehensive web development crash course.", "workshop", "completed", false, 1, 1, null);
+                                "Comprehensive web development crash course.", "workshop", "completed", false, 1, 1,
+                                null);
         }
 
         private void seedEventIfMissing(EventRepository repo, String title, String slug, String desc, String type,
@@ -217,7 +223,8 @@ public class DatabaseSeeder {
                         e.setStartDate(LocalDateTime.now().minusDays(10));
                         e.setEndDate(LocalDateTime.now().minusDays(9));
                         repo.save(e);
-                } else if (posterUrl != null && (existing.get().getPosterUrl() == null || existing.get().getPosterUrl().isEmpty())) {
+                } else if (posterUrl != null
+                                && (existing.get().getPosterUrl() == null || existing.get().getPosterUrl().isEmpty())) {
                         Event e = existing.get();
                         e.setPosterUrl(posterUrl);
                         repo.save(e);
