@@ -136,63 +136,61 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <>
           <div className="mobile-menu-overlay" onClick={closeMobileMenu} />
-          <div className="mobile-menu" style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: 0, justifyContent: 'space-between', overflow: 'hidden' }}>
+          <div className="mobile-menu" style={{ display: 'flex', flexDirection: 'column', height: '100dvh', padding: 0, paddingBottom: 'env(safe-area-inset-bottom, 20px)', justifyContent: 'space-between', overflow: 'hidden' }}>
             <div style={{ position: 'relative', width: '100%', flex: 1, minHeight: '350px' }}>
-              <OptionWheel
-                items={dynamicNavItems.map(item => ({
-                  label: item.label,
-                  icon: item.icon,
-                  href: item.href,
-                  onClick: (item as any).onClick
-                })) as any}
-                defaultSelected={Math.max(0, dynamicNavItems.findIndex(item => isActive(item.href)))}
-                activeColor="#ffffff"
-                textColor="rgba(255, 255, 255, 0.5)"
-                side="left"
-                fontSize={2.2}
-                spacing={1.8}
-                inset={40}
-                loop={true}
-                onChange={(idx: number) => {
-                  const item = dynamicNavItems[idx];
-                  if (!item) return;
-
-                  if ((window as any).wheelNavTimer) {
-                    clearTimeout((window as any).wheelNavTimer);
+              {(() => {
+                const mobileWheelItems = [
+                  ...dynamicNavItems,
+                  {
+                    label: theme === "dark" ? "Light Mode" : "Dark Mode",
+                    icon: theme === "dark" ? Sun : Moon,
+                    href: "#theme",
+                    onClick: (e: any) => { e?.preventDefault(); toggleTheme(); }
                   }
+                ];
 
-                  (window as any).wheelNavTimer = setTimeout(() => {
-                    closeMobileMenu();
-                    if ((item as any).onClick) {
-                      (item as any).onClick({ preventDefault: () => { } });
-                    } else if (item.href && item.href !== "#theme") {
-                      window.location.href = item.href;
-                    }
-                  }, 800);
-                }}
-              />
-            </div>
+                return (
+                  <OptionWheel
+                    items={mobileWheelItems.map(item => ({
+                      label: item.label,
+                      icon: item.icon,
+                      href: item.href,
+                      onClick: (item as any).onClick
+                    })) as any}
+                    defaultSelected={Math.max(0, dynamicNavItems.findIndex(item => isActive(item.href)))}
+                    activeColor={theme === "dark" ? "#ffffff" : "#111111"}
+                    textColor={theme === "dark" ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)"}
+                    side="left"
+                    fontSize={2.2}
+                    spacing={1.8}
+                    inset={40}
+                    loop={true}
+                    onChange={(idx: number) => {
+                      const item = mobileWheelItems[idx];
+                      if (!item) return;
 
-            {/* Relocated Dark Mode Toggle Row */}
-            <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between z-50 bg-black/50 backdrop-blur-md">
-              <div className="flex items-center gap-3 text-white font-semibold text-sm">
-                {theme === "dark" ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-blue-300" />}
-                <span>Dark Mode</span>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggleTheme();
-                }}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${theme === "dark" ? "bg-blue-600" : "bg-zinc-700"
-                  }`}
-                aria-label="Toggle Dark Mode"
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 ease-in-out ${theme === "dark" ? "translate-x-6" : "translate-x-1"
-                    }`}
-                />
-              </button>
+                      if ((window as any).wheelNavTimer) {
+                        clearTimeout((window as any).wheelNavTimer);
+                      }
+
+                      (window as any).wheelNavTimer = setTimeout(() => {
+                        if (item.href === "#theme") {
+                          toggleTheme();
+                          // Keep menu open when toggling theme
+                          return;
+                        }
+
+                        closeMobileMenu();
+                        if ((item as any).onClick) {
+                          (item as any).onClick({ preventDefault: () => { } });
+                        } else if (item.href) {
+                          window.location.href = item.href;
+                        }
+                      }, 800);
+                    }}
+                  />
+                );
+              })()}
             </div>
           </div>
         </>

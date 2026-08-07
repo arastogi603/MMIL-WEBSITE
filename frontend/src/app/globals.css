@@ -383,14 +383,14 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   inset: 0;
   z-index: 45;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(3px);
   animation: ow-fade-in 0.3s ease forwards;
 }
 
 [data-theme="dark"] .mobile-menu-overlay {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(14px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
 }
 
 .mobile-menu {

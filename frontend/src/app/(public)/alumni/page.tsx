@@ -194,7 +194,7 @@ export default function AlumniPage() {
                 key={year}
                 onClick={() => setActiveYear(year)}
                 className={`px-7 py-2.5 rounded-full font-bold text-sm transition-all duration-300 ${activeYear === year
-                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                  ? "bg-black dark:bg-white text-white dark:text-black shadow-lg scale-105"
                   : "hover:bg-white/10 text-[var(--text-secondary)]"
                   }`}
               >
