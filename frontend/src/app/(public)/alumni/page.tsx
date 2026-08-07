@@ -1,123 +1,233 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { alumniApi, Alumni } from "@/lib/api/alumni";
-import { Link as LinkIcon, Briefcase, MapPin } from "lucide-react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link as LinkIcon } from "lucide-react";
 
-export default function AlumniPage() {
-  const [alumni, setAlumni] = useState<Alumni[]>([]);
-  const [activeYear, setActiveYear] = useState<number | null>(null);
+interface AlumniMember {
+  id: string;
+  name: string;
+  batchYear: number;
+  linkedInUrl: string;
+  linkedInUsername: string;
+  avatarUrl: string;
+  company: string;
+}
 
-  useEffect(() => {
-    const controller = new AbortController();
-    alumniApi.getAllAlumni().then((data) => {
-      if (controller.signal.aborted) return;
-      setAlumni(data);
-      if (data.length > 0) {
-        setActiveYear(data[0].batchYear);
-      }
-    });
-    return () => controller.abort();
-  }, []);
+const ALUMNI_DATA: AlumniMember[] = [
+  {
+    id: "1",
+    name: "Harsh Jajaniya",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/harsh-jajaniya-293bb0247/",
+    linkedInUsername: "harsh-jajaniya-293bb0247",
+    avatarUrl: "/images/alumni/harsh-jajaniya.jpg",
+    company: "AARFID Holdings LLC",
+  },
+  {
+    id: "2",
+    name: "Ashita Maheshwari",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/ashita-maheshwari/",
+    linkedInUsername: "ashita-maheshwari",
+    avatarUrl: "/images/alumni/ashita-maheshwari.jpg",
+    company: "Codess.Cafe",
+  },
+  {
+    id: "3",
+    name: "Anusha Agarwal",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/anusha-agarwal-068b70271/",
+    linkedInUsername: "anusha-agarwal-068b70271",
+    avatarUrl: "/images/alumni/anusha-agarwal.jpg",
+    company: "Blinkit",
+  },
+  {
+    id: "4",
+    name: "Parth Gupta",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/parth-gupta-3793ba273/",
+    linkedInUsername: "parth-gupta-3793ba273",
+    avatarUrl: "/images/alumni/parth-gupta.jpg",
+    company: "Modgenics Technology Solutions",
+  },
+  {
+    id: "5",
+    name: "Muskan Jaiswal",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/muskan-jais/",
+    linkedInUsername: "muskan-jais",
+    avatarUrl: "/images/alumni/muskan-jaiswal.jpg",
+    company: "Newgen Software",
+  },
+  {
+    id: "6",
+    name: "Manas Rai",
+    batchYear: 2024,
+    linkedInUrl: "https://www.linkedin.com/in/manas-rai2003/",
+    linkedInUsername: "manas-rai2003",
+    avatarUrl: "/images/alumni/manas-rai.jpg",
+    company: "Astrotalk",
+  },
+  {
+    id: "7",
+    name: "Ayush Pandey",
+    batchYear: 2024,
+    linkedInUrl: "https://www.linkedin.com/in/ayush-pandey01/",
+    linkedInUsername: "ayush-pandey01",
+    avatarUrl: "/images/alumni/ayush-pandey.jpg",
+    company: "Amazon",
+  },
+];
 
+function getInitials(name: string): string {
+  if (!name) return "";
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
 
-  const batchYears = Array.from(new Set(alumni.map(a => a.batchYear))).sort((a, b) => b - a);
-  const filteredAlumni = alumni.filter(a => a.batchYear === activeYear);
+function PosterImage({ src, alt, name }: { src: string; alt: string; name: string }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (!src || hasError) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-800 text-white select-none">
+        <span className="text-4xl font-black tracking-wider text-zinc-300">
+          {getInitials(name)}
+        </span>
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen pt-32 pb-20 px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-6xl font-black mb-6 text-[var(--text-primary)]"
-        >
-          OUR ALUMNI
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
-          className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto"
-        >
-          Meet the brilliant minds who helped shape MMIL. See where they are now and connect with them.
-        </motion.p>
-      </div>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      className="w-full h-full object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+      onError={() => setHasError(true)}
+    />
+  );
+}
 
-      {/* Horizontal Timeline */}
-      <div className="flex justify-center mb-16">
-        <div className="flex gap-4 p-2 bg-white/10 dark:bg-black/20 backdrop-blur-md rounded-full border border-[var(--card-border)] overflow-x-auto max-w-full">
-          {batchYears.map((year) => (
-            <button
-              key={year}
-              onClick={() => setActiveYear(year)}
-              className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${activeYear === year
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "hover:bg-white/10 text-[var(--text-secondary)]"
-                }`}
-            >
-              {year}
-            </button>
-          ))}
-          {batchYears.length === 0 && <span className="px-6 py-2 text-gray-500">No batches found</span>}
+function AlumniCard({ member, index }: { member: AlumniMember; index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
+      className="relative group rounded-2xl overflow-hidden transition-all duration-200 ease-out hover:-translate-y-1.5 hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)] shrink-0 w-[280px] sm:w-[320px] md:w-[350px] lg:w-[370px] h-[370px] sm:h-[420px] md:h-[460px] lg:h-[480px] cursor-pointer bg-black/5 dark:bg-white/5"
+    >
+      <PosterImage src={member.avatarUrl} alt={member.name} name={member.name} />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
+
+      <a
+        href={member.linkedInUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`${member.name}'s LinkedIn profile`}
+        className="absolute top-4 right-4 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white border border-white/20 hover:bg-blue-600 hover:text-white hover:scale-110 transition-all duration-200 shadow-md z-10"
+      >
+        <LinkIcon className="w-4 h-4" />
+      </a>
+
+      <div className="absolute bottom-0 left-0 w-full p-4 sm:p-6 text-white z-10 pointer-events-none">
+        <h3 className="text-xl sm:text-2xl font-black tracking-tight leading-snug mb-0.5">
+          {member.name}
+        </h3>
+        <p className="text-xs sm:text-sm font-semibold tracking-wide text-white/80">
+          Working at <span className="text-white font-bold">{member.company}</span>
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function AlumniPage() {
+  const batchYears = Array.from(
+    new Set(ALUMNI_DATA.map((a) => a.batchYear))
+  ).sort((a, b) => b - a);
+
+  const [activeYear, setActiveYear] = useState<number>(batchYears[0]);
+  const filteredAlumni = ALUMNI_DATA.filter((a) => a.batchYear === activeYear);
+
+  return (
+    <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+
+        <div className="text-center max-w-4xl mx-auto mb-20">
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-5xl md:text-7xl font-black tracking-tight uppercase leading-none mb-6 text-[var(--text-primary)]"
+          >
+            OUR ALUMNI
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+            className="text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed font-medium"
+          >
+            Meet the brilliant minds who helped shape MMIL. Connect with them on
+            LinkedIn and follow their journey.
+          </motion.p>
         </div>
-      </div>
 
-      {/* Alumni Grid */}
-      <AnimatePresence mode="wait">
         <motion.div
-          key={activeYear || 'empty'}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex justify-center mb-14"
         >
-          {filteredAlumni.map((alum, idx) => (
-            <motion.div
-              key={alum.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.1 }}
-              className="relative group overflow-hidden rounded-[2.5rem] bg-[var(--background)] border border-[var(--border)] shadow-md hover:shadow-xl transition-all duration-300"
-            >
-              <div className="aspect-[4/5] relative bg-black/5 dark:bg-white/5">
-                {alum.imageUrl ? (
-                  <img src={alum.imageUrl} alt={alum.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-blue-100 dark:bg-blue-900/30">
-                    <span className="text-6xl font-bold text-blue-500">{alum.name.charAt(0)}</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80" />
-
-                {/* LinkedIn Button */}
-                {alum.linkedInUrl && (
-                  <a
-                    href={alum.linkedInUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-blue-600 transition-all shadow-sm z-10"
-                  >
-                    <LinkIcon size={20} />
-                  </a>
-                )}
-
-                {/* Info */}
-                <div className="absolute bottom-0 left-0 w-full p-6 text-white z-10">
-                  <h3 className="text-2xl font-black mb-2">{alum.name}</h3>
-                  <div className="flex items-center gap-2 text-white/90 font-medium text-sm">
-                    <Briefcase size={16} className="text-blue-400" />
-                    <span className="tracking-wide">{alum.role} at <span className="font-bold text-white">{alum.company}</span></span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          <div className="flex gap-3 p-2 bg-white/10 dark:bg-black/20 backdrop-blur-md rounded-full border border-[var(--card-border)]">
+            {batchYears.map((year) => (
+              <button
+                key={year}
+                onClick={() => setActiveYear(year)}
+                className={`px-7 py-2.5 rounded-full font-bold text-sm transition-all duration-300 ${activeYear === year
+                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                  : "hover:bg-white/10 text-[var(--text-secondary)]"
+                  }`}
+              >
+                {year}
+              </button>
+            ))}
+          </div>
         </motion.div>
-      </AnimatePresence>
+
+        <div className="flex items-center justify-center mb-12">
+          <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
+          <span className="px-6 text-xl sm:text-2xl font-black tracking-[0.1em] text-[var(--text-primary)] uppercase">
+            Batch of {activeYear}
+          </span>
+          <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeYear}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-6 sm:gap-8"
+          >
+            {filteredAlumni.map((member, idx) => (
+              <AlumniCard key={member.id} member={member} index={idx} />
+            ))}
+          </motion.div>
+        </AnimatePresence>
+
+      </div>
     </main>
   );
 }

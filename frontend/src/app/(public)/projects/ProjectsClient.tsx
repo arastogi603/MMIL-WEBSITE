@@ -34,7 +34,8 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
   const { theme } = useTheme();
   const [posts, setPosts] = useState<any[]>(initialPosts);
   const [currentPost, setCurrentPost] = useState<any | null>(initialPosts[0] || null);
-  const [hoveredTitle, setHoveredTitle] = useState<string | null>(null);
+  const [isHoveringCanvas, setIsHoveringCanvas] = useState(false);
+  const [canvasVisible, setCanvasVisible] = useState(false);
 
   // Lenis is removed in favor of our custom WebGL scroll lerping loop
 
@@ -96,18 +97,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
       images: infinitePosts,
       router: router,
       onHover: (slug: string | null) => {
-        if (slug !== null && slug !== undefined) {
-          const found = infinitePosts.find(
-            (p) => String(p.slug) === String(slug) || String(p.id) === String(slug)
-          );
-          if (found) {
-            setHoveredTitle(found.title);
-          } else {
-            setHoveredTitle(null);
-          }
-        } else {
-          setHoveredTitle(null);
-        }
+        setIsHoveringCanvas(slug !== null && slug !== undefined);
       },
       onClick: (slug: string) => {
         const isCurrentPost = slug !== null && String(slug) === String(currentPostRef.current?.slug);
@@ -153,6 +143,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
           containerEl.style.transform = "none";
           containerEl.style.pointerEvents = "none";
         }
+        setCanvasVisible(enterProgress > 0.9);
       }
 
       // Project info overlay fades in with the 3D canvas
@@ -332,10 +323,11 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
         </>
       )}
 
-      {/* Hovered Project Title on Left Side - Minimal & Clean */}
-      <AnimatePresence>
-        {hoveredTitle && (
+      {/* Current Project Title on Left Side — only visible after canvas enters */}
+      <AnimatePresence mode="wait">
+        {currentPost && canvasVisible && (
           <motion.div
+            key={currentPost.slug ?? currentPost.id}
             initial={{ opacity: 0, x: -15 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
@@ -343,7 +335,7 @@ export default function ProjectsClient({ initialPosts }: { initialPosts: any[] }
             className="fixed left-4 md:left-14 top-1/2 -translate-y-1/2 z-40 pointer-events-none max-w-[calc(100vw-2rem)] md:max-w-md"
           >
             <p className="text-xl md:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-lg break-words">
-              {hoveredTitle}
+              {currentPost.title}
             </p>
           </motion.div>
         )}

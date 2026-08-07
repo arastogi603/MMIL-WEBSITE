@@ -271,6 +271,7 @@ export default class InfiniteSlider {
 
     const mesh = this._findMeshAtNDC(new THREE.Vector2(x, y));
     const slug = mesh?.userData.slug ?? null;
+    this.container.style.cursor = slug ? 'pointer' : 'default';
     this.onHover?.(slug);
   }
 

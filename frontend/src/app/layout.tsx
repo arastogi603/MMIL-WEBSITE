@@ -44,7 +44,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", poppins.variable, geist.variable, poppins.className, "font-sans")}
       suppressHydrationWarning
     >
-      <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }} className={poppins.className}>
+      <body style={{ display: "flex", flexDirection: "column" }} className={poppins.className}>
         <ThemeProvider>
           <AuthProvider>
             <InitialLoader />

@@ -164,7 +164,7 @@ export const BentoGrid = () => {
             {/* Photo 2 (Center, rotated 1 deg, elevated z-10) */}
             <div className="relative z-10 w-28 sm:w-32 h-24 sm:h-28 rounded-2xl overflow-hidden border-2 border-white dark:border-[#11222C] shadow-lg transform rotate-1">
               <img
-                src="/community.jpg"
+                src="/orientation.jpg"
                 alt="MMIL Community Photo"
                 className="w-full h-full object-cover"
               />
@@ -173,7 +173,7 @@ export const BentoGrid = () => {
             {/* Photo 3 (Right, rotated 6 deg) */}
             <div className="absolute right-6 sm:right-12 top-2 w-24 sm:w-28 h-20 sm:h-24 rounded-2xl overflow-hidden border border-black/10 dark:border-white/20 shadow-md transform rotate-6">
               <img
-                src="/images/gallery/WhatsApp Image 2026-07-25 at 3.36.46 PM.jpeg"
+                src="/images/gallery/WhatsApp Image 2026-07-25 at 3.37.33 PM.jpeg"
                 alt="MMIL Event Photo 2"
                 className="w-full h-full object-cover"
               />
@@ -260,7 +260,7 @@ export const BentoGrid = () => {
 
           {/* Visual: Company Chips pulled tight above heading */}
           <div className="mt-4 mb-3 flex flex-wrap items-center gap-1.5">
-            {["Microsoft", "Google", "Amazon", "+12"].map((company) => (
+            {["Amazon", "Blinkit", "Zomato", "+12"].map((company) => (
               <span
                 key={company}
                 className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${company.startsWith("+")

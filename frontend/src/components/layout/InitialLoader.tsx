@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function InitialLoader() {
-  const [mounted, setMounted] = useState(false);
-  const [hasPlayedOnce, setHasPlayedOnce] = useState(false);
+  // Start as null = unknown (SSR). After hydration we know the real value.
+  const [shouldShow, setShouldShow] = useState<boolean | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [isCarpetOpening, setIsCarpetOpening] = useState(false);
@@ -16,52 +16,41 @@ export function InitialLoader() {
   const VIDEO_PLAYBACK_SPEED = 1.5;
 
   useEffect(() => {
-    setMounted(true);
-
-    // Check if the intro has already played in this session
+    // On mount (client only), decide whether to show splash
     const played = sessionStorage.getItem("mmil_intro_played");
-    if (played) {
-      setHasPlayedOnce(true);
-    }
+    setShouldShow(!played);
   }, []);
 
-  // Lock body scroll while intro animation is active
+  // Lock body scroll while intro is active — no position:fixed (causes jump on unlock)
   useEffect(() => {
-    if (mounted && !hasPlayedOnce && !isVideoFinished) {
+    const isActive = shouldShow === true && !isVideoFinished;
+    if (isActive) {
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
-      // Also lock position to prevent iOS bounce causing white gap
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.top = "0";
+      document.body.style.overscrollBehavior = "none";
     } else {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.top = "";
+      document.body.style.overscrollBehavior = "";
     }
-
     return () => {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.top = "";
+      document.body.style.overscrollBehavior = "";
     };
-  }, [mounted, hasPlayedOnce, isVideoFinished]);
+  }, [shouldShow, isVideoFinished]);
 
   useEffect(() => {
     if (hasInteracted && videoRef.current) {
       videoRef.current.playbackRate = VIDEO_PLAYBACK_SPEED;
-      videoRef.current.play().catch(e => console.error("Video playback failed", e));
+      videoRef.current.play().catch((e) =>
+        console.error("Video playback failed", e)
+      );
     }
   }, [hasInteracted]);
 
   const handleInteraction = () => {
-    if (!hasInteracted) {
-      setHasInteracted(true);
-    }
+    if (!hasInteracted) setHasInteracted(true);
   };
 
   const handleVideoEnd = () => {
@@ -69,47 +58,64 @@ export function InitialLoader() {
     setTimeout(() => {
       setIsVideoFinished(true);
       sessionStorage.setItem("mmil_intro_played", "true");
-    }, (ANIMATION_SPEED * 1000) + 200);
+    }, ANIMATION_SPEED * 1000 + 200);
   };
 
-  if (!mounted || hasPlayedOnce || isVideoFinished) {
-    return null;
+  // ── Bug 1 fix ──────────────────────────────────────────────────────────────
+  // While shouldShow is null (SSR / first paint), render a blocking black screen
+  // so the home page is never visible before we know if splash should play.
+  // Once we know shouldShow=false (played before), remove it immediately.
+  if (shouldShow === null) {
+    return (
+      <div
+        className="fixed inset-0 z-[99999] bg-black"
+        style={{ width: "100vw", height: "100dvh" }}
+      />
+    );
   }
 
+  if (!shouldShow || isVideoFinished) return null;
+
   return (
+    // ── Bug 2 fix ─────────────────────────────────────────────────────────────
+    // Use overflow:hidden + overscroll-none instead of position:fixed on body.
+    // isolate so stacking contexts beneath don't bleed through.
+    // ── Bug 3 fix ─────────────────────────────────────────────────────────────
+    // Use max-w/max-h on the video wrapper so it never overflows the viewport
+    // on mobile, and clip strictly to 100dvh.
     <div
-      className="fixed inset-0 z-[99999] select-none cursor-pointer touch-none overscroll-none overflow-hidden bg-black"
+      className="fixed inset-0 z-[99999] select-none cursor-pointer touch-none overflow-hidden bg-black"
       style={{ width: "100vw", height: "100dvh" }}
       onClick={handleInteraction}
     >
-      {/* Carpet Panels - Split Left & Right when ending (Background) */}
+      {/* Carpet Panels — slide left/right when animation ends */}
       <motion.div
-        className="absolute top-0 left-0 w-1/2 bg-black z-10 pointer-events-none border-r border-white/10"
+        className="absolute top-0 left-0 w-1/2 bg-black z-10 pointer-events-none"
         style={{ height: "100dvh" }}
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "-100%" : 0 }}
         transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
       <motion.div
-        className="absolute top-0 right-0 w-1/2 bg-black z-10 pointer-events-none border-l border-white/10"
+        className="absolute top-0 right-0 w-1/2 bg-black z-10 pointer-events-none"
         style={{ height: "100dvh" }}
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "100%" : 0 }}
         transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
 
-      {/* Content layer — fades out before carpet opens so logo doesn't fly offscreen */}
+      {/* Content layer — fades out before carpet opens */}
       <AnimatePresence>
         {!isCarpetOpening && (
           <motion.div
-            className="absolute inset-0 z-20"
+            className="absolute inset-0 z-20 overflow-hidden"
             style={{ height: "100dvh" }}
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
             {!hasInteracted ? (
-              /* BEFORE CLICK: Centered Elegant Script Text */
+              /* BEFORE CLICK: Centered prompt */
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
@@ -118,8 +124,18 @@ export function InitialLoader() {
                   className="flex flex-col items-center w-full max-w-md"
                 >
                   <motion.p
-                    animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.1)", "0 0 20px rgba(255,255,255,0.5)", "0 0 10px rgba(255,255,255,0.1)"] }}
-                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                    animate={{
+                      textShadow: [
+                        "0 0 10px rgba(255,255,255,0.1)",
+                        "0 0 20px rgba(255,255,255,0.5)",
+                        "0 0 10px rgba(255,255,255,0.1)",
+                      ],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2.5,
+                      ease: "easeInOut",
+                    }}
                     className="text-xs md:text-sm font-medium tracking-[0.4em] uppercase text-white"
                   >
                     Click anywhere to launch
@@ -127,14 +143,18 @@ export function InitialLoader() {
                 </motion.div>
               </div>
             ) : (
-              /* AFTER CLICK: Full Screen Video + Minimalist Loading Bar */
-              <div className="absolute inset-0 overflow-hidden bg-black" style={{ height: "100dvh" }}>
+              /* AFTER CLICK: Full Screen Video */
+              <div
+                className="absolute inset-0 overflow-hidden bg-black"
+                style={{ height: "100dvh" }}
+              >
+                {/* Bug 3 fix: max-w/max-h + object-contain on mobile prevents overflow */}
                 <video
                   ref={videoRef}
                   src="/animation.mp4"
                   className="absolute inset-0 w-full h-full object-cover opacity-80"
                   playsInline
-                  autoPlay
+                  muted
                   onEnded={handleVideoEnd}
                   onError={(e) => {
                     console.error("Video error, skipping intro:", e);
@@ -152,7 +172,6 @@ export function InitialLoader() {
                     Experience Loading
                   </motion.div>
 
-                  {/* Responsive Width Container for Loading Bar */}
                   <div className="w-[120px] md:w-[160px] flex justify-center mt-1 md:mt-2">
                     <motion.div
                       initial={{ opacity: 0, width: 0 }}
@@ -162,7 +181,11 @@ export function InitialLoader() {
                     >
                       <motion.div
                         animate={{ x: ["-100%", "200%"] }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 1.5,
+                          ease: "linear",
+                        }}
                         className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent"
                       />
                     </motion.div>

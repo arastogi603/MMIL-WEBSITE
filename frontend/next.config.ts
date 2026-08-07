@@ -62,6 +62,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.jssuninoida.edu.in',
       },
+      {
+        protocol: 'https',
+        hostname: 'unavatar.io',
+      },
     ],
   },
 };
