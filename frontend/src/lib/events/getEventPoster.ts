@@ -33,6 +33,8 @@ export function getEventPoster(evt?: Event | null): string | undefined {
   if (title.includes("valorant")) return "/images/events/valorant.png";
   if (title.includes("genai") || title.includes("generative ai")) return "/images/events/GenAI.jpeg";
   if (title.includes("linkedin") || title.includes("linkdin") || title.includes("resume")) return "/images/events/Linkdin.jpeg";
+  if (title.includes("hackathon")) return "/images/events/CodeInPair.png";
+  if (title.includes("web dev") || title.includes("core programming")) return "/images/events/CodeInPair.png";
 
   return undefined;
 }

@@ -267,12 +267,21 @@ export default function EventsPage() {
     setIsHydrated(true);
     eventsApi.getPublishedEvents().then(data => {
       if (controller.signal.aborted) return;
+      
+      let combinedEvents = [...fallbackEvents];
+
       if (data && data.length > 0) {
-        const filtered = data.filter(e => e.slug !== "hack-o-code" && e.slug !== "github-workshop" && e.slug !== "resume-workshop");
-        setEvents(filtered.length > 0 ? filtered : fallbackEvents);
-      } else {
-        setEvents(fallbackEvents);
+        // Filter out specific unwanted events from backend (removed resume-workshop from filter so it shows up)
+        const filtered = data.filter(e => e.slug !== "hack-o-code" && e.slug !== "github-workshop");
+        
+        // Merge backend events, overriding any fallback events with the same slug
+        const backendSlugs = new Set(filtered.map(e => e.slug));
+        const filteredFallbacks = fallbackEvents.filter(e => !backendSlugs.has(e.slug));
+        
+        combinedEvents = [...filtered, ...filteredFallbacks];
       }
+      
+      setEvents(combinedEvents);
     }).catch(() => {
       if (!controller.signal.aborted) setEvents(fallbackEvents);
     });

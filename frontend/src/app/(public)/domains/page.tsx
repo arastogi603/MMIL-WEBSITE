@@ -26,7 +26,7 @@ const domainData = [
     lead: {
       name: "Tanmay Kalra",
       role: "Programming Lead",
-      avatar: "https://media.licdn.com/dms/image/v2/D5603AQHdOVvvjrtoaQ/profile-displayphoto-crop_800_800/B56Z.U0t6jHYAI-/0/1784908276336?e=1786579200&v=beta&t=lgOoi4ELPSBTYkEPfRQ357XNpbdbZveqlnaOOyHdNOU"
+      avatar: "/images/members/tanmay.jpeg"
     }
   },
   {
@@ -46,7 +46,7 @@ const domainData = [
     lead: {
       name: "Disha Agrawal",
       role: "Web Dev Lead",
-      avatar: "https://media.licdn.com/dms/image/v2/D5635AQEkSyHkUmXTSw/profile-framedphoto-shrink_800_800/B56Z0VRC_bJwAg-/0/1774178283808?e=1785315600&v=beta&t=CIe8dDQu7QMFDxJg9vyi37mfWwLyV2dEkWbvqvYJj64"
+      avatar: "/images/members/disha.jpeg"
     }
   },
   {
@@ -66,7 +66,7 @@ const domainData = [
     lead: {
       name: "Vaishnav Gupta",
       role: "Technical Lead",
-      avatar: "https://media.licdn.com/dms/image/v2/D5635AQHfu0yPDmJkHw/profile-framedphoto-shrink_800_800/B56Z4kv4peHEAg-/0/1778732993418?e=1785355200&v=beta&t=nKmKhCi0gcmSyI5Kmts3KN0aWcn1DDyXaD6B4xCt4co"
+      avatar: "/images/members/VaishnavGupta.jpg.jpeg"
     }
   },
   {
@@ -86,7 +86,7 @@ const domainData = [
     lead: {
       name: "Aarsh Upadhyay",
       role: "Design Lead",
-      avatar: "https://media.licdn.com/dms/image/v2/D4D03AQFc7G8FNXP2Cw/profile-displayphoto-shrink_800_800/B4DZXWd3q2HwAc-/0/1743059910043?e=1786579200&v=beta&t=gngRgGef8mSj5cJYciKYSDny_u6J4jhxFIsfMCTwavs"
+      avatar: "/images/members/aarsh.jpg.jpeg"
     }
   }
 ];
