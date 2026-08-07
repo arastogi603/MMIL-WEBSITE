@@ -263,52 +263,9 @@ export default function EventsPage() {
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    const controller = new AbortController();
     setIsHydrated(true);
-    eventsApi.getPublishedEvents().then(data => {
-      if (controller.signal.aborted) return;
-      
-      let combinedEvents = [...fallbackEvents];
-
-      if (data && data.length > 0) {
-        // Filter out specific unwanted events from backend (removed resume-workshop from filter so it shows up)
-        const filtered = data.filter(e => e.slug !== "hack-o-code" && e.slug !== "github-workshop");
-        
-        // Merge backend events, overriding any fallback events with the same slug
-        const backendSlugs = new Set(filtered.map(e => e.slug));
-        const filteredFallbacks = fallbackEvents.filter(e => !backendSlugs.has(e.slug));
-        
-        combinedEvents = [...filtered, ...filteredFallbacks];
-      }
-      
-      setEvents(combinedEvents);
-    }).catch(() => {
-      if (!controller.signal.aborted) setEvents(fallbackEvents);
-    });
-    return () => controller.abort();
+    setEvents(fallbackEvents);
   }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated || events.length === 0) return;
-    const controller = new AbortController();
-    const ongoing = events.filter(e => e.status !== "completed" && e.status !== "draft");
-    Promise.all(
-      ongoing.map(async (e) => {
-        try {
-          const res = await apiClient.get(`/events/${e.slug}/registration-status`, { signal: controller.signal });
-          return { slug: e.slug, isRegistered: res.data.isRegistered };
-        } catch {
-          return { slug: e.slug, isRegistered: false };
-        }
-      })
-    ).then(results => {
-      if (controller.signal.aborted) return;
-      const statuses: Record<string, boolean> = {};
-      results.forEach(r => statuses[r.slug] = r.isRegistered);
-      setRegisteredEvents(statuses);
-    });
-    return () => controller.abort();
-  }, [isAuthenticated, events]);
 
 
   const categories = useMemo(() => {
