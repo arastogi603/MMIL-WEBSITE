@@ -176,7 +176,7 @@ export function Navbar() {
                       (window as any).wheelNavTimer = setTimeout(() => {
                         if (item.href === "#theme") {
                           toggleTheme();
-                          // Keep menu open when toggling theme
+                          closeMobileMenu();
                           return;
                         }
 
