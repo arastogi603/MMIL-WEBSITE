@@ -272,12 +272,14 @@ export default function DomainsPage() {
       <AnimatePresence>
         {toastMessage && (
           <motion.div
-            initial={{ opacity: 0, y: 50, x: "-50%" }}
-            animate={{ opacity: 1, y: 0, x: "-50%" }}
-            exit={{ opacity: 0, y: 50, x: "-50%" }}
-            className="fixed bottom-10 left-1/2 z-50 px-8 py-4 bg-red-500/90 text-white font-bold rounded-full shadow-[0_10px_40px_rgba(239,68,68,0.4)] border border-red-400 backdrop-blur-xl"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed top-24 left-4 right-4 sm:left-auto sm:top-28 sm:right-8 z-[100] px-5 py-3.5 bg-black/80 dark:bg-[#11222C]/90 text-white text-sm font-semibold rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-white/10 backdrop-blur-2xl flex items-start sm:items-center gap-3 w-auto"
           >
-            {toastMessage}
+            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse mt-1 sm:mt-0 shrink-0" />
+            <span className="leading-snug">{toastMessage}</span>
           </motion.div>
         )}
       </AnimatePresence>
