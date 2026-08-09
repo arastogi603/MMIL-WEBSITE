@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Poppins, Geist } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { BackgroundShapes } from "@/components/layout/BackgroundShapes";
 import { InitialLoader } from "@/components/layout/InitialLoader";
 import { ThemeProvider } from "@/lib/theme/theme";
 import { AuthProvider } from "@/components/auth/AuthProvider";
@@ -48,7 +47,6 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <InitialLoader />
-            <BackgroundShapes />
             <Navbar />
             {children}
             <Footer />

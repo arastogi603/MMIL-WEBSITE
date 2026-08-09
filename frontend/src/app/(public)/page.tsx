@@ -42,26 +42,26 @@ export default function Home() {
           >
             <motion.h1 
               className="hero-title select-none"
-              initial={{ y: 40, opacity: 0 }}
+              initial={{ y: 15, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
               MMIL
             </motion.h1>
             <motion.h2 
-              className="hero-subtitle text-[clamp(2.2rem,6vw,5.5rem)] text-center font-black select-none tracking-tight"
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              className="hero-full-form select-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             >
-              PRESENTS
+              Microsoft Mobile Innovation Lab
             </motion.h2>
           </motion.div>
         </motion.section>
 
         {/* ───── BENTO SHEET (PEEKS AT BOTTOM ON LOAD, COVER ANIMATION ON SCROLL) ───── */}
         <motion.div 
-          className="relative z-10 -mt-[15vh] sm:-mt-[18vh] md:-mt-[25vh] lg:-mt-[30vh] w-[96%] md:w-[94%] max-w-[1400px] mx-auto bg-[var(--card-bg)] dark:bg-[#07171F]/90 backdrop-blur-3xl rounded-t-[2.5rem] md:rounded-t-[3.5rem] pt-8 md:pt-14 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_-20px_60px_rgba(0,0,0,0.7)] flex flex-col items-center justify-start transition-colors duration-300"
+          className="relative z-10 -mt-[15vh] sm:-mt-[18vh] md:-mt-[25vh] lg:-mt-[30vh] w-[96%] md:w-[94%] max-w-[1400px] mx-auto bg-[var(--card-bg)] dark:bg-[#07171F]/90 backdrop-blur-3xl rounded-t-[2.5rem] md:rounded-t-[3.5rem] pt-8 md:pt-14 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_-20px_60px_rgba(0,0,0,0.7)] flex flex-col items-center justify-start transition-colors duration-300 border-x border-t border-[var(--card-border)]"
         >
           {/* Peek Handle Indicator */}
           <div className="w-16 h-1.5 bg-black/20 dark:bg-white/20 rounded-full mb-6 md:mb-8" />
