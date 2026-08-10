@@ -88,6 +88,15 @@ const ALUMNI_DATA: AlumniMember[] = [
     company: "Attero",
   },
   {
+    id: "30",
+    name: "Rounak Ali",
+    batchYear: 2026,
+    linkedInUrl: "https://www.linkedin.com/in/rounak-ali-a58362260/",
+    linkedInUsername: "rounak-ali-a58362260",
+    avatarUrl: "/images/alumni/rounak-ali.jpg",
+    company: "DIAT, DRDO",
+  },
+  {
     id: "9",
     name: "Manas Rai",
     batchYear: 2025,
