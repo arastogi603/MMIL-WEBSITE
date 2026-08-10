@@ -52,16 +52,16 @@ const executiveBoard: Member[] = [
     linkedin: "https://www.linkedin.com/in/parth-chaturvedi-dev/",
   },
   {
-    name: "Anurag Maurya",
-    role: "Management Head",
-    avatar: "/images/members/anurag.jpg.jpeg",
-    linkedin: "https://www.linkedin.com/in/anuragg28/",
-  },
-  {
     name: "Sanya Pandey",
     role: "General Secretary",
     avatar: "/images/members/sanya.jpeg",
     linkedin: "https://www.linkedin.com/in/sanya-pandey08/",
+  },
+  {
+    name: "Anurag Maurya",
+    role: "Management Head",
+    avatar: "/images/members/anurag.jpg.jpeg",
+    linkedin: "https://www.linkedin.com/in/anuragg28/",
   },
 ];
 
@@ -151,8 +151,7 @@ const domains: DomainData[] = [
       {
         name: "Thushar Rai",
         role: "Web Developer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D4E03AQHCgVvwxGYlSQ/profile-displayphoto-crop_800_800/B4EZkLMw8CGwAI-/0/1756829521504?e=1786579200&v=beta&t=od5HdvJahMff8MbT4AKj8L8dFZzhqEs22haWXkDEvlE",
+        avatar: "/images/members/tushar.jpeg",
         linkedin: "https://www.linkedin.com/in/thushar-rai-a8aa9a375/",
       },
       {

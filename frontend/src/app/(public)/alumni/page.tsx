@@ -18,7 +18,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "1",
     name: "Harsh Jajaniya",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/harsh-jajaniya-293bb0247/",
     linkedInUsername: "harsh-jajaniya-293bb0247",
     avatarUrl: "/images/alumni/harsh-jajaniya.jpg",
@@ -27,7 +27,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "2",
     name: "Ashita Maheshwari",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/ashita-maheshwari/",
     linkedInUsername: "ashita-maheshwari",
     avatarUrl: "/images/alumni/ashita-maheshwari.jpg",
@@ -36,7 +36,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "3",
     name: "Anusha Agarwal",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/anusha-agarwal-068b70271/",
     linkedInUsername: "anusha-agarwal-068b70271",
     avatarUrl: "/images/alumni/anusha-agarwal.jpg",
@@ -45,7 +45,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "4",
     name: "Parth Gupta",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/parth-gupta-3793ba273/",
     linkedInUsername: "parth-gupta-3793ba273",
     avatarUrl: "/images/alumni/parth-gupta.jpg",
@@ -54,7 +54,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "5",
     name: "Muskan Jaiswal",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/muskan-jais/",
     linkedInUsername: "muskan-jais",
     avatarUrl: "/images/alumni/muskan-jaiswal.jpg",
@@ -63,7 +63,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "6",
     name: "Garima Singh",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/garimasingh10u/",
     linkedInUsername: "garimasingh10u",
     avatarUrl: "/images/alumni/garima-singh.jpg",
@@ -72,7 +72,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "7",
     name: "Anushka Dubey",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/anushka-dubey-17ba77275/",
     linkedInUsername: "anushka-dubey-17ba77275",
     avatarUrl: "/images/alumni/anushka-dubey.jpg",
@@ -81,7 +81,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "8",
     name: "Abhinav Yadav",
-    batchYear: 2025,
+    batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/abhinav-yadav-70088a252/",
     linkedInUsername: "abhinav-yadav-70088a252",
     avatarUrl: "/images/alumni/abhinav-yadav.jpg",
@@ -90,7 +90,7 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "9",
     name: "Manas Rai",
-    batchYear: 2024,
+    batchYear: 2025,
     linkedInUrl: "https://www.linkedin.com/in/manas-rai2003/",
     linkedInUsername: "manas-rai2003",
     avatarUrl: "/images/alumni/manas-rai.jpg",
@@ -163,11 +163,47 @@ const ALUMNI_DATA: AlumniMember[] = [
   {
     id: "18",
     name: "Nipun Khatri",
-    batchYear: 2024,
+    batchYear: 2025,
     linkedInUrl: "https://www.linkedin.com/in/nipun-khatri-80b168224/",
     linkedInUsername: "nipun-khatri-80b168224",
     avatarUrl: "/images/alumni/nipun-khatri.jpg",
     company: "Vesper",
+  },
+  {
+    id: "26",
+    name: "Bhoomi Agrawal",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/bhoomi-agarwal-393846239/",
+    linkedInUsername: "bhoomi-agarwal-393846239",
+    avatarUrl: "/images/alumni/bhoomi-agrawal.jpg",
+    company: "Infineon Technologies",
+  },
+  {
+    id: "27",
+    name: "Yash Shekhar",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/yash-shekhar-srivastava-b0559922a/",
+    linkedInUsername: "yash-shekhar-srivastava-b0559922a",
+    avatarUrl: "/images/alumni/yash-shekhar.jpg",
+    company: "HCL Tech",
+  },
+  {
+    id: "28",
+    name: "Vibhuti Kapoor",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/vibhutikapoor/",
+    linkedInUsername: "vibhutikapoor",
+    avatarUrl: "/images/alumni/vibhuti-kapoor.jpg",
+    company: "RedDoorz",
+  },
+  {
+    id: "29",
+    name: "Dhanraj Singh",
+    batchYear: 2025,
+    linkedInUrl: "https://www.linkedin.com/in/sdhanraj300/",
+    linkedInUsername: "sdhanraj300",
+    avatarUrl: "/images/alumni/dhanraj-singh.jpg",
+    company: "Pursuing MTech at Kiel University",
   },
   {
     id: "19",
@@ -298,7 +334,15 @@ function AlumniCard({ member, index }: { member: AlumniMember; index: number }) 
           {member.name}
         </h3>
         <p className="text-xs sm:text-sm font-semibold tracking-wide text-white/80">
-          Working at <span className="text-white font-bold">{member.company}</span>
+          {member.company.toLowerCase().startsWith("pursuing") ||
+          member.company.toLowerCase().startsWith("studying") ||
+          member.company.toLowerCase().startsWith("self") ? (
+            <span className="text-white font-bold">{member.company}</span>
+          ) : (
+            <>
+              Working at <span className="text-white font-bold">{member.company}</span>
+            </>
+          )}
         </p>
       </div>
     </motion.div>
