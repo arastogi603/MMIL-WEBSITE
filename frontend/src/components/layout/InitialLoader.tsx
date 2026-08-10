@@ -69,7 +69,6 @@ export function InitialLoader() {
     return (
       <div
         className="fixed inset-0 z-[99999] bg-black"
-        style={{ width: "100vw", height: "100dvh" }}
       />
     );
   }
@@ -85,20 +84,17 @@ export function InitialLoader() {
     // on mobile, and clip strictly to 100dvh.
     <div
       className="fixed inset-0 z-[99999] select-none cursor-pointer touch-none overflow-hidden bg-black"
-      style={{ width: "100vw", height: "100dvh" }}
       onClick={handleInteraction}
     >
       {/* Carpet Panels — slide left/right when animation ends */}
       <motion.div
-        className="absolute top-0 left-0 w-1/2 bg-black z-10 pointer-events-none"
-        style={{ height: "100dvh" }}
+        className="absolute inset-y-0 left-0 w-1/2 bg-black z-10 pointer-events-none"
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "-100%" : 0 }}
         transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
       />
       <motion.div
-        className="absolute top-0 right-0 w-1/2 bg-black z-10 pointer-events-none"
-        style={{ height: "100dvh" }}
+        className="absolute inset-y-0 right-0 w-1/2 bg-black z-10 pointer-events-none"
         initial={{ x: 0 }}
         animate={{ x: isCarpetOpening ? "100%" : 0 }}
         transition={{ duration: ANIMATION_SPEED, ease: [0.76, 0, 0.24, 1] }}
@@ -109,7 +105,6 @@ export function InitialLoader() {
         {!isCarpetOpening && (
           <motion.div
             className="absolute inset-0 z-20 overflow-hidden"
-            style={{ height: "100dvh" }}
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
@@ -146,7 +141,6 @@ export function InitialLoader() {
               /* AFTER CLICK: Full Screen Video */
               <div
                 className="absolute inset-0 overflow-hidden bg-black"
-                style={{ height: "100dvh" }}
               >
                 {/* Bug 3 fix: max-w/max-h + object-contain on mobile prevents overflow */}
                 <video
