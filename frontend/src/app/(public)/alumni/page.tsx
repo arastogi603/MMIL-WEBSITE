@@ -93,8 +93,8 @@ const ALUMNI_DATA: AlumniMember[] = [
     batchYear: 2026,
     linkedInUrl: "https://www.linkedin.com/in/rounak-ali-a58362260/",
     linkedInUsername: "rounak-ali-a58362260",
-    avatarUrl: "/images/alumni/rounak-ali.jpg",
-    company: "DIAT, DRDO",
+    avatarUrl: "/images/alumni/raunak.png",
+    company: "Masters at DRDO",
   },
   {
     id: "9",
@@ -344,8 +344,9 @@ function AlumniCard({ member, index }: { member: AlumniMember; index: number }) 
         </h3>
         <p className="text-xs sm:text-sm font-semibold tracking-wide text-white/80">
           {member.company.toLowerCase().startsWith("pursuing") ||
-          member.company.toLowerCase().startsWith("studying") ||
-          member.company.toLowerCase().startsWith("self") ? (
+            member.company.toLowerCase().startsWith("studying") ||
+            member.company.toLowerCase().startsWith("self") ||
+            member.company.toLowerCase().startsWith("masters") ? (
             <span className="text-white font-bold">{member.company}</span>
           ) : (
             <>
