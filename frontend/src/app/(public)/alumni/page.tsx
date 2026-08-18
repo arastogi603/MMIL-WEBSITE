@@ -88,6 +88,15 @@ const ALUMNI_DATA: AlumniMember[] = [
     company: "Attero",
   },
   {
+    id: "31",
+    name: "Utkarsh Sharma",
+    batchYear: 2026,
+    linkedInUrl: "https://www.linkedin.com/in/utkarshdev2411/",
+    linkedInUsername: "utkarshdev2411",
+    avatarUrl: "/images/alumni/utkarsh-sharma.jpg",
+    company: "Binmile",
+  },
+  {
     id: "30",
     name: "Rounak Ali",
     batchYear: 2026,
