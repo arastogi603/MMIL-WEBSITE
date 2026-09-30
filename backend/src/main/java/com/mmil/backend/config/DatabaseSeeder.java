@@ -71,7 +71,7 @@ public class DatabaseSeeder {
                         // Seed events
                         seedEvents(eventRepository);
                         seedAlumni(alumniRepository);
-                        seedTeam(userRepository);
+                        seedTeam(userRepository, passwordEncoder);
                 };
         }
 
@@ -297,51 +297,70 @@ public class DatabaseSeeder {
         }
 
 
-        private void seedTeam(UserRepository userRepo) {
-            seedUserIfMissing(userRepo, "Kuldeep Pandit", "kuldeep.pandit@mmil.com", "president", "https://www.linkedin.com/in/kuldeepk-pandit/", "/images/members/kuldeep.jpeg");
-            seedUserIfMissing(userRepo, "Vaishnavi Bhati", "vaishnavi.bhati@mmil.com", "vice-president", "https://www.linkedin.com/in/vaishnavi-bhati-15vb2004/", "/images/members/vaisnavi.png");
-            seedUserIfMissing(userRepo, "Ayan Khan", "ayan.khan@mmil.com", "ctc", "https://www.linkedin.com/in/ayankhan28/", "/images/members/ayan.jpeg");
-            seedUserIfMissing(userRepo, "Parth Chaturvedi", "parth.chaturvedi@mmil.com", "co-ctc", "https://www.linkedin.com/in/parth-chaturvedi-dev/", "/images/members/parth.jpg.jpeg");
-            seedUserIfMissing(userRepo, "Sanya Pandey", "sanya.pandey@mmil.com", "general-secretary", "https://www.linkedin.com/in/sanya-pandey08/", "/images/members/sanya.jpeg");
-            seedUserIfMissing(userRepo, "Anurag Maurya", "anurag.maurya@mmil.com", "management-head", "https://www.linkedin.com/in/anuragg28/", "/images/members/anurag.jpg.jpeg");
-            seedUserIfMissing(userRepo, "Tanmay Kalra", "tanmay.kalra@mmil.com", "programming-lead", "https://www.linkedin.com/in/tanmay-kalra-09oct/", "/images/members/tanmay.jpeg");
-            seedUserIfMissing(userRepo, "Akshat Rastogi", "akshat.rastogi@mmil.com", "programmer", "https://www.linkedin.com/in/-akshatrastogi/", "https://media.licdn.com/dms/image/v2/D5603AQGHyzr7S7o_XQ/profile-displayphoto-crop_800_800/B56ZkT.9D0HQAU-/0/1756976896081?e=1786579200&v=beta&t=_AY8oRu--oNUZBrkA_wWCYkRhfzOWERHEc-fH6gitOs");
-            seedUserIfMissing(userRepo, "Vansh Bhaskar", "vansh.bhaskar@mmil.com", "programmer", "https://www.linkedin.com/in/vanshbhaskar/", "/images/members/vansh.jpg");
-            seedUserIfMissing(userRepo, "Arunima Negi", "arunima.negi@mmil.com", "programmer", "https://www.linkedin.com/in/arunima-negi-90504429b/", "/images/members/Arunima.jpeg");
-            seedUserIfMissing(userRepo, "K. Anushree", "k..anushree@mmil.com", "programmer", "https://www.linkedin.com/in/theanushree25/", "/images/members/Anushree.jpeg");
-            seedUserIfMissing(userRepo, "Aditya Kumar Gupta", "aditya.kumar.gupta@mmil.com", "programmer", "https://www.linkedin.com/in/aditya-kumar-gupta-245515297/", "https://drive.google.com/uc?export=view&id=1WYkNYR7fAGegTi3I8mkPpNzPIIG9xdJ4");
-            seedUserIfMissing(userRepo, "Sanskar Mittal", "sanskar.mittal@mmil.com", "programmer", "https://www.linkedin.com/in/sanskarmittal/", "/images/members/sanskar.jpg");
-            seedUserIfMissing(userRepo, "Prashasti Jha", "prashasti.jha@mmil.com", "programmer", "https://www.linkedin.com/in/prashasti-jha-391109381/", "/images/members/Prashasthi.jpg");
-            seedUserIfMissing(userRepo, "Aaryan Singh", "aaryan.singh@mmil.com", "programmer", "https://www.linkedin.com/in/aaryansingh31/", "https://drive.google.com/uc?export=view&id=1go3rBmnxA0Upp89TfmtxSliSE-qgD-8m");
-            seedUserIfMissing(userRepo, "Disha Agrawal", "disha.agrawal@mmil.com", "web-dev-lead", "https://www.linkedin.com/in/disha-agrawal-0438062a5/", "/images/members/disha.jpeg");
-            seedUserIfMissing(userRepo, "Abhishek Jaiswal", "abhishek.jaiswal@mmil.com", "web-developer", "https://www.linkedin.com/in/abhishek-jaiswal-110399338/", "https://media.licdn.com/dms/image/v2/D5603AQH9OH2jrPDlfg/profile-displayphoto-crop_800_800/B56ZyMGA0yJQAM-/0/1771876913422?e=1786579200&v=beta&t=iCUqJoUDAt58UMkScnakQJvqYQHjOHikvCvQhJ0rN4A");
-            seedUserIfMissing(userRepo, "Thushar Rai", "thushar.rai@mmil.com", "web-developer", "https://www.linkedin.com/in/thushar-rai-a8aa9a375/", "/images/members/tushar.jpeg");
-            seedUserIfMissing(userRepo, "Nandini Mishra", "nandini.mishra@mmil.com", "web-developer", "https://www.linkedin.com/in/nandini-mishra-4a5a3132a/", "/images/members/nandini.jpeg");
-            seedUserIfMissing(userRepo, "Ayushi Tiwari", "ayushi.tiwari@mmil.com", "web-developer", "https://www.linkedin.com/in/ayushi-tiwari-408a61302/", "/images/members/Ayushi.png");
-            seedUserIfMissing(userRepo, "Akhil Mishra", "akhil.mishra@mmil.com", "web-developer", "https://www.linkedin.com/in/akhil-mishra-95ba36312/", "https://media.licdn.com/dms/image/v2/D5603AQEFlb64aMvblA/profile-displayphoto-crop_800_800/B56Z9CxSqKGcAI-/0/1783531646775?e=1786579200&v=beta&t=tavhaGWLV5ZmDWi_zU4PJtEGm8KKL5-YTOpOy8MYVaQ");
-            seedUserIfMissing(userRepo, "Vaishnav Gupta", "vaishnav.gupta@mmil.com", "technical-lead", "https://www.linkedin.com/in/vaishnavgupta/", "/images/members/VaishnavGupta.jpg.jpeg");
-            seedUserIfMissing(userRepo, "Abhishek", "abhishek@mmil.com", "technical-member", "https://www.linkedin.com/in/abhishekk1811/", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSs9bBvurUnow2rc2cuJHs7GL1_7VA3Q_QeQBC_X08Xg&s=10");
-            seedUserIfMissing(userRepo, "Shivanshu Kushwaha", "shivanshu.kushwaha@mmil.com", "technical-member", "https://www.linkedin.com/in/shivanshu-kushwaha-12572b345/", "/images/members/shivanshu.jpg");
-            seedUserIfMissing(userRepo, "Rajat Kumar", "rajat.kumar@mmil.com", "technical-member", "https://www.linkedin.com/in/rajat281/", "/images/members/rajat.jpeg");
-            seedUserIfMissing(userRepo, "Mahi Gupta", "mahi.gupta@mmil.com", "technical-member", "https://www.linkedin.com/in/mahi-gupta-8623b4364/", "/images/members/mahi.jpeg");
-            seedUserIfMissing(userRepo, "Aarsh Upadhyay", "aarsh.upadhyay@mmil.com", "design-lead", "https://www.linkedin.com/in/aarsh-upadhyay-66010a359/", "/images/members/aarsh.jpg.jpeg");
-            seedUserIfMissing(userRepo, "Arnav", "arnav@mmil.com", "designer", "https://www.linkedin.com/in/arnav2k5/", "/images/members/arnav.jpg");
-            seedUserIfMissing(userRepo, "Akshat Srivastava", "akshat.srivastava@mmil.com", "designer", "https://www.linkedin.com/in/akshat-srivastava-522265407/", "https://drive.google.com/uc?export=view&id=1oDp5216NuGeljG1uet0hHaeBVpuOGlFo");
-            seedUserIfMissing(userRepo, "Ankita Singh", "ankita.singh@mmil.com", "designer", "https://www.linkedin.com/in/ankita-singh-566007385/", "/images/members/ankita.jpg");
-            seedUserIfMissing(userRepo, "Himanshi", "himanshi@mmil.com", "designer", "#", "/images/members/himanshi.jpeg");
-
+        private void seedTeam(UserRepository userRepo, PasswordEncoder encoder) {
+            seedUserIfMissing(userRepo, encoder, "Kuldeep Pandit", "kuldeep.pandit@mmil.com", "president", "https://www.linkedin.com/in/kuldeepk-pandit/", "/images/members/kuldeep.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Vaishnavi Bhati", "vaishnavi.bhati@mmil.com", "vice-president", "https://www.linkedin.com/in/vaishnavi-bhati-15vb2004/", "/images/members/vaisnavi.png");
+            seedUserIfMissing(userRepo, encoder, "Ayan Khan", "ayan.khan@mmil.com", "ctc", "https://www.linkedin.com/in/ayankhan28/", "/images/members/ayan.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Parth Chaturvedi", "parth.chaturvedi@mmil.com", "co-ctc", "https://www.linkedin.com/in/parth-chaturvedi-dev/", "/images/members/parth.jpg.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Sanya Pandey", "sanya.pandey@mmil.com", "general-secretary", "https://www.linkedin.com/in/sanya-pandey08/", "/images/members/sanya.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Anurag Maurya", "anurag.maurya@mmil.com", "management-head", "https://www.linkedin.com/in/anuragg28/", "/images/members/anurag.jpg.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Tanmay Kalra", "tanmay.kalra@mmil.com", "programming-lead", "https://www.linkedin.com/in/tanmay-kalra-09oct/", "/images/members/tanmay.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Akshat Rastogi", "akshat.rastogi@mmil.com", "programmer", "https://www.linkedin.com/in/-akshatrastogi/", "https://media.licdn.com/dms/image/v2/D5603AQGHyzr7S7o_XQ/profile-displayphoto-crop_800_800/B56ZkT.9D0HQAU-/0/1756976896081?e=1786579200&v=beta&t=_AY8oRu--oNUZBrkA_wWCYkRhfzOWERHEc-fH6gitOs");
+            seedUserIfMissing(userRepo, encoder, "Vansh Bhaskar", "vansh.bhaskar@mmil.com", "programmer", "https://www.linkedin.com/in/vanshbhaskar/", "/images/members/vansh.jpg");
+            seedUserIfMissing(userRepo, encoder, "Arunima Negi", "arunima.negi@mmil.com", "programmer", "https://www.linkedin.com/in/arunima-negi-90504429b/", "/images/members/Arunima.jpeg");
+            seedUserIfMissing(userRepo, encoder, "K. Anushree", "k..anushree@mmil.com", "programmer", "https://www.linkedin.com/in/theanushree25/", "/images/members/Anushree.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Aditya Kumar Gupta", "aditya.kumar.gupta@mmil.com", "programmer", "https://www.linkedin.com/in/aditya-kumar-gupta-245515297/", "https://drive.google.com/uc?export=view&id=1WYkNYR7fAGegTi3I8mkPpNzPIIG9xdJ4");
+            seedUserIfMissing(userRepo, encoder, "Sanskar Mittal", "sanskar.mittal@mmil.com", "programmer", "https://www.linkedin.com/in/sanskarmittal/", "/images/members/sanskar.jpg");
+            seedUserIfMissing(userRepo, encoder, "Prashasti Jha", "prashasti.jha@mmil.com", "programmer", "https://www.linkedin.com/in/prashasti-jha-391109381/", "/images/members/Prashasthi.jpg");
+            seedUserIfMissing(userRepo, encoder, "Aaryan Singh", "aaryan.singh@mmil.com", "programmer", "https://www.linkedin.com/in/aaryansingh31/", "https://drive.google.com/uc?export=view&id=1go3rBmnxA0Upp89TfmtxSliSE-qgD-8m");
+            seedUserIfMissing(userRepo, encoder, "Disha Agrawal", "disha.agrawal@mmil.com", "web-dev-lead", "https://www.linkedin.com/in/disha-agrawal-0438062a5/", "/images/members/disha.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Abhishek Jaiswal", "abhishek.jaiswal@mmil.com", "web-developer", "https://www.linkedin.com/in/abhishek-jaiswal-110399338/", "https://media.licdn.com/dms/image/v2/D5603AQH9OH2jrPDlfg/profile-displayphoto-crop_800_800/B56ZyMGA0yJQAM-/0/1771876913422?e=1786579200&v=beta&t=iCUqJoUDAt58UMkScnakQJvqYQHjOHikvCvQhJ0rN4A");
+            seedUserIfMissing(userRepo, encoder, "Thushar Rai", "thushar.rai@mmil.com", "web-developer", "https://www.linkedin.com/in/thushar-rai-a8aa9a375/", "/images/members/tushar.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Nandini Mishra", "nandini.mishra@mmil.com", "web-developer", "https://www.linkedin.com/in/nandini-mishra-4a5a3132a/", "/images/members/nandini.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Ayushi Tiwari", "ayushi.tiwari@mmil.com", "web-developer", "https://www.linkedin.com/in/ayushi-tiwari-408a61302/", "/images/members/Ayushi.png");
+            seedUserIfMissing(userRepo, encoder, "Akhil Mishra", "akhil.mishra@mmil.com", "web-developer", "https://www.linkedin.com/in/akhil-mishra-95ba36312/", "https://media.licdn.com/dms/image/v2/D5603AQEFlb64aMvblA/profile-displayphoto-crop_800_800/B56Z9CxSqKGcAI-/0/1783531646775?e=1786579200&v=beta&t=tavhaGWLV5ZmDWi_zU4PJtEGm8KKL5-YTOpOy8MYVaQ");
+            seedUserIfMissing(userRepo, encoder, "Vaishnav Gupta", "vaishnav.gupta@mmil.com", "technical-lead", "https://www.linkedin.com/in/vaishnavgupta/", "/images/members/VaishnavGupta.jpg.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Abhishek", "abhishek@mmil.com", "technical-member", "https://www.linkedin.com/in/abhishekk1811/", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSs9bBvurUnow2rc2cuJHs7GL1_7VA3Q_QeQBC_X08Xg&s=10");
+            seedUserIfMissing(userRepo, encoder, "Shivanshu Kushwaha", "shivanshu.kushwaha@mmil.com", "technical-member", "https://www.linkedin.com/in/shivanshu-kushwaha-12572b345/", "/images/members/shivanshu.jpg");
+            seedUserIfMissing(userRepo, encoder, "Rajat Kumar", "rajat.kumar@mmil.com", "technical-member", "https://www.linkedin.com/in/rajat281/", "/images/members/rajat.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Mahi Gupta", "mahi.gupta@mmil.com", "technical-member", "https://www.linkedin.com/in/mahi-gupta-8623b4364/", "/images/members/mahi.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Aarsh Upadhyay", "aarsh.upadhyay@mmil.com", "design-lead", "https://www.linkedin.com/in/aarsh-upadhyay-66010a359/", "/images/members/aarsh.jpg.jpeg");
+            seedUserIfMissing(userRepo, encoder, "Arnav", "arnav@mmil.com", "designer", "https://www.linkedin.com/in/arnav2k5/", "/images/members/arnav.jpg");
+            seedUserIfMissing(userRepo, encoder, "Akshat Srivastava", "akshat.srivastava@mmil.com", "designer", "https://www.linkedin.com/in/akshat-srivastava-522265407/", "https://drive.google.com/uc?export=view&id=1oDp5216NuGeljG1uet0hHaeBVpuOGlFo");
+            seedUserIfMissing(userRepo, encoder, "Ankita Singh", "ankita.singh@mmil.com", "designer", "https://www.linkedin.com/in/ankita-singh-566007385/", "/images/members/ankita.jpg");
+            seedUserIfMissing(userRepo, encoder, "Himanshi", "himanshi@mmil.com", "designer", "#", "/images/members/himanshi.jpeg");
+            System.out.println("Club team members verified and seeded with active roles.");
         }
 
-        private void seedUserIfMissing(UserRepository userRepo, String name, String email, String role, String linkedIn, String avatar) {
-            if (userRepo.findByEmail(email).isEmpty()) {
+        private void seedUserIfMissing(UserRepository userRepo, PasswordEncoder encoder, String name, String email, String role, String linkedIn, String avatar) {
+            var existing = userRepo.findByEmail(email);
+            if (existing.isEmpty()) {
                 User u = new User();
                 u.setName(name);
                 u.setEmail(email);
-                u.setPasswordHash("$2a$10$xyzDummyHashxyz"); // Not meant for login
+                u.setPasswordHash(encoder.encode("mmil123"));
                 u.setRole(role);
                 u.setLinkedInUrl(linkedIn);
                 u.setAvatarUrl(avatar);
                 userRepo.save(u);
+            } else {
+                User u = existing.get();
+                boolean changed = false;
+                if (u.getRole() == null || u.getRole().isEmpty() || "student".equalsIgnoreCase(u.getRole()) || !u.getRole().equals(role)) {
+                    u.setRole(role);
+                    changed = true;
+                }
+                if (avatar != null && !avatar.isEmpty() && (u.getAvatarUrl() == null || u.getAvatarUrl().isEmpty())) {
+                    u.setAvatarUrl(avatar);
+                    changed = true;
+                }
+                if (linkedIn != null && !linkedIn.isEmpty() && (u.getLinkedInUrl() == null || u.getLinkedInUrl().isEmpty())) {
+                    u.setLinkedInUrl(linkedIn);
+                    changed = true;
+                }
+                if (changed) {
+                    userRepo.save(u);
+                }
             }
         }
 

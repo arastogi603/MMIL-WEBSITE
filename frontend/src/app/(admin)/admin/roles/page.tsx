@@ -16,7 +16,7 @@ const GlassSelect = ({ value, onChange, options }: { value: string, onChange: (v
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full min-w-[140px] px-4 py-2 rounded-xl bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_4px_12px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,0.8)] text-sm font-bold text-[#111] hover:bg-white/60 transition-all"
       >
-        <span className="truncate">{options.find(o => o.value === value)?.label || "Select..."}</span>
+        <span className="truncate">{options.find(o => o.value === value)?.label || (value ? formatRoleName(value) : "Select...")}</span>
         <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
