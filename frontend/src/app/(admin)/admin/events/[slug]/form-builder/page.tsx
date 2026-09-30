@@ -21,7 +21,7 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
   
   const [event, setEvent] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
-  const [header, setHeader] = useState({ title: "", description: "", emoji: "" });
+  const [header, setHeader] = useState<{ title: string; description: string; emoji: string; coverUrl?: string }>({ title: "", description: "", emoji: "", coverUrl: "" });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {

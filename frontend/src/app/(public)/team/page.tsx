@@ -345,7 +345,7 @@ function FacultyCoordinatorsSection({ coordinators = facultyCoordinators }: { co
 
             {/* Point-wise Achievements */}
             <div className="border-t border-white/20 pt-2.5 space-y-1">
-              {coord.bullets.map((bullet, bIdx) => (
+              {coord.bullets.map((bullet: string, bIdx: number) => (
                 <div
                   key={bIdx}
                   className="flex items-start gap-1.5 text-xs text-white/95 leading-snug font-medium"
@@ -384,7 +384,7 @@ export default function TeamPage() {
       // Map Faculty Coordinators dynamically
       const dynamicFaculty = users.filter((u: any) => u.role === "faculty-coordinator").map((u: any) => {
         // Find if hardcoded data exists for them by name to keep extra fields
-        const hardcoded = facultyCoordinators.find(f => f.name.toLowerCase() === u.name.toLowerCase()) || {};
+        const hardcoded: any = facultyCoordinators.find(f => f.name.toLowerCase() === u.name.toLowerCase()) || {};
         return {
           name: u.name,
           role: u.role.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
@@ -569,7 +569,7 @@ export default function TeamPage() {
                   {/* Left Column: Domain Lead Card */}
                   <div className="w-full lg:w-auto flex flex-col items-center lg:items-start shrink-0">
                     <PosterCard
-                      member={activeDomainData?.lead}
+                      member={activeDomainData?.lead as any}
                       accentColor={activeDomainData?.accentColor}
                       isDomainLead
                       index={0}
@@ -586,7 +586,7 @@ export default function TeamPage() {
                         <DomainMemberCard
                           key={`member-${student.name}-${idx}`}
                           member={student}
-                          accentColor={activeDomainData?.accentColor}
+                          accentColor={activeDomainData?.accentColor || "#2563eb"}
                           index={idx}
                         />
                       ))}

@@ -116,13 +116,13 @@ export default function AlumniPage() {
         avatarUrl: a.imageUrl || ""
       }));
       setAlumni(mapped);
-      const years: number[] = Array.from(new Set(mapped.map((a: any) => a.batchYear))).sort((a: any, b: any) => b - a);
+      const years: number[] = Array.from(new Set<number>(mapped.map((a: any) => Number(a.batchYear)))).sort((a, b) => b - a);
       if (years.length > 0) setActiveYear(years[0]);
       setIsLoading(false);
     });
   }, []);
 
-  const batchYears = Array.from(new Set(alumni.map((a) => a.batchYear))).sort((a, b) => b - a);
+  const batchYears: number[] = Array.from(new Set<number>(alumni.map((a) => Number(a.batchYear)))).sort((a, b) => b - a);
   const filteredAlumni = alumni.filter((a) => a.batchYear === activeYear);
 
   if (isLoading) {

@@ -9,9 +9,9 @@ import { useAuthStore } from "@/lib/store/auth.store";
 import { useTheme } from "@/lib/theme/theme";
 import dynamic from 'next/dynamic';
 
-const JellyRadio = dynamic(() => import('@/components/JellyRadio'), { ssr: false });
-const FolderFloat = dynamic(() => import('@/components/FolderFloat'), { ssr: false });
-const CodeSlots = dynamic(() => import('@/components/CodeSlots'), { ssr: false });
+const JellyRadio = dynamic<any>(() => import('@/components/JellyRadio'), { ssr: false });
+const FolderFloat = dynamic<any>(() => import('@/components/FolderFloat'), { ssr: false });
+const CodeSlots = dynamic<any>(() => import('@/components/CodeSlots'), { ssr: false });
 
 export default function RegisterFormPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
