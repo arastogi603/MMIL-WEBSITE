@@ -28,6 +28,8 @@ public class CreateEventDto {
     private Integer teamSizeMin;
     private Integer teamSizeMax;
     private String posterUrl;
+    
+    private String formSchema;
 
     // Getters and Setters
     public String getTitle() { return title; }
@@ -98,4 +100,7 @@ public class CreateEventDto {
 
     public LocalDateTime getRound3EndsAt() { return round3EndsAt; }
     public void setRound3EndsAt(LocalDateTime round3EndsAt) { this.round3EndsAt = round3EndsAt; }
+
+    public String getFormSchema() { return formSchema; }
+    public void setFormSchema(String formSchema) { this.formSchema = formSchema; }
 }

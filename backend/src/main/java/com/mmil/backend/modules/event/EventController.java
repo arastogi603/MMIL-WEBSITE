@@ -63,12 +63,39 @@ public class EventController {
         return ResponseEntity.ok(eventService.unpublishEvent(slug));
     }
 
+    
+    public static class RegisterRequest {
+        public String formAnswers;
+    }
+
     @PostMapping("/{slug}/register")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> registerForEvent(@PathVariable String slug, @AuthenticationPrincipal User user) {
-        eventService.registerForEvent(slug, user.getId());
+    public ResponseEntity<?> registerForEvent(@PathVariable String slug, @RequestBody(required = false) RegisterRequest req, @AuthenticationPrincipal User user) {
+        UUID userId = user != null ? user.getId() : null;
+        eventService.registerForEvent(slug, userId, req != null ? req.formAnswers : null);
         return ResponseEntity.ok().build();
     }
+    
+    @GetMapping("/{slug}/applications")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
+    public ResponseEntity<?> getEventApplications(@PathVariable String slug) {
+        Event event = eventService.getEventBySlug(slug);
+        if (event == null) return ResponseEntity.notFound().build();
+        List<EventRegistration> registrations = eventService.getRegistrationsForEvent(event.getId());
+        
+        List<Map<String, Object>> result = new java.util.ArrayList<>();
+        for (EventRegistration r : registrations) {
+            Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", r.getId());
+            map.put("userId", r.getUser() != null ? r.getUser().getId() : null);
+            map.put("userName", r.getUser() != null ? r.getUser().getName() : "Guest");
+            map.put("userEmail", r.getUser() != null ? r.getUser().getEmail() : "Guest");
+            map.put("formAnswers", r.getFormAnswers());
+            map.put("registeredAt", r.getRegisteredAt());
+            result.add(map);
+        }
+        return ResponseEntity.ok(result);
+    }
+
 
     @GetMapping("/{slug}/registration-status")
     @PreAuthorize("isAuthenticated()")

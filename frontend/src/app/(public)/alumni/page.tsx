@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link as LinkIcon } from "lucide-react";
+import { alumniApi } from "@/lib/api/alumni";
+import { useEffect } from "react";
 
 interface AlumniMember {
   id: string;
@@ -14,279 +16,7 @@ interface AlumniMember {
   company: string;
 }
 
-const ALUMNI_DATA: AlumniMember[] = [
-  {
-    id: "1",
-    name: "Harsh Jajaniya",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/harsh-jajaniya-293bb0247/",
-    linkedInUsername: "harsh-jajaniya-293bb0247",
-    avatarUrl: "/images/alumni/harsh-jajaniya.jpg",
-    company: "AARFID Holdings LLC",
-  },
-  {
-    id: "2",
-    name: "Ashita Maheshwari",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/ashita-maheshwari/",
-    linkedInUsername: "ashita-maheshwari",
-    avatarUrl: "/images/alumni/ashita-maheshwari.jpg",
-    company: "Haltdos",
-  },
-  {
-    id: "3",
-    name: "Anusha Agarwal",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/anusha-agarwal-068b70271/",
-    linkedInUsername: "anusha-agarwal-068b70271",
-    avatarUrl: "/images/alumni/anusha-agarwal.jpg",
-    company: "Blinkit",
-  },
-  {
-    id: "4",
-    name: "Parth Gupta",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/parth-gupta-3793ba273/",
-    linkedInUsername: "parth-gupta-3793ba273",
-    avatarUrl: "/images/alumni/parth-gupta.jpg",
-    company: "Modgenics Technology Solutions",
-  },
-  {
-    id: "5",
-    name: "Muskan Jaiswal",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/muskan-jais/",
-    linkedInUsername: "muskan-jais",
-    avatarUrl: "/images/alumni/muskan-jaiswal.jpg",
-    company: "Newgen",
-  },
-  {
-    id: "6",
-    name: "Garima Singh",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/garimasingh10u/",
-    linkedInUsername: "garimasingh10u",
-    avatarUrl: "/images/alumni/garima-singh.jpg",
-    company: "TCS",
-  },
-  {
-    id: "7",
-    name: "Anushka Dubey",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/anushka-dubey-17ba77275/",
-    linkedInUsername: "anushka-dubey-17ba77275",
-    avatarUrl: "/images/alumni/anushka-dubey.jpg",
-    company: "Premier Energies",
-  },
-  {
-    id: "8",
-    name: "Abhinav Yadav",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/abhinav-yadav-70088a252/",
-    linkedInUsername: "abhinav-yadav-70088a252",
-    avatarUrl: "/images/alumni/abhinav-yadav.jpg",
-    company: "Attero",
-  },
-  {
-    id: "31",
-    name: "Utkarsh Sharma",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/utkarshdev2411/",
-    linkedInUsername: "utkarshdev2411",
-    avatarUrl: "/images/alumni/utkarsh-sharma.jpg",
-    company: "Binmile",
-  },
-  {
-    id: "30",
-    name: "Rounak Ali",
-    batchYear: 2026,
-    linkedInUrl: "https://www.linkedin.com/in/rounak-ali-a58362260/",
-    linkedInUsername: "rounak-ali-a58362260",
-    avatarUrl: "/images/alumni/raunak.png",
-    company: "Masters at DRDO",
-  },
-  {
-    id: "9",
-    name: "Manas Rai",
-    batchYear: 2025,
-    linkedInUrl: "https://www.linkedin.com/in/manas-rai2003/",
-    linkedInUsername: "manas-rai2003",
-    avatarUrl: "/images/alumni/manas-rai.jpg",
-    company: "Astrotalk",
-  },
-  {
-    id: "10",
-    name: "Ayush Pandey",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/ayush-pandey01/",
-    linkedInUsername: "ayush-pandey01",
-    avatarUrl: "/images/alumni/ayush-pandey.jpg",
-    company: "Amazon",
-  },
-  {
-    id: "11",
-    name: "Sakshi Tiwari",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/sakshi-tiwari-7a952b1b7/",
-    linkedInUsername: "sakshi-tiwari-7a952b1b7",
-    avatarUrl: "/images/alumni/sakshi-tiwari.jpg",
-    company: "Oracle",
-  },
-  {
-    id: "12",
-    name: "Suyash Rastogi",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/suyash-rastogi/",
-    linkedInUsername: "suyash-rastogi",
-    avatarUrl: "/images/alumni/suyash-rastogi.jpg",
-    company: "Clinikally (YC S22)",
-  },
-  {
-    id: "13",
-    name: "Anuj Agarwal",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/anujagarwal900/",
-    linkedInUsername: "anujagarwal900",
-    avatarUrl: "/images/alumni/anuj-agarwal.jpg",
-    company: "Pelocal Fintech Private Limited",
-  },
 
-  {
-    id: "15",
-    name: "Pushkar Singh",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/pushkar-singh-a052a1205/",
-    linkedInUsername: "pushkar-singh-a052a1205",
-    avatarUrl: "/images/alumni/pushkar-singh.jpg",
-    company: "Newgen Software",
-  },
-  {
-    id: "16",
-    name: "Arnika Sharma",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/arnika-sharma-53496320b/",
-    linkedInUsername: "arnika-sharma-53496320b",
-    avatarUrl: "/images/alumni/arnika-sharma.jpg",
-    company: "Emerson",
-  },
-  {
-    id: "17",
-    name: "Ashwin Raj Vats",
-    batchYear: 2024,
-    linkedInUrl: "https://www.linkedin.com/in/ashwin-raj-vats-5911a41b7/",
-    linkedInUsername: "ashwin-raj-vats-5911a41b7",
-    avatarUrl: "/images/alumni/ashwin-raj-vats.jpg",
-    company: "Self Employed Graphic Designer",
-  },
-  {
-    id: "18",
-    name: "Nipun Khatri",
-    batchYear: 2025,
-    linkedInUrl: "https://www.linkedin.com/in/nipun-khatri-80b168224/",
-    linkedInUsername: "nipun-khatri-80b168224",
-    avatarUrl: "/images/alumni/nipun-khatri.jpg",
-    company: "Vesper",
-  },
-  {
-    id: "26",
-    name: "Bhoomi Agrawal",
-    batchYear: 2025,
-    linkedInUrl: "https://www.linkedin.com/in/bhoomi-agarwal-393846239/",
-    linkedInUsername: "bhoomi-agarwal-393846239",
-    avatarUrl: "/images/alumni/bhoomi-agrawal.jpg",
-    company: "Infineon Technologies",
-  },
-  {
-    id: "27",
-    name: "Yash Shekhar",
-    batchYear: 2025,
-    linkedInUrl: "https://www.linkedin.com/in/yash-shekhar-srivastava-b0559922a/",
-    linkedInUsername: "yash-shekhar-srivastava-b0559922a",
-    avatarUrl: "/images/alumni/yash-shekhar.jpg",
-    company: "HCL Tech",
-  },
-  {
-    id: "28",
-    name: "Vibhuti Kapoor",
-    batchYear: 2025,
-    linkedInUrl: "https://www.linkedin.com/in/vibhutikapoor/",
-    linkedInUsername: "vibhutikapoor",
-    avatarUrl: "/images/alumni/vibhuti-kapoor.jpg",
-    company: "RedDoorz",
-  },
-  {
-    id: "29",
-    name: "Dhanraj Singh",
-    batchYear: 2025,
-    linkedInUrl: "https://www.linkedin.com/in/sdhanraj300/",
-    linkedInUsername: "sdhanraj300",
-    avatarUrl: "/images/alumni/dhanraj-singh.jpg",
-    company: "Pursuing MTech at Kiel University",
-  },
-  {
-    id: "19",
-    name: "Parth Sharma",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/parthsharmat/",
-    linkedInUsername: "parthsharmat",
-    avatarUrl: "/images/alumni/parth-sharma.jpg",
-    company: "BUSINESSNEXT",
-  },
-  {
-    id: "20",
-    name: "Gautam Kushal",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/gautamkushal/",
-    linkedInUsername: "gautamkushal",
-    avatarUrl: "/images/alumni/gautam-kushal.jpg",
-    company: "AU Small Finance Bank",
-  },
-  {
-    id: "21",
-    name: "Neeraj Maurya",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/mauryaneeraj11/",
-    linkedInUsername: "mauryaneeraj11",
-    avatarUrl: "/images/alumni/neeraj-maurya.jpg",
-    company: "Josh Technology Group",
-  },
-  {
-    id: "22",
-    name: "Anmol Puri",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/anmol-puri-401b441a4/",
-    linkedInUsername: "anmol-puri-401b441a4",
-    avatarUrl: "/images/alumni/anmol-puri.jpg",
-    company: "Newgen Software",
-  },
-  {
-    id: "23",
-    name: "Rudrakshi Soni",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/rudrakshi-soni/",
-    linkedInUsername: "rudrakshi-soni",
-    avatarUrl: "/images/alumni/rudrakshi-soni.jpg",
-    company: "Amazon",
-  },
-  {
-    id: "24",
-    name: "Diksha Shukla",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/diksha-shukla-98aa1a196/",
-    linkedInUsername: "diksha-shukla-98aa1a196",
-    avatarUrl: "/images/alumni/diksha-shukla.jpg",
-    company: "Headset",
-  },
-  {
-    id: "25",
-    name: "Samyak Singh",
-    batchYear: 2023,
-    linkedInUrl: "https://www.linkedin.com/in/samyak-singh-007abc/",
-    linkedInUsername: "samyak-singh-007abc",
-    avatarUrl: "/images/alumni/samyak-singh.jpg",
-    company: "Playo",
-  },
-];
 
 function getInitials(name: string): string {
   if (!name) return "";
@@ -369,14 +99,38 @@ function AlumniCard({ member, index }: { member: AlumniMember; index: number }) 
 }
 
 export default function AlumniPage() {
-  const batchYears = Array.from(
-    new Set(ALUMNI_DATA.map((a) => a.batchYear))
-  ).sort((a, b) => b - a);
+  const [alumni, setAlumni] = useState<AlumniMember[]>([]);
+  const [activeYear, setActiveYear] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [activeYear, setActiveYear] = useState<number>(batchYears[0]);
-  const filteredAlumni = ALUMNI_DATA.filter((a) => a.batchYear === activeYear);
+  useEffect(() => {
+    alumniApi.getAllAlumni().then(data => {
+      const mapped = data.map((a: any) => ({
+        id: a.id,
+        name: a.name,
+        batchYear: a.batchYear,
+        company: a.company,
+        role: a.role,
+        linkedInUrl: a.linkedInUrl,
+        linkedInUsername: "",
+        avatarUrl: a.imageUrl || ""
+      }));
+      setAlumni(mapped);
+      const years: number[] = Array.from(new Set(mapped.map((a: any) => a.batchYear))).sort((a: any, b: any) => b - a);
+      if (years.length > 0) setActiveYear(years[0]);
+      setIsLoading(false);
+    });
+  }, []);
+
+  const batchYears = Array.from(new Set(alumni.map((a) => a.batchYear))).sort((a, b) => b - a);
+  const filteredAlumni = alumni.filter((a) => a.batchYear === activeYear);
+
+  if (isLoading) {
+    return <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']"><div className="text-center">Loading...</div></main>;
+  }
 
   return (
+
     <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
 

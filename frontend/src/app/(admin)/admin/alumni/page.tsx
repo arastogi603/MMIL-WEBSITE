@@ -102,7 +102,7 @@ function AdminAlumniPage() {
               
               <button 
                 onClick={() => handleDelete(alum.id)} 
-                className="absolute top-4 right-4 z-10 text-neutral-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100"
+                className="absolute top-4 right-4 z-20 text-neutral-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100"
               >
                 <Trash size={18} />
               </button>

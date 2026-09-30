@@ -65,7 +65,7 @@ export default function AdminEventsPage() {
     }
   };
 
-  const handleDeleteDraft = async (slug: string) => {
+  const handleDeleteEvent = async (slug: string) => {
     if (!confirm("Are you sure you want to delete this event? This cannot be undone.")) return;
     try {
       await eventsApi.deleteEvent(slug);
@@ -210,6 +210,19 @@ export default function AdminEventsPage() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 relative">
+                  
+                  <Link 
+                    href={`/admin/events/${event.slug}/form-builder`}
+                    className="col-span-2 w-full py-3 mb-2 rounded-2xl font-black text-sm bg-gradient-to-b from-indigo-50 to-indigo-100/50 text-indigo-600 border border-indigo-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(99,102,241,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(99,102,241,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    Form Builder
+                  </Link>
+                  <Link 
+                    href={`/admin/events/${event.slug}/applications`}
+                    className="col-span-2 w-full py-3 mb-3 rounded-2xl font-black text-sm bg-gradient-to-b from-fuchsia-50 to-fuchsia-100/50 text-fuchsia-600 border border-fuchsia-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(217,70,239,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(217,70,239,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    View Registrations
+                  </Link>
                   <button 
                     onClick={() => handleEditClick(event)}
                     className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
@@ -225,7 +238,7 @@ export default function AdminEventsPage() {
                     </button>
                   )}
                   <button 
-                    onClick={() => handleDeleteDraft(event.slug)}
+                    onClick={() => handleDeleteEvent(event.slug)}
                     className="col-span-2 w-full py-3 rounded-2xl font-black text-sm text-neutral-500 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
                   >
                     <Trash2 className="w-4 h-4" /> Delete Draft
@@ -278,6 +291,19 @@ export default function AdminEventsPage() {
                   </Link>
                 )}
                 <div className="grid grid-cols-2 gap-3 relative">
+                  
+                  <Link 
+                    href={`/admin/events/${event.slug}/form-builder`}
+                    className="col-span-2 w-full py-3 mb-2 rounded-2xl font-black text-sm bg-gradient-to-b from-indigo-50 to-indigo-100/50 text-indigo-600 border border-indigo-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(99,102,241,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(99,102,241,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    Form Builder
+                  </Link>
+                  <Link 
+                    href={`/admin/events/${event.slug}/applications`}
+                    className="col-span-2 w-full py-3 mb-3 rounded-2xl font-black text-sm bg-gradient-to-b from-fuchsia-50 to-fuchsia-100/50 text-fuchsia-600 border border-fuchsia-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(217,70,239,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(217,70,239,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    View Registrations
+                  </Link>
                   <button 
                     onClick={() => handleEditClick(event)}
                     className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
@@ -290,6 +316,14 @@ export default function AdminEventsPage() {
                       className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-red-50 to-red-100/50 text-red-600 border border-red-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(239,68,68,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                     >
                       <ShieldAlert className="w-4 h-4" /> Unpublish
+                    </button>
+                  )}
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handleDeleteEvent(event.slug)}
+                      className="col-span-2 w-full py-3 rounded-2xl font-black text-sm text-neutral-500 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" /> Delete Event
                     </button>
                   )}
                 </div>
@@ -327,12 +361,35 @@ export default function AdminEventsPage() {
                   {new Date(event.startDate).toLocaleDateString()}
                 </div>
                 
-                <button 
-                  onClick={() => handleEditClick(event)}
-                  className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
-                >
-                  <Type className="w-4 h-4" /> Edit Event
-                </button>
+                <div className="grid grid-cols-1 gap-3 relative">
+                  
+                  <Link 
+                    href={`/admin/events/${event.slug}/form-builder`}
+                    className="col-span-2 w-full py-3 mb-2 rounded-2xl font-black text-sm bg-gradient-to-b from-indigo-50 to-indigo-100/50 text-indigo-600 border border-indigo-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(99,102,241,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(99,102,241,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    Form Builder
+                  </Link>
+                  <Link 
+                    href={`/admin/events/${event.slug}/applications`}
+                    className="col-span-2 w-full py-3 mb-3 rounded-2xl font-black text-sm bg-gradient-to-b from-fuchsia-50 to-fuchsia-100/50 text-fuchsia-600 border border-fuchsia-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(217,70,239,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(217,70,239,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    View Registrations
+                  </Link>
+                  <button 
+                    onClick={() => handleEditClick(event)}
+                    className="w-full py-3 rounded-2xl font-black text-sm bg-gradient-to-b from-blue-50 to-blue-100/50 text-blue-600 border border-blue-200 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(59,130,246,0.1)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_15px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Type className="w-4 h-4" /> Edit Event
+                  </button>
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handleDeleteEvent(event.slug)}
+                      className="w-full py-3 rounded-2xl font-black text-sm text-neutral-500 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" /> Delete Event
+                    </button>
+                  )}
+                </div>
               </motion.div>
             ))}
           </div>

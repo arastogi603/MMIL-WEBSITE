@@ -56,6 +56,9 @@ public class Event {
     private LocalDateTime round3StartsAt;
     private LocalDateTime round3EndsAt;
 
+    @Column(columnDefinition = "TEXT")
+    private String formSchema;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -151,6 +154,9 @@ public class Event {
     
     public LocalDateTime getRound3EndsAt() { return round3EndsAt; }
     public void setRound3EndsAt(LocalDateTime round3EndsAt) { this.round3EndsAt = round3EndsAt; }
+
+    public String getFormSchema() { return formSchema; }
+    public void setFormSchema(String formSchema) { this.formSchema = formSchema; }
 
     @PreUpdate
     public void setLastUpdate() { this.updatedAt = LocalDateTime.now(); }

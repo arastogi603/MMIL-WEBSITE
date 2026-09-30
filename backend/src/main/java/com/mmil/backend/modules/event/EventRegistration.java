@@ -18,7 +18,7 @@ public class EventRegistration {
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +29,9 @@ public class EventRegistration {
     private String collegeName;
     private String district;
     private String state;
+
+    @Column(columnDefinition = "TEXT")
+    private String formAnswers;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime registeredAt = LocalDateTime.now();
@@ -57,6 +60,9 @@ public class EventRegistration {
 
     public String getState() { return state; }
     public void setState(String state) { this.state = state; }
+
+    public String getFormAnswers() { return formAnswers; }
+    public void setFormAnswers(String formAnswers) { this.formAnswers = formAnswers; }
 
     public LocalDateTime getRegisteredAt() { return registeredAt; }
     public void setRegisteredAt(LocalDateTime registeredAt) { this.registeredAt = registeredAt; }

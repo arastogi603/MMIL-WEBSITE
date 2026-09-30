@@ -27,13 +27,14 @@ target/
 *.zip
 *.tar.gz
 *.rar
+backend/bin/
 
 # Maven
 .mvn/
 !/.mvn/wrapper/maven-wrapper.jar
 !/.mvn/wrapper/maven-wrapper.properties
 
-# Secrets
+# Secrets — NEVER commit these
 application.yml
 application-dev.yml
 
@@ -47,7 +48,33 @@ out/
 build/
 .eslintcache
 
-# Env files (Universal ignore for ANY .env file anywhere in the repo)
+# Env files
 .env
 .env.*
 !.env.example
+
+# ── Scratch / helper scripts at root (not part of the app) ──
+/*.js
+/*.ts
+/*.ps1
+
+# ── Media / images at root ──
+/*.png
+/*.jpeg
+/*.jpg
+/*.gif
+/*.mp4
+/*.webm
+/*.webp
+/*.svg
+
+# ── Scratch text files inside frontend ──
+frontend/*.txt
+
+# ── PRD / docs folder (not needed in repo) ──
+MMIL-Website-PRD/
+
+# ── Root node_modules (from running scripts at root) ──
+/node_modules/
+/package-lock.json
+/package.json

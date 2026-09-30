@@ -13,7 +13,8 @@ export const CLUB_ROLES = [
   "technical",
   "programming",
   "design",
-  "web-development"
+  "web-development",
+  "faculty-coordinator"
 ];
 
 export const isAdminRights = (role: string | undefined | null): boolean => {

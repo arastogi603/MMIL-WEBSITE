@@ -10,4 +10,10 @@ import java.util.UUID;
 public interface RemovalRequestRepository extends JpaRepository<RemovalRequest, UUID> {
     List<RemovalRequest> findByStatusOrderByCreatedAtDesc(String status);
     boolean existsByTargetUserIdAndStatus(UUID targetUserId, String status);
+    
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByTargetUserId(UUID targetUserId);
+    
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByRequestedById(UUID requestedById);
 }

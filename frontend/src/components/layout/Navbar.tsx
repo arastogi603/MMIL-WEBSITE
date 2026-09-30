@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { LogOut, Menu, X, Home, Info, Layers, Calendar, GraduationCap, Briefcase, Users, Image as ImageIcon, Library, LogIn, UserPlus, LayoutDashboard, Sun, Moon } from "lucide-react";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { isCoreTeam } from "@/lib/roles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import GooeyNav from "@/components/GooeyNav";
 import { useTheme } from "@/lib/theme/theme";
@@ -29,6 +29,11 @@ export function Navbar() {
   const { isAuthenticated, user, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Don't show navbar in admin, portal, or auth
   if (pathname.startsWith("/admin") || pathname.startsWith("/portal") || pathname === "/login" || pathname === "/register" || pathname === "/forgot-password") {
@@ -62,7 +67,7 @@ export function Navbar() {
   // Desktop dark mode: light notch (#F4EBE1) → dark text logo
   // Mobile: light top bar (#f4f4f6) → dark text logo
   // We use theme state for desktop; mobile always gets dark-text logo
-  const desktopLogoSrc = theme === "dark" ? "/logo-light.png" : "/logo-dark.png";
+  const desktopLogoSrc = (mounted && theme === "dark") ? "/logo-light.png" : "/logo-dark.png";
   const mobileLogoSrc = "/logo-light.png";
 
   return (

@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiClient } from "@/lib/api/client";
+import { useEffect } from "react";
 import { Link as LinkIcon, Award, BookOpen, Sparkles, ExternalLink, GraduationCap } from "lucide-react";
 import Image from "next/image";
 
@@ -25,233 +27,9 @@ type DomainData = {
   students: Member[];
 };
 
-const executiveBoard: Member[] = [
-  {
-    name: "Kuldeep Pandit",
-    role: "President",
-    avatar: "/images/members/kuldeep.jpeg",
-    linkedin: "https://www.linkedin.com/in/kuldeepk-pandit/",
-    isPresident: true,
-  },
-  {
-    name: "Vaishnavi Bhati",
-    role: "Vice President",
-    avatar: "/images/members/vaisnavi.png",
-    linkedin: "https://www.linkedin.com/in/vaishnavi-bhati-15vb2004/",
-  },
-  {
-    name: "Ayan Khan",
-    role: "CTC",
-    avatar: "/images/members/ayan.jpeg",
-    linkedin: "https://www.linkedin.com/in/ayankhan28/",
-  },
-  {
-    name: "Parth Chaturvedi",
-    role: "Co-CTC",
-    avatar: "/images/members/parth.jpg.jpeg",
-    linkedin: "https://www.linkedin.com/in/parth-chaturvedi-dev/",
-  },
-  {
-    name: "Sanya Pandey",
-    role: "General Secretary",
-    avatar: "/images/members/sanya.jpeg",
-    linkedin: "https://www.linkedin.com/in/sanya-pandey08/",
-  },
-  {
-    name: "Anurag Maurya",
-    role: "Management Head",
-    avatar: "/images/members/anurag.jpg.jpeg",
-    linkedin: "https://www.linkedin.com/in/anuragg28/",
-  },
-];
 
-const domains: DomainData[] = [
-  {
-    id: "programming",
-    label: "Programming",
-    accentColor: "#0d9488", // Teal
-    badgeText: "PROGRAMMING LEAD",
-    lead: {
-      name: "Tanmay Kalra",
-      role: "Programming Lead",
-      avatar: "/images/members/tanmay.jpeg",
-      linkedin: "https://www.linkedin.com/in/tanmay-kalra-09oct/",
-    },
-    students: [
-      {
-        name: "Akshat Rastogi",
-        role: "Programmer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5603AQGHyzr7S7o_XQ/profile-displayphoto-crop_800_800/B56ZkT.9D0HQAU-/0/1756976896081?e=1786579200&v=beta&t=_AY8oRu--oNUZBrkA_wWCYkRhfzOWERHEc-fH6gitOs",
-        linkedin: "https://www.linkedin.com/in/-akshatrastogi/",
-      },
-      {
-        name: "Vansh Bhaskar",
-        role: "Programmer",
-        avatar: "/images/members/vansh.jpg",
-        linkedin: "https://www.linkedin.com/in/vanshbhaskar/",
-      },
-      {
-        name: "Arunima Negi",
-        role: "Programmer",
-        avatar: "/images/members/Arunima.jpeg",
-        linkedin: "https://www.linkedin.com/in/arunima-negi-90504429b/",
-      },
-      {
-        name: "K. Anushree",
-        role: "Programmer",
-        avatar: "/images/members/Anushree.jpeg",
-        linkedin: "https://www.linkedin.com/in/theanushree25/",
-      },
-      {
-        name: "Aditya Kumar Gupta",
-        role: "Programmer",
-        avatar: "https://drive.google.com/uc?export=view&id=1WYkNYR7fAGegTi3I8mkPpNzPIIG9xdJ4",
-        linkedin: "https://www.linkedin.com/in/aditya-kumar-gupta-245515297/",
-      },
-      {
-        name: "Sanskar Mittal",
-        role: "Programmer",
-        avatar: "/images/members/sanskar.jpg",
-        linkedin: "https://www.linkedin.com/in/sanskarmittal/",
-      },
-      {
-        name: "Prashasti Jha",
-        role: "Programmer",
-        avatar: "/images/members/Prashasthi.jpg",
-        linkedin: "https://www.linkedin.com/in/prashasti-jha-391109381/",
-      },
-      {
-        name: "Aaryan Singh",
-        role: "Programmer",
-        avatar: "https://drive.google.com/uc?export=view&id=1go3rBmnxA0Upp89TfmtxSliSE-qgD-8m",
-        linkedin: "https://www.linkedin.com/in/aaryansingh31/",
-      },
-    ],
-  },
-  {
-    id: "web-dev",
-    label: "Web Development",
-    accentColor: "#2563eb", // Blue
-    badgeText: "WEB DEV LEAD",
-    lead: {
-      name: "Disha Agrawal",
-      role: "Web Dev Lead",
-      avatar: "/images/members/disha.jpeg",
-      linkedin: "https://www.linkedin.com/in/disha-agrawal-0438062a5/",
-    },
-    students: [
-      {
-        name: "Abhishek Jaiswal",
-        role: "Web Developer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5603AQH9OH2jrPDlfg/profile-displayphoto-crop_800_800/B56ZyMGA0yJQAM-/0/1771876913422?e=1786579200&v=beta&t=iCUqJoUDAt58UMkScnakQJvqYQHjOHikvCvQhJ0rN4A",
-        linkedin: "https://www.linkedin.com/in/abhishek-jaiswal-110399338/",
-      },
-      {
-        name: "Thushar Rai",
-        role: "Web Developer",
-        avatar: "/images/members/tushar.jpeg",
-        linkedin: "https://www.linkedin.com/in/thushar-rai-a8aa9a375/",
-      },
-      {
-        name: "Nandini Mishra",
-        role: "Web Developer",
-        avatar: "/images/members/nandini.jpeg",
-        linkedin: "https://www.linkedin.com/in/nandini-mishra-4a5a3132a/",
-      },
-      {
-        name: "Ayushi Tiwari",
-        role: "Web Developer",
-        avatar: "/images/members/Ayushi.png",
-        linkedin: "https://www.linkedin.com/in/ayushi-tiwari-408a61302/",
-      },
-      {
-        name: "Akhil Mishra",
-        role: "Web Developer",
-        avatar:
-          "https://media.licdn.com/dms/image/v2/D5603AQEFlb64aMvblA/profile-displayphoto-crop_800_800/B56Z9CxSqKGcAI-/0/1783531646775?e=1786579200&v=beta&t=tavhaGWLV5ZmDWi_zU4PJtEGm8KKL5-YTOpOy8MYVaQ",
-        linkedin: "https://www.linkedin.com/in/akhil-mishra-95ba36312/",
-      },
-    ],
-  },
-  {
-    id: "technical",
-    label: "Technical",
-    accentColor: "#d97706", // Amber
-    badgeText: "TECHNICAL LEAD",
-    lead: {
-      name: "Vaishnav Gupta",
-      role: "Technical Lead",
-      avatar: "/images/members/VaishnavGupta.jpg.jpeg",
-      linkedin: "https://www.linkedin.com/in/vaishnavgupta/",
-    },
-    students: [
-      {
-        name: "Abhishek",
-        role: "Technical Member",
-        avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSs9bBvurUnow2rc2cuJHs7GL1_7VA3Q_QeQBC_X08Xg&s=10",
-        linkedin: "https://www.linkedin.com/in/abhishekk1811/",
-      },
-      {
-        name: "Shivanshu Kushwaha",
-        role: "Technical Member",
-        avatar: "/images/members/shivanshu.jpg",
-        linkedin: "https://www.linkedin.com/in/shivanshu-kushwaha-12572b345/",
-      },
-      {
-        name: "Rajat Kumar",
-        role: "Technical Member",
-        avatar: "/images/members/rajat.jpeg",
-        linkedin: "https://www.linkedin.com/in/rajat281/",
-      },
-      {
-        name: "Mahi Gupta",
-        role: "Technical Member",
-        avatar: "/images/members/mahi.jpeg",
-        linkedin: "https://www.linkedin.com/in/mahi-gupta-8623b4364/",
-      },
-    ],
-  },
-  {
-    id: "design",
-    label: "Design",
-    accentColor: "#eb4d6d", // Pink
-    badgeText: "DESIGN LEAD",
-    lead: {
-      name: "Aarsh Upadhyay",
-      role: "Design Lead",
-      avatar: "/images/members/aarsh.jpg.jpeg",
-      linkedin: "https://www.linkedin.com/in/aarsh-upadhyay-66010a359/",
-    },
-    students: [
-      {
-        name: "Arnav",
-        role: "Designer",
-        avatar: "/images/members/arnav.jpg",
-        linkedin: "https://www.linkedin.com/in/arnav2k5/",
-      },
-      {
-        name: "Akshat Srivastava",
-        role: "Designer",
-        avatar: "https://drive.google.com/uc?export=view&id=1oDp5216NuGeljG1uet0hHaeBVpuOGlFo",
-        linkedin: "https://www.linkedin.com/in/akshat-srivastava-522265407/",
-      },
-      {
-        name: "Ankita Singh",
-        role: "Designer",
-        avatar: "/images/members/ankita.jpg",
-        linkedin: "https://www.linkedin.com/in/ankita-singh-566007385/",
-      },
-      {
-        name: "Himanshi",
-        role: "Designer",
-        avatar: "/images/members/himanshi.jpeg",
-        linkedin: "#",
-      },
-    ],
-  },
-];
+
+
 
 // Helper to get initials
 function getInitials(name: string): string {
@@ -507,10 +285,10 @@ const facultyCoordinators = [
 ];
 
 /** Faculty Coordinators Section Component */
-function FacultyCoordinatorsSection() {
+function FacultyCoordinatorsSection({ coordinators = facultyCoordinators }: { coordinators?: any[] }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
-      {facultyCoordinators.map((coord, i) => (
+      {coordinators.map((coord, i) => (
         <motion.div
           key={`coord-${coord.name}`}
           initial={{ opacity: 0, y: 20 }}
@@ -588,9 +366,97 @@ function FacultyCoordinatorsSection() {
 // PAGE
 // ----------------------------------------------------
 export default function TeamPage() {
-  const [activeDomainId, setActiveDomainId] = useState(domains[0].id);
+  const [activeDomain, setActiveDomain] = useState<string>("programming");
+  const [executiveBoard, setExecutiveBoard] = useState<Member[]>([]);
+  const [faculty, setFaculty] = useState<any[]>([]);
+  const [domains, setDomains] = useState<DomainData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const activeDomain = domains.find((d) => d.id === activeDomainId) || domains[0];
+  useEffect(() => {
+    apiClient.get('/public/team').then(res => {
+      const users = res.data;
+      
+      const execRoles = ["president", "vice-president", "ctc", "co-ctc", "general-secretary", "management-head"];
+      const execMap: Record<string, number> = {};
+      execRoles.forEach((r, i) => execMap[r] = i);
+
+      
+      // Map Faculty Coordinators dynamically
+      const dynamicFaculty = users.filter((u: any) => u.role === "faculty-coordinator").map((u: any) => {
+        // Find if hardcoded data exists for them by name to keep extra fields
+        const hardcoded = facultyCoordinators.find(f => f.name.toLowerCase() === u.name.toLowerCase()) || {};
+        return {
+          name: u.name,
+          role: u.role.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+          designation: hardcoded.designation || "Faculty Coordinator",
+          avatar: u.avatarUrl || hardcoded.avatar || "/images/default-avatar.png",
+          linkedin: u.linkedInUrl || hardcoded.linkedin || "",
+          universityLink: hardcoded.universityLink || "",
+          bullets: hardcoded.bullets || [],
+        };
+      });
+      // Fallback to hardcoded if none returned yet (for first load before admin adds them)
+      setFaculty(dynamicFaculty.length > 0 ? dynamicFaculty : facultyCoordinators);
+
+      const execs = users.filter((u: any) => execRoles.includes(u.role)).map((u: any) => ({
+        name: u.name,
+        role: u.role.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+        avatar: u.avatarUrl || "/images/default-avatar.png",
+        linkedin: u.linkedInUrl || "",
+        isPresident: u.role === 'president'
+      })).sort((a: any, b: any) => execMap[a.role.toLowerCase().replace(/ /g, '-')] - execMap[b.role.toLowerCase().replace(/ /g, '-')]);
+      setExecutiveBoard(execs);
+
+      const progLead = users.find((u: any) => u.role === "programming-head");
+      const progStudents = users.filter((u: any) => u.role === "programmer" || u.role === "programming");
+      
+      const webLead = users.find((u: any) => u.role === "web-development-head");
+      const webStudents = users.filter((u: any) => u.role === "web-developer" || u.role === "web-development");
+
+      const technicalLead = users.find((u: any) => u.role === "technical-head" || u.role === "technical-lead");
+      const technicalStudents = users.filter((u: any) => u.role === "technical-member" || u.role === "technical");
+
+      const designLead = users.find((u: any) => u.role === "design-head");
+      const designStudents = users.filter((u: any) => u.role === "designer" || u.role === "design");
+
+      const mapToMember = (u: any, defaultRole: string) => u ? {
+        name: u.name,
+        role: u.role.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+        avatar: u.avatarUrl || "/images/default-avatar.png",
+        linkedin: u.linkedInUrl || ""
+      } : { name: "TBA", role: defaultRole, avatar: "", linkedin: "" };
+
+      setDomains([
+        {
+          id: "programming", label: "Programming", accentColor: "#0d9488", badgeText: "PROGRAMMING LEAD",
+          lead: mapToMember(progLead, "Programming Lead"),
+          students: progStudents.map((s: any) => mapToMember(s, "Programmer"))
+        },
+        {
+          id: "web-dev", label: "Web Development", accentColor: "#2563eb", badgeText: "WEB DEV LEAD",
+          lead: mapToMember(webLead, "Web Dev Lead"),
+          students: webStudents.map((s: any) => mapToMember(s, "Web Developer"))
+        },
+        {
+          id: "technical", label: "Technical", accentColor: "#d97706", badgeText: "TECHNICAL LEAD",
+          lead: mapToMember(technicalLead, "Technical Lead"),
+          students: technicalStudents.map((s: any) => mapToMember(s, "Technical Member"))
+        },
+        {
+          id: "design", label: "Design", accentColor: "#d946ef", badgeText: "DESIGN LEAD",
+          lead: mapToMember(designLead, "Design Lead"),
+          students: designStudents.map((s: any) => mapToMember(s, "Designer"))
+        }
+      ]);
+      setIsLoading(false);
+    });
+  }, []);
+
+  const activeDomainData = domains.find((d) => d.id === activeDomain);
+
+  if (isLoading) {
+    return <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']"><div className="text-center">Loading...</div></main>;
+  }
 
   return (
     <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']">
@@ -649,7 +515,7 @@ export default function TeamPage() {
             <div className="h-px bg-black/10 dark:bg-white/10 flex-grow" />
           </div>
 
-          <FacultyCoordinatorsSection />
+          <FacultyCoordinatorsSection coordinators={faculty} />
         </section>
 
         {/* 2. DOMAINS SECTION */}
@@ -665,11 +531,11 @@ export default function TeamPage() {
           {/* Minimal Domain Tabs Bar with 2px Accent Underline */}
           <div className="flex overflow-x-auto pb-3 mb-10 snap-x hide-scrollbar justify-start md:justify-center items-center gap-8 sm:gap-10 border-b border-black/10 dark:border-white/10">
             {domains.map((domain) => {
-              const isActive = activeDomainId === domain.id;
+              const isActive = activeDomain === domain.id;
               return (
                 <button
                   key={domain.id}
-                  onClick={() => setActiveDomainId(domain.id)}
+                  onClick={() => setActiveDomain(domain.id)}
                   className="relative pb-3 px-1 whitespace-nowrap text-base sm:text-lg font-medium transition-colors duration-200 flex-shrink-0 snap-center"
                   style={{
                     color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
@@ -693,7 +559,7 @@ export default function TeamPage() {
           <section className="rounded-3xl p-6 sm:p-10 border border-black/10 dark:border-white/10 bg-transparent">
             <AnimatePresence mode="wait">
               <motion.div
-                key={activeDomain.id}
+                key={activeDomainData?.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
@@ -703,8 +569,8 @@ export default function TeamPage() {
                   {/* Left Column: Domain Lead Card */}
                   <div className="w-full lg:w-auto flex flex-col items-center lg:items-start shrink-0">
                     <PosterCard
-                      member={activeDomain.lead}
-                      accentColor={activeDomain.accentColor}
+                      member={activeDomainData?.lead}
+                      accentColor={activeDomainData?.accentColor}
                       isDomainLead
                       index={0}
                     />
@@ -716,11 +582,11 @@ export default function TeamPage() {
                       Members
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-8 sm:gap-y-10 justify-items-center items-start">
-                      {activeDomain.students.map((student, idx) => (
+                      {(activeDomainData?.students || []).map((student, idx) => (
                         <DomainMemberCard
                           key={`member-${student.name}-${idx}`}
                           member={student}
-                          accentColor={activeDomain.accentColor}
+                          accentColor={activeDomainData?.accentColor}
                           index={idx}
                         />
                       ))}

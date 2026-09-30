@@ -2,8 +2,19 @@
 
 import { useTheme } from "@/lib/theme/theme";
 
+import { useEffect, useState } from "react";
+
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <button className="theme-toggle" aria-label="Toggle theme" style={{ width: 40, height: 40 }}></button>;
+  }
 
   return (
     <button

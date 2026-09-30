@@ -31,6 +31,8 @@ public class User implements UserDetails {
 
     private String avatarUrl;
 
+    private String linkedInUrl;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -57,7 +59,10 @@ public class User implements UserDetails {
     
     public String getAvatarUrl() { return avatarUrl; }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
-    
+
+    public String getLinkedInUrl() { return linkedInUrl; }
+    public void setLinkedInUrl(String linkedInUrl) { this.linkedInUrl = linkedInUrl; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     

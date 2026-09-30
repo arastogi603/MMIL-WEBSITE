@@ -15,14 +15,7 @@ import { apiClient } from "@/lib/api/client";
 export { getEventPoster } from "@/lib/events/getEventPoster";
 
 // Fallback events with uploaded images mapped to cards
-const fallbackEvents: Event[] = [
-  { id: "1", title: "Logocon", slug: "logocon", description: "Zealicon flagship logic and coding contest.", type: "event", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/Logocon.png" },
-  { id: "2", title: "Code-in-Pair", slug: "code-in-pair", description: "Two-member team coding relay contest.", type: "event", status: "completed", isTeamEvent: true, teamSizeMin: 2, teamSizeMax: 2, seatsTaken: 0, posterUrl: "/images/events/CodeInPair.png" },
-  { id: "3", title: "Decode", slug: "decode", description: "Cryptic hunt and algorithmic decoding event.", type: "event", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/deencode.png" },
-  { id: "4", title: "Valorant Gaming Tournament", slug: "valorant", description: "Zealicon e-sports Valorant tournament.", type: "event", status: "completed", isTeamEvent: true, teamSizeMin: 5, teamSizeMax: 5, seatsTaken: 0, posterUrl: "/images/events/valorant.png" },
-  { id: "5", title: "LinkedIn & Resume Building", slug: "resume-workshop", description: "Professional profile optimization session.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/Linkdin.jpeg" },
-  { id: "6", title: "Generative AI & Python", slug: "genai-workshop", description: "Learn prompt engineering and Python.", type: "workshop", status: "completed", isTeamEvent: false, teamSizeMin: 1, teamSizeMax: 1, seatsTaken: 0, posterUrl: "/images/events/GenAI.jpeg" },
-];
+const fallbackEvents: Event[] = [];
 
 function StatusBadge({ status }: { status?: string }) {
   const s = (status || "").toLowerCase();
@@ -264,7 +257,9 @@ export default function EventsPage() {
 
   useEffect(() => {
     setIsHydrated(true);
-    setEvents(fallbackEvents);
+    eventsApi.getAllEvents().then((data) => {
+      setEvents(data);
+    });
   }, []);
 
 

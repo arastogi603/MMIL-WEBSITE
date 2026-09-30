@@ -1,6 +1,10 @@
 import { apiClient } from './client';
 
 export const usersApi = {
+  createUser: async (userData: any) => {
+    const response = await apiClient.post('/admin/users', userData);
+    return response.data;
+  },
   getAllUsers: async () => {
     const response = await apiClient.get('/admin/users');
     return response.data;

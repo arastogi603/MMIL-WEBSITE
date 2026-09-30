@@ -66,6 +66,7 @@ public class EventService {
         event.setRound2EndsAt(dto.getRound2EndsAt());
         event.setRound3StartsAt(dto.getRound3StartsAt());
         event.setRound3EndsAt(dto.getRound3EndsAt());
+        event.setFormSchema(dto.getFormSchema());
         event.setStatus("draft");
 
         return eventRepository.save(event);
@@ -100,6 +101,7 @@ public class EventService {
         event.setRound2EndsAt(dto.getRound2EndsAt());
         event.setRound3StartsAt(dto.getRound3StartsAt());
         event.setRound3EndsAt(dto.getRound3EndsAt());
+        event.setFormSchema(dto.getFormSchema());
 
         return eventRepository.save(event);
     }
@@ -139,30 +141,37 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public void registerForEvent(String slug, UUID userId) {
+    public void registerForEvent(String slug, UUID userId, String formAnswers) {
         Event event = getEventBySlug(slug);
-        if (!"published".equals(event.getStatus())) {
-            throw new RuntimeException("Event is not published or active");
-        }
 
-        if (event.getCapacity() != null && event.getSeatsTaken() >= event.getCapacity()) {
+        int currentSeats = event.getSeatsTaken() != null ? event.getSeatsTaken() : 0;
+        if (event.getCapacity() != null && currentSeats >= event.getCapacity()) {
             throw new RuntimeException("Event is full");
         }
 
-        if (registrationRepository.existsByEventIdAndUserId(event.getId(), userId)) {
+        if (userId != null && registrationRepository.existsByEventIdAndUserId(event.getId(), userId)) {
             throw new RuntimeException("You are already registered for this event");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
         EventRegistration registration = new EventRegistration();
         registration.setEvent(event);
-        registration.setUser(user);
+        registration.setRegisteredAt(java.time.LocalDateTime.now());
+        registration.setFormAnswers(formAnswers);
+
+        if (userId != null) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            registration.setUser(user);
+        }
+
         registrationRepository.save(registration);
 
-        event.setSeatsTaken(event.getSeatsTaken() + 1);
+        event.setSeatsTaken(currentSeats + 1);
         eventRepository.save(event);
+    }
+
+    public List<EventRegistration> getRegistrationsForEvent(UUID eventId) {
+        return registrationRepository.findByEventId(eventId);
     }
 
     public Optional<EventRegistration> getRegistration(UUID eventId, UUID userId) {

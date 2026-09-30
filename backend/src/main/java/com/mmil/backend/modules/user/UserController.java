@@ -3,6 +3,7 @@ package com.mmil.backend.modules.user;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -14,10 +15,12 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final RemovalRequestRepository removalRequestRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository userRepository, RemovalRequestRepository removalRequestRepository) {
+    public UserController(UserRepository userRepository, RemovalRequestRepository removalRequestRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.removalRequestRepository = removalRequestRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -71,8 +74,29 @@ public class UserController {
             throw new RuntimeException("Only System Admin can delete President or CTC");
         }
         
+        removalRequestRepository.deleteByTargetUserId(user.getId());
+        removalRequestRepository.deleteByRequestedById(user.getId());
+        
         userRepository.delete(user);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createUser(@RequestBody User request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Email already exists"));
+        }
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole() != null ? request.getRole() : "student");
+        user.setAvatarUrl(request.getAvatarUrl());
+        user.setLinkedInUrl(request.getLinkedInUrl());
+        // Default password for manually created users
+        user.setPasswordHash(passwordEncoder.encode("mmil123"));
+        User saved = userRepository.save(user);
+        return ResponseEntity.ok(mapToDto(saved));
     }
 
     @PostMapping("/{id}/removal-request")
