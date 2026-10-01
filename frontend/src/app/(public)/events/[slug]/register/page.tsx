@@ -59,8 +59,36 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
           }
         } catch (e) {
           console.error("Failed to parse form schema", e);
+          setSchema({ header: { title: "Error", description: "Form schema is invalid" }, fields: [] });
+        }
+      } else {
+        // Fallback schema if none is provided
+        setSchema({
+          header: {
+            title: `Register for ${res.data.title}`,
+            description: "Please fill in the details below to register."
+          },
+          fields: [
+            { label: "Full Name", type: "text", required: true },
+            { label: "Email Address", type: "text", required: true },
+            { label: "Phone Number", type: "text", required: true }
+          ]
+        });
+        
+        // Pre-populate if logged in
+        if (user) {
+           setAnswers((prev) => ({
+             ...prev,
+             "Full Name": user.name || "",
+             "Email Address": user.email || ""
+           }));
         }
       }
+    }).catch(err => {
+      console.error(err);
+      setError("Failed to fetch event data.");
+      setEvent({ title: "Error" });
+      setSchema({ header: { title: "Error" }, fields: [] });
     });
   }, [resolvedParams.slug, mounted, user]);
 
