@@ -105,7 +105,7 @@ export default function AdminEventsPage() {
     e.preventDefault();
     setIsCreating(true);
     try {
-      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000);
+      const slug = editingEventSlug || (formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.floor(Math.random() * 1000));
       const payload = {
         ...formData,
         slug,
