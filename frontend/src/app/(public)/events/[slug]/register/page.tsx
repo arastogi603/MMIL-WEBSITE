@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic';
 const JellyRadio = dynamic<any>(() => import('@/components/JellyRadio'), { ssr: false });
 const FolderFloat = dynamic<any>(() => import('@/components/FolderFloat'), { ssr: false });
 const CodeSlots = dynamic<any>(() => import('@/components/CodeSlots'), { ssr: false });
+import toast from "react-hot-toast";
 
 export default function RegisterFormPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
@@ -102,7 +103,9 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
         if (f.required && f.type !== 'image') {
           const val = answers[f.label];
           if (val === undefined || val === null || String(val).trim() === '') {
-            setError(`Please fill in the required field: "${f.label}"`);
+            const errorMsg = `Please fill in the required field: "${f.label}"`;
+            setError(errorMsg);
+            toast.error(errorMsg);
             window.scrollTo({ top: 120, behavior: 'smooth' });
             return;
           }
@@ -122,7 +125,9 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
       }, 10000);
     } catch (err: any) {
       console.error("Registration error:", err);
-      setError(err.response?.data?.message || err.response?.data || "Registration failed. Please check your answers and try again.");
+      const errorMsg = err.response?.data?.message || err.response?.data || "Registration failed. Please check your answers and try again.";
+      setError(errorMsg);
+      toast.error(errorMsg);
       setIsSubmitting(false);
       window.scrollTo({ top: 120, behavior: 'smooth' });
     }

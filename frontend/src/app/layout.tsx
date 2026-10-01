@@ -6,6 +6,7 @@ import { InitialLoader } from "@/components/layout/InitialLoader";
 import { ThemeProvider } from "@/lib/theme/theme";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { cn } from "@/lib/utils";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -47,6 +48,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <InitialLoader />
+            <Toaster position="top-right" />
             <Navbar />
             {children}
             <Footer />
