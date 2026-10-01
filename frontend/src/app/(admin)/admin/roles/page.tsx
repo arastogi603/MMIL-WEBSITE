@@ -55,7 +55,7 @@ export default function RolesManagementPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
-  const [newUser, setNewUser] = useState({ name: "", email: "", role: "student", avatarUrl: "", description: "" });
+  const [newUser, setNewUser] = useState({ name: "", email: "", role: "student", avatarUrl: "", description: "", linkedInUrl: "" });
   const { user: currentUser } = useAuthStore();
 
   const isAdmin = isAdminRights(currentUser?.role);
@@ -111,7 +111,7 @@ export default function RolesManagementPage() {
       }
       setIsAddModalOpen(false);
       setEditingUserId(null);
-      setNewUser({ name: "", email: "", role: "student", avatarUrl: "", description: "" });
+      setNewUser({ name: "", email: "", role: "student", avatarUrl: "", description: "", linkedInUrl: "" });
       fetchUsers();
     } catch (err: any) {
       alert(err.response?.data?.message || (editingUserId ? "Failed to update user" : "Failed to create user"));
@@ -125,7 +125,8 @@ export default function RolesManagementPage() {
       email: user.email || "",
       role: user.role || "student",
       avatarUrl: user.avatarUrl || "",
-      description: user.description || ""
+      description: user.description || "",
+      linkedInUrl: user.linkedInUrl || ""
     });
     setIsAddModalOpen(true);
   };
@@ -262,7 +263,7 @@ export default function RolesManagementPage() {
                 <button
                   onClick={() => {
                     setEditingUserId(null);
-                    setNewUser({ name: "", email: "", role: "student", avatarUrl: "", description: "" });
+                    setNewUser({ name: "", email: "", role: "student", avatarUrl: "", description: "", linkedInUrl: "" });
                     setIsAddModalOpen(true);
                   }}
                   className="px-6 py-2 rounded-xl bg-[#111] text-white font-bold hover:bg-black transition-colors whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
@@ -504,6 +505,10 @@ export default function RolesManagementPage() {
               <div>
                 <label className="block text-sm font-bold mb-1">Photo URL</label>
                 <input type="text" value={newUser.avatarUrl || ''} onChange={e => setNewUser({...newUser, avatarUrl: e.target.value})} className="w-full px-4 py-2 rounded-xl bg-white/50 border border-white focus:outline-none" placeholder="https://..." />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">LinkedIn URL</label>
+                <input type="text" value={newUser.linkedInUrl || ''} onChange={e => setNewUser({...newUser, linkedInUrl: e.target.value})} className="w-full px-4 py-2 rounded-xl bg-white/50 border border-white focus:outline-none" placeholder="https://linkedin.com/in/..." />
               </div>
               {newUser.role === 'faculty-coordinator' && (
                 <div>

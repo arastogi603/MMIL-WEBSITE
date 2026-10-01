@@ -413,17 +413,19 @@ export default function TeamPage() {
       })).sort((a: any, b: any) => execMap[a.role.toLowerCase().replace(/ /g, '-')] - execMap[b.role.toLowerCase().replace(/ /g, '-')]);
       setExecutiveBoard(execs);
 
+      const sortByName = (a: any, b: any) => a.name.localeCompare(b.name);
+
       const progLead = users.find((u: any) => u.role === "programming-head" || u.role === "programming-lead");
-      const progStudents = users.filter((u: any) => u.role === "programmer" || u.role === "programming");
+      const progStudents = users.filter((u: any) => u.role === "programmer" || u.role === "programming").sort(sortByName);
       
       const webLead = users.find((u: any) => u.role === "web-development-head" || u.role === "web-dev-lead");
-      const webStudents = users.filter((u: any) => u.role === "web-developer" || u.role === "web-development");
+      const webStudents = users.filter((u: any) => u.role === "web-developer" || u.role === "web-development").sort(sortByName);
 
       const technicalLead = users.find((u: any) => u.role === "technical-head" || u.role === "technical-lead");
-      const technicalStudents = users.filter((u: any) => u.role === "technical-member" || u.role === "technical");
+      const technicalStudents = users.filter((u: any) => u.role === "technical-member" || u.role === "technical").sort(sortByName);
 
       const designLead = users.find((u: any) => u.role === "design-head" || u.role === "design-lead");
-      const designStudents = users.filter((u: any) => u.role === "designer" || u.role === "design");
+      const designStudents = users.filter((u: any) => u.role === "designer" || u.role === "design").sort(sortByName);
 
       const mapToMember = (u: any, defaultRole: string) => u ? {
         name: u.name,
