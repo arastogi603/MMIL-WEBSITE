@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, Shield, Search, RefreshCw, AlertCircle, Trash2, CheckCircle, XCircle, ChevronDown } from "lucide-react";
+import { Users, Shield, Search, RefreshCw, AlertCircle, Trash2, Edit, CheckCircle, XCircle, ChevronDown } from "lucide-react";
 import { usersApi } from "@/lib/api/users";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { CLUB_ROLES, isCoreTeam, isAdminRights, formatRoleName } from "@/lib/roles";
@@ -54,7 +54,8 @@ export default function RolesManagementPage() {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ name: "", email: "", role: "student" });
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [newUser, setNewUser] = useState({ name: "", email: "", role: "student", avatarUrl: "", description: "" });
   const { user: currentUser } = useAuthStore();
 
   const isAdmin = isAdminRights(currentUser?.role);
@@ -100,16 +101,33 @@ export default function RolesManagementPage() {
   };
 
   
-  const handleAddUser = async (e: React.FormEvent) => {
+  const handleSaveUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await usersApi.createUser(newUser);
+      if (editingUserId) {
+        await usersApi.updateUser(editingUserId, newUser);
+      } else {
+        await usersApi.createUser(newUser);
+      }
       setIsAddModalOpen(false);
-      setNewUser({ name: "", email: "", role: "student" });
+      setEditingUserId(null);
+      setNewUser({ name: "", email: "", role: "student", avatarUrl: "", description: "" });
       fetchUsers();
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to create user");
+      alert(err.response?.data?.message || (editingUserId ? "Failed to update user" : "Failed to create user"));
     }
+  };
+
+  const handleEditUser = (user: any) => {
+    setEditingUserId(user.id);
+    setNewUser({
+      name: user.name || "",
+      email: user.email || "",
+      role: user.role || "student",
+      avatarUrl: user.avatarUrl || "",
+      description: user.description || ""
+    });
+    setIsAddModalOpen(true);
   };
 
   const handleRequestRemoval = async (userId: string) => {
@@ -242,7 +260,11 @@ export default function RolesManagementPage() {
             </div>
               {isAdmin && (
                 <button
-                  onClick={() => setIsAddModalOpen(true)}
+                  onClick={() => {
+                    setEditingUserId(null);
+                    setNewUser({ name: "", email: "", role: "student", avatarUrl: "", description: "" });
+                    setIsAddModalOpen(true);
+                  }}
                   className="px-6 py-2 rounded-xl bg-[#111] text-white font-bold hover:bg-black transition-colors whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
                 >
                   + Add Member
@@ -383,6 +405,13 @@ export default function RolesManagementPage() {
                                 ]}
                               />
                               <button 
+                                onClick={() => handleEditUser(u)}
+                                className="p-1.5 rounded-lg bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors border border-blue-200"
+                                title="Edit Account"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button 
                                 onClick={() => handleDeleteUser(u.id)}
                                 className="p-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors border border-red-200"
                                 title="Delete Account"
@@ -451,8 +480,8 @@ export default function RolesManagementPage() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             className="relative w-full max-w-md bg-white/70 backdrop-blur-3xl rounded-3xl p-8 border border-white/50 shadow-2xl text-[#111]"
           >
-            <h2 className="text-2xl font-black mb-6">Add New Member</h2>
-            <form onSubmit={handleAddUser} className="space-y-4">
+            <h2 className="text-2xl font-black mb-6">{editingUserId ? "Edit Member" : "Add New Member"}</h2>
+            <form onSubmit={handleSaveUser} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold mb-1">Name</label>
                 <input required type="text" value={newUser.name} onChange={e => setNewUser({...newUser, name: e.target.value})} className="w-full px-4 py-2 rounded-xl bg-white/50 border border-white focus:outline-none" />
@@ -472,9 +501,19 @@ export default function RolesManagementPage() {
                   options={CLUB_ROLES.map(r => ({ value: r, label: formatRoleName(r) }))}
                 />
               </div>
+              <div>
+                <label className="block text-sm font-bold mb-1">Photo URL</label>
+                <input type="text" value={newUser.avatarUrl || ''} onChange={e => setNewUser({...newUser, avatarUrl: e.target.value})} className="w-full px-4 py-2 rounded-xl bg-white/50 border border-white focus:outline-none" placeholder="https://..." />
+              </div>
+              {newUser.role === 'faculty-coordinator' && (
+                <div>
+                  <label className="block text-sm font-bold mb-1">Description (for Faculty Coordinator)</label>
+                  <textarea rows={2} value={newUser.description || ''} onChange={e => setNewUser({...newUser, description: e.target.value})} className="w-full px-4 py-2 rounded-xl bg-white/50 border border-white focus:outline-none" placeholder="Faculty Coordinator Description..." />
+                </div>
+              )}
               <div className="flex gap-4 mt-6 pt-4 border-t border-black/5">
                 <button type="button" onClick={() => setIsAddModalOpen(false)} className="flex-1 py-3 rounded-xl border border-black/10 font-bold hover:bg-black/5 text-[#111]">Cancel</button>
-                <button type="submit" className="flex-1 py-3 rounded-xl bg-[#111] text-white font-bold hover:bg-black shadow-[0_4px_12px_rgba(0,0,0,0.1)]">Add Member</button>
+                <button type="submit" className="flex-1 py-3 rounded-xl bg-[#111] text-white font-bold hover:bg-black shadow-[0_4px_12px_rgba(0,0,0,0.1)]">{editingUserId ? "Save Changes" : "Add Member"}</button>
               </div>
             </form>
           </motion.div>

@@ -9,7 +9,10 @@ export const usersApi = {
     const response = await apiClient.get('/admin/users');
     return response.data;
   },
-  
+  updateUser: async (userId: string, userData: any) => {
+    const response = await apiClient.put(`/admin/users/${userId}`, userData);
+    return response.data;
+  },
   updateUserRole: async (userId: string, role: string) => {
     const response = await apiClient.put(`/admin/users/${userId}/role`, { role });
     return response.data;

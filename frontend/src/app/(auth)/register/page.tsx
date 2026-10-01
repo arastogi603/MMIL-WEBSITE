@@ -49,9 +49,10 @@ export default function RegisterPage() {
     try {
       await apiClient.post("/auth/signup", { name, email, password });
       setIsSuccess(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => {
         router.push("/login");
-      }, 3000);
+      }, 10000);
     } catch (err: any) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
     } finally {

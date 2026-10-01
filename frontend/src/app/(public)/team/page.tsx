@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/lib/api/client";
 import { useEffect } from "react";
+import { useDataStore } from "@/lib/store/data.store";
 import { Link as LinkIcon, Award, BookOpen, Sparkles, ExternalLink, GraduationCap } from "lucide-react";
 import Image from "next/image";
 
@@ -366,15 +367,20 @@ function FacultyCoordinatorsSection({ coordinators = facultyCoordinators }: { co
 // PAGE
 // ----------------------------------------------------
 export default function TeamPage() {
+  const { team: users, isLoaded, prefetchData } = useDataStore();
   const [activeDomain, setActiveDomain] = useState<string>("programming");
   const [executiveBoard, setExecutiveBoard] = useState<Member[]>([]);
   const [faculty, setFaculty] = useState<any[]>([]);
   const [domains, setDomains] = useState<DomainData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    apiClient.get('/public/team').then(res => {
-      const users = res.data;
+    if (!isLoaded) {
+      prefetchData();
+    }
+  }, [isLoaded, prefetchData]);
+
+  useEffect(() => {
+    if (!users || users.length === 0) return;
       
       const execRoles = ["president", "vice-president", "ctc", "co-ctc", "general-secretary", "management-head"];
       const execMap: Record<string, number> = {};
@@ -448,14 +454,12 @@ export default function TeamPage() {
           students: designStudents.map((s: any) => mapToMember(s, "Designer"))
         }
       ]);
-      setIsLoading(false);
-    });
-  }, []);
+  }, [users]);
 
   const activeDomainData = domains.find((d) => d.id === activeDomain);
 
-  if (isLoading) {
-    return <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']"><div className="text-center">Loading...</div></main>;
+  if (!isLoaded || domains.length === 0) {
+    return null; // Return nothing so it shows instantly once data is loaded (which is done by InitialLoader)
   }
 
   return (

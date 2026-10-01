@@ -9,6 +9,7 @@ import { LiquidGlassCard } from "@/components/ui/LiquidGlassCard";
 import { Calendar, Users, ChevronRight, ChevronLeft, ExternalLink, Code, Lightbulb, Palette, Trophy } from "lucide-react";
 import Image from "next/image";
 import { useAuthStore } from "@/lib/store/auth.store";
+import { useDataStore } from "@/lib/store/data.store";
 import { apiClient } from "@/lib/api/client";
 
 // Re-export so any consumer that imported getEventPoster from this file keeps working.
@@ -249,7 +250,7 @@ function CoverflowCarousel({ events }: { events: Event[] }) {
 }
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const { events, isLoaded, prefetchData } = useDataStore();
   const [isHydrated, setIsHydrated] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState<Record<string, boolean>>({});
   const [categoryFilter, setCategoryFilter] = useState("All");
@@ -257,10 +258,10 @@ export default function EventsPage() {
 
   useEffect(() => {
     setIsHydrated(true);
-    eventsApi.getAllEvents().then((data) => {
-      setEvents(data);
-    });
-  }, []);
+    if (!isLoaded) {
+      prefetchData();
+    }
+  }, [isLoaded, prefetchData]);
 
 
   const categories = useMemo(() => {
@@ -283,7 +284,7 @@ export default function EventsPage() {
     return sorted.filter(e => e.type === categoryFilter);
   }, [events, categoryFilter]);
 
-  if (!isHydrated) return null;
+  if (!isHydrated || !isLoaded) return null;
 
   const ongoingEvents = events.filter(e => e.status !== "completed" && e.status !== "draft");
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { alumniApi, Alumni } from "@/lib/api/alumni";
-import { Plus, Trash, GraduationCap, MapPin, Building, Briefcase, ExternalLink, Users, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { Plus, Trash, Edit, GraduationCap, MapPin, Building, Briefcase, ExternalLink, Users, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { withRoleGuard } from "@/components/auth/RoleGuard";
@@ -12,6 +12,7 @@ import { withRoleGuard } from "@/components/auth/RoleGuard";
 function AdminAlumniPage() {
   const [alumni, setAlumni] = useState<Alumni[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAlumni, setEditingAlumni] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<Alumni>();
 
@@ -33,14 +34,26 @@ function AdminAlumniPage() {
 
   const onSubmit = async (data: Alumni) => {
     try {
-      await alumniApi.createAlumni(data);
-      toast.success("Alumni created successfully");
+      if (editingAlumni) {
+        await alumniApi.updateAlumni(editingAlumni, data);
+        toast.success("Alumni updated successfully");
+      } else {
+        await alumniApi.createAlumni(data);
+        toast.success("Alumni created successfully");
+      }
       setIsModalOpen(false);
+      setEditingAlumni(null);
       reset();
       fetchAlumni();
     } catch (e) {
-      toast.error("Failed to create Alumni");
+      toast.error(editingAlumni ? "Failed to update Alumni" : "Failed to create Alumni");
     }
+  };
+
+  const handleEdit = (alum: Alumni) => {
+    setEditingAlumni(alum.id);
+    reset(alum);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -69,7 +82,11 @@ function AdminAlumniPage() {
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="text-neutral-500 font-medium mt-1">Manage alumni profiles and connections.</motion.p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingAlumni(null);
+            reset();
+            setIsModalOpen(true);
+          }}
           className="w-full sm:w-auto px-6 py-3 bg-[#111] hover:bg-black text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.2)] active:scale-95"
         >
           <Plus className="w-5 h-5" /> Add Alumni
@@ -100,12 +117,20 @@ function AdminAlumniPage() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/30 pointer-events-none" />
               
-              <button 
-                onClick={() => handleDelete(alum.id)} 
-                className="absolute top-4 right-4 z-20 text-neutral-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100"
-              >
-                <Trash size={18} />
-              </button>
+              <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100">
+                <button 
+                  onClick={() => handleEdit(alum)} 
+                  className="text-neutral-400 hover:text-blue-500 hover:bg-blue-50 p-2 rounded-xl transition-colors"
+                >
+                  <Edit size={18} />
+                </button>
+                <button 
+                  onClick={() => handleDelete(alum.id)} 
+                  className="text-neutral-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-xl transition-colors"
+                >
+                  <Trash size={18} />
+                </button>
+              </div>
               
               <div className="flex items-center gap-5 mb-6 relative z-10">
                 {alum.imageUrl ? (
@@ -163,8 +188,8 @@ function AdminAlumniPage() {
             className="bg-white/90 backdrop-blur-2xl border border-white rounded-[2rem] p-6 sm:p-8 w-full max-w-lg shadow-[0_20px_60px_rgba(0,0,0,0.2)] my-8"
           >
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-black text-[#111]">Add New Alumni</h2>
-              <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 bg-[#faf7f3] rounded-xl flex items-center justify-center text-neutral-500 hover:text-[#111] transition-colors border border-black/5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
+              <h2 className="text-2xl font-black text-[#111]">{editingAlumni ? "Edit Alumni" : "Add New Alumni"}</h2>
+              <button onClick={() => { setIsModalOpen(false); setEditingAlumni(null); reset(); }} className="w-10 h-10 bg-[#faf7f3] rounded-xl flex items-center justify-center text-neutral-500 hover:text-[#111] transition-colors border border-black/5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
                 &times;
               </button>
             </div>
@@ -204,7 +229,7 @@ function AdminAlumniPage() {
               <div className="pt-4 flex justify-end gap-3">
                 <button 
                   type="button" 
-                  onClick={() => setIsModalOpen(false)} 
+                  onClick={() => { setIsModalOpen(false); setEditingAlumni(null); reset(); }} 
                   className="px-6 py-3 rounded-xl font-bold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors"
                 >
                   Cancel

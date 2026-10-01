@@ -116,9 +116,10 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
         formAnswers: JSON.stringify(answers) 
       });
       setIsSuccess(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => {
         router.push('/');
-      }, 4500);
+      }, 10000);
     } catch (err: any) {
       console.error("Registration error:", err);
       setError(err.response?.data?.message || err.response?.data || "Registration failed. Please check your answers and try again.");

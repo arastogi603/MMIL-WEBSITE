@@ -93,8 +93,26 @@ public class UserController {
         user.setRole(request.getRole() != null ? request.getRole() : "student");
         user.setAvatarUrl(request.getAvatarUrl());
         user.setLinkedInUrl(request.getLinkedInUrl());
+        user.setDescription(request.getDescription());
         // Default password for manually created users
         user.setPasswordHash(passwordEncoder.encode("mmil123"));
+        User saved = userRepository.save(user);
+        return ResponseEntity.ok(mapToDto(saved));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateUser(@PathVariable UUID id, @RequestBody User request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setName(request.getName());
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Email already exists"));
+        }
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getRole() != null) user.setRole(request.getRole());
+        user.setAvatarUrl(request.getAvatarUrl());
+        user.setLinkedInUrl(request.getLinkedInUrl());
+        user.setDescription(request.getDescription());
         User saved = userRepository.save(user);
         return ResponseEntity.ok(mapToDto(saved));
     }

@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { useDataStore } from "@/lib/store/data.store";
+
 export function InitialLoader() {
   // Start as null = unknown (SSR). After hydration we know the real value.
   const [shouldShow, setShouldShow] = useState<boolean | null>(null);
@@ -16,6 +18,9 @@ export function InitialLoader() {
   const VIDEO_PLAYBACK_SPEED = 1.5;
 
   useEffect(() => {
+    // Prefetch data immediately in the background
+    useDataStore.getState().prefetchData();
+
     // On mount (client only), decide whether to show splash
     const played = sessionStorage.getItem("mmil_intro_played");
     setShouldShow(!played);

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link as LinkIcon } from "lucide-react";
 import { alumniApi } from "@/lib/api/alumni";
 import { useEffect } from "react";
+import { useDataStore } from "@/lib/store/data.store";
 
 interface AlumniMember {
   id: string;
@@ -99,34 +100,38 @@ function AlumniCard({ member, index }: { member: AlumniMember; index: number }) 
 }
 
 export default function AlumniPage() {
+  const { alumni: storeAlumni, isLoaded, prefetchData } = useDataStore();
   const [alumni, setAlumni] = useState<AlumniMember[]>([]);
   const [activeYear, setActiveYear] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    alumniApi.getAllAlumni().then(data => {
-      const mapped = data.map((a: any) => ({
-        id: a.id,
-        name: a.name,
-        batchYear: a.batchYear,
-        company: a.company,
-        role: a.role,
-        linkedInUrl: a.linkedInUrl,
-        linkedInUsername: "",
-        avatarUrl: a.imageUrl || ""
-      }));
-      setAlumni(mapped);
-      const years: number[] = Array.from(new Set<number>(mapped.map((a: any) => Number(a.batchYear)))).sort((a, b) => b - a);
-      if (years.length > 0) setActiveYear(years[0]);
-      setIsLoading(false);
-    });
-  }, []);
+    if (!isLoaded) {
+      prefetchData();
+    }
+  }, [isLoaded, prefetchData]);
+
+  useEffect(() => {
+    if (storeAlumni.length === 0) return;
+    const mapped = storeAlumni.map((a: any) => ({
+      id: a.id,
+      name: a.name,
+      batchYear: a.batchYear,
+      company: a.company,
+      role: a.role,
+      linkedInUrl: a.linkedInUrl,
+      linkedInUsername: "",
+      avatarUrl: a.imageUrl || ""
+    }));
+    setAlumni(mapped);
+    const years: number[] = Array.from(new Set<number>(mapped.map((a: any) => Number(a.batchYear)))).sort((a, b) => b - a);
+    if (years.length > 0) setActiveYear(years[0]);
+  }, [storeAlumni]);
 
   const batchYears: number[] = Array.from(new Set<number>(alumni.map((a) => Number(a.batchYear)))).sort((a, b) => b - a);
   const filteredAlumni = alumni.filter((a) => a.batchYear === activeYear);
 
-  if (isLoading) {
-    return <main className="min-h-screen text-[var(--text-primary)] bg-transparent pt-36 md:pt-40 pb-24 relative font-['Outfit']"><div className="text-center">Loading...</div></main>;
+  if (!isLoaded || alumni.length === 0) {
+    return null;
   }
 
   return (

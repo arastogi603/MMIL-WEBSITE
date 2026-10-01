@@ -33,6 +33,9 @@ public class User implements UserDetails {
 
     private String linkedInUrl;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -62,6 +65,9 @@ public class User implements UserDetails {
 
     public String getLinkedInUrl() { return linkedInUrl; }
     public void setLinkedInUrl(String linkedInUrl) { this.linkedInUrl = linkedInUrl; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
