@@ -106,3 +106,15 @@
     transform: none;
   }
 }
+
+@media (max-width: 640px) {
+  .jelly-radio {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+  }
+  .jelly-radio__chip,
+  .jelly-radio__skin {
+    width: 100%;
+  }
+}

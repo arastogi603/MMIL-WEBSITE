@@ -9,10 +9,11 @@ import { motion, Reorder } from "framer-motion";
 
 const defaultFields = [
   { id: 'f1', type: 'text', label: 'Name', required: true },
-  { id: 'f2', type: 'text', label: 'Email', required: true },
-  { id: 'f3', type: 'number', label: 'Phone No', required: true },
+  { id: 'f2', type: 'number', label: 'Phone Number', required: true },
+  { id: 'f3', type: 'text', label: 'Email', required: true },
   { id: 'f4', type: 'text', label: 'Roll No', required: true },
-  { id: 'f5', type: 'dropdown', label: 'University / College', required: true, options: ['JSS Academy of Technical Education Noida', 'Other'] }
+  { id: 'f5', type: 'checkbox', label: 'YEAR OF STUDY', required: true, options: ['1st Year', '2nd Year', '3rd Year', '4th Year'] },
+  { id: 'f6', type: 'dropdown', label: 'COLLEGE/UNIVERSITY', required: true, options: ['JSS ACADEMY OF TECHNICAL EDUCATION', 'JSS UNIVERSITY', 'Other'] }
 ];
 
 export default function FormBuilderPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -291,14 +291,18 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                     
                         {/* 1. Text Input */}
                         {f.type === 'text' && (
-                          <input 
-                            required={f.required} 
-                            type="text" 
-                            value={answers[f.label] || ""}
-                            placeholder="Type your answer here..." 
-                            onChange={e => setAnswers({...answers, [f.label]: e.target.value})} 
-                            className="w-full px-5 py-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.05] border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all font-medium text-base sm:text-lg"
-                          />
+                          <div className="relative group z-0">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-[2rem] blur-md opacity-0 group-hover:opacity-30 group-focus-within:opacity-100 transition duration-500 group-focus-within:duration-200" />
+                            <motion.input 
+                              whileTap={{ scale: 0.995 }}
+                              required={f.required} 
+                              type="text" 
+                              value={answers[f.label] || ""}
+                              placeholder="Type your answer here..." 
+                              onChange={e => setAnswers({...answers, [f.label]: e.target.value})} 
+                              className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-all duration-300 font-semibold text-lg shadow-inner"
+                            />
+                          </div>
                         )}
 
                         {/* 2. Number Input (Interactive CodeSlots with 5-slot rows) */}
@@ -321,14 +325,18 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                         
                         {/* 3. Textarea Input */}
                         {f.type === 'textarea' && (
-                          <textarea 
-                            required={f.required} 
-                            value={answers[f.label] || ""}
-                            placeholder="Write your answer in detail..." 
-                            rows={4}
-                            onChange={e => setAnswers({...answers, [f.label]: e.target.value})} 
-                            className="w-full px-5 py-4 rounded-2xl bg-black/[0.03] dark:bg-white/[0.05] border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all font-medium text-base sm:text-lg min-h-[120px] resize-y"
-                          />
+                          <div className="relative group z-0">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-[2rem] blur-md opacity-0 group-hover:opacity-30 group-focus-within:opacity-100 transition duration-500 group-focus-within:duration-200" />
+                            <motion.textarea 
+                              whileTap={{ scale: 0.995 }}
+                              required={f.required} 
+                              value={answers[f.label] || ""}
+                              placeholder="Write your answer in detail..." 
+                              rows={4}
+                              onChange={e => setAnswers({...answers, [f.label]: e.target.value})} 
+                              className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-all duration-300 font-semibold text-lg min-h-[160px] resize-y shadow-inner"
+                            />
+                          </div>
                         )}
 
                         {/* 4. Dropdown (Interactive FolderFloat) */}
@@ -380,19 +388,22 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                   <button 
                     disabled={isSubmitting} 
                     type="submit" 
-                    className="w-full sm:w-auto px-10 py-4.5 rounded-2xl font-bold text-lg bg-neutral-900 text-white hover:bg-black dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 shadow-[0_10px_25px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_25px_rgba(255,255,255,0.1)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3"
+                    className="relative group w-full sm:w-auto transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        <span>Submitting Application...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Submit Registration</span>
-                        <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                      </>
-                    )}
+                    <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 opacity-60 blur-lg group-hover:opacity-100 transition duration-300 group-hover:duration-200" />
+                    <div className="relative w-full px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 rounded-[2rem] font-black text-lg text-white shadow-xl flex items-center justify-center gap-3 transform group-hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <span>Submitting...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Submit Registration</span>
+                          <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                        </>
+                      )}
+                    </div>
                   </button>
 
                   <button 
