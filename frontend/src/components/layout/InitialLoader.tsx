@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useDataStore } from "@/lib/store/data.store";
+import { useRouter } from "next/navigation";
 
 export function InitialLoader() {
   // Start as null = unknown (SSR). After hydration we know the real value.
@@ -11,6 +12,7 @@ export function InitialLoader() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [isCarpetOpening, setIsCarpetOpening] = useState(false);
+  const router = useRouter();
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -20,6 +22,9 @@ export function InitialLoader() {
   useEffect(() => {
     // Prefetch data immediately in the background
     useDataStore.getState().prefetchData();
+    router.prefetch("/events");
+    router.prefetch("/alumni");
+    router.prefetch("/team");
 
     // On mount (client only), decide whether to show splash
     const played = sessionStorage.getItem("mmil_intro_played");

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Menu, X, Home, Info, Layers, Calendar, GraduationCap, Briefcase, Users, Image as ImageIcon, Library, LogIn, UserPlus, LayoutDashboard, Sun, Moon } from "lucide-react";
 import { useAuthStore } from "@/lib/store/auth.store";
 import { isCoreTeam } from "@/lib/roles";
@@ -26,6 +26,7 @@ const navItems = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { isAuthenticated, user, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
@@ -189,7 +190,7 @@ export function Navbar() {
                         if ((item as any).onClick) {
                           (item as any).onClick({ preventDefault: () => { } });
                         } else if (item.href) {
-                          window.location.href = item.href;
+                          router.push(item.href);
                         }
                       }, 800);
                     }}
