@@ -24,7 +24,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     set({ isLoading: true });
     try {
       const [events, alumni, team] = await Promise.all([
-        eventsApi.getAllEvents().catch(() => []),
+        eventsApi.getPublishedEvents().catch(() => []),
         alumniApi.getAllAlumni().catch(() => []),
         apiClient.get('/public/team').then(r => r.data).catch(() => [])
       ]);
