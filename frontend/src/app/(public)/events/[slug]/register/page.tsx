@@ -273,7 +273,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                 transition={{ delay: 0.1 }}
                 className="rounded-[2.5rem] p-7 sm:p-10 relative overflow-hidden bg-white/70 dark:bg-[#0c1820]/75 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
               >
-                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-neutral-800 to-black dark:from-neutral-200 dark:to-white" />
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-neutral-800 to-[#0f172a] dark:from-neutral-200 dark:to-white" />
                 
                 {/* Event meta tags */}
                 <div className="flex flex-wrap items-center gap-2 mb-4">
