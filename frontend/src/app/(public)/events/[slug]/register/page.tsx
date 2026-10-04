@@ -410,7 +410,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                                 slotColor={isDark ? "#162834" : "#f1f5f9"}
                                 digitColor={isDark ? "#ffffff" : "#0f172a"}
                                 accentColor={isDark ? "#ffffff" : "#000000"}
-                                inkColor={isDark ? "#ffffff" : "#0f172a"}
+                                inkColor={isDark ? "#000000" : "#ffffff"}
                                 onChange={(val: string) => setAnswers({...answers, [f.label]: val})} 
                               />
                             </div>
