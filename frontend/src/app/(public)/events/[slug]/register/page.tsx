@@ -15,6 +15,28 @@ const CodeSlots = dynamic<any>(() => import('@/components/CodeSlots'), { ssr: fa
 import ArrowRevealButton from "@/components/ArrowRevealButton";
 import toast from "react-hot-toast";
 
+const renderWithLinks = (text: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a 
+          key={i} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 underline decoration-2 underline-offset-2 transition-colors mx-1 inline-flex items-center gap-1 font-bold"
+          title={part}
+        >
+          Click me 🔗
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 function AnimatedListbox({ options, value, onChange, placeholder }: { options: string[], value: string, onChange: (v: string) => void, placeholder: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
@@ -533,7 +555,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
 
               <p className="text-base sm:text-lg max-w-md mx-auto leading-relaxed text-neutral-600 dark:text-neutral-300 whitespace-pre-wrap">
                 {schema.header?.successMessage ? (
-                  schema.header.successMessage
+                  renderWithLinks(schema.header.successMessage)
                 ) : (
                   <>You have successfully registered for <span className="font-bold text-neutral-900 dark:text-white">{event.title}</span>. We are excited to have you join us!</>
                 )}
