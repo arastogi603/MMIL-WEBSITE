@@ -46,9 +46,8 @@ function AnimatedListbox({ options, value, onChange, placeholder }: { options: s
     <div className="relative z-50">
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white cursor-pointer transition-all duration-300 font-semibold text-lg shadow-inner flex items-center justify-between group"
+        className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border-2 border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white text-neutral-900 dark:text-white cursor-pointer transition-all duration-300 font-semibold text-lg shadow-inner flex items-center justify-between group"
       >
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-[2rem] blur-md opacity-0 group-hover:opacity-30 transition duration-500 pointer-events-none" />
         <span className="relative z-10">{value || <span className="text-neutral-400">{placeholder}</span>}</span>
         <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="relative z-10 text-neutral-400 pointer-events-none">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,6 +273,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                 transition={{ delay: 0.1 }}
                 className="rounded-[2.5rem] p-7 sm:p-10 relative overflow-hidden bg-white/70 dark:bg-[#0c1820]/75 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
               >
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-neutral-800 to-black dark:from-neutral-200 dark:to-white" />
                 
                 {/* Event meta tags */}
                 <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -387,7 +387,6 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                         {/* 1. Text Input */}
                         {f.type === 'text' && (
                           <div className="relative group z-0">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-[2rem] blur-md opacity-0 group-hover:opacity-30 group-focus-within:opacity-100 transition duration-500 group-focus-within:duration-200" />
                             <motion.input 
                               whileTap={{ scale: 0.995 }}
                               required={f.required} 
@@ -395,7 +394,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                               value={answers[f.label] || ""}
                               placeholder="Type your answer here..." 
                               onChange={e => setAnswers({...answers, [f.label]: e.target.value})} 
-                              className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-all duration-300 font-semibold text-lg shadow-inner"
+                              className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border-2 border-black/10 dark:border-white/10 hover:border-black focus:border-black dark:hover:border-white dark:focus:border-white text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-all duration-300 font-semibold text-lg shadow-inner"
                             />
                           </div>
                         )}
@@ -421,7 +420,6 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                         {/* 3. Textarea Input */}
                         {f.type === 'textarea' && (
                           <div className="relative group z-0">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-[2rem] blur-md opacity-0 group-hover:opacity-30 group-focus-within:opacity-100 transition duration-500 group-focus-within:duration-200" />
                             <motion.textarea 
                               whileTap={{ scale: 0.995 }}
                               required={f.required} 
@@ -429,7 +427,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                               placeholder="Write your answer in detail..." 
                               rows={4}
                               onChange={e => setAnswers({...answers, [f.label]: e.target.value})} 
-                              className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-all duration-300 font-semibold text-lg min-h-[160px] resize-y shadow-inner"
+                              className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border-2 border-black/10 dark:border-white/10 hover:border-black focus:border-black dark:hover:border-white dark:focus:border-white text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-all duration-300 font-semibold text-lg min-h-[160px] resize-y shadow-inner"
                             />
                           </div>
                         )}
@@ -463,8 +461,8 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                               onChange={(val: string) => setAnswers({...answers, [f.label]: val})}
                               chipColor={isDark ? "#162834" : "#f1f5f9"}
                               textColor={isDark ? "#94a3b8" : "#64748b"}
-                              activeColor={isDark ? "#38bdf8" : "#2563eb"}
-                              activeTextColor="#ffffff"
+                              activeColor={isDark ? "#ffffff" : "#000000"}
+                              activeTextColor={isDark ? "#000000" : "#ffffff"}
                             />
                           </div>
                         )}
