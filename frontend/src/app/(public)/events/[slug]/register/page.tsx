@@ -451,7 +451,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                 Registration Successful!
               </h2>
 
-              <p className="text-base sm:text-lg max-w-md mx-auto leading-relaxed text-neutral-600 dark:text-neutral-300">
+              <p className="text-base sm:text-lg max-w-md mx-auto leading-relaxed text-neutral-600 dark:text-neutral-300 whitespace-pre-wrap">
                 {schema.header?.successMessage ? (
                   schema.header.successMessage
                 ) : (
