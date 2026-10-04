@@ -452,7 +452,11 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
               </h2>
 
               <p className="text-base sm:text-lg max-w-md mx-auto leading-relaxed text-neutral-600 dark:text-neutral-300">
-                You have successfully registered for <span className="font-bold text-neutral-900 dark:text-white">{event.title}</span>. We are excited to have you join us!
+                {schema.header?.successMessage ? (
+                  schema.header.successMessage
+                ) : (
+                  <>You have successfully registered for <span className="font-bold text-neutral-900 dark:text-white">{event.title}</span>. We are excited to have you join us!</>
+                )}
               </p>
 
               <div className="mt-8 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/5 dark:border-white/5 inline-block">

@@ -13,16 +13,16 @@ const defaultFields = [
   { id: 'f3', type: 'text', label: 'Email', required: true },
   { id: 'f4', type: 'text', label: 'Roll No', required: true },
   { id: 'f5', type: 'checkbox', label: 'YEAR OF STUDY', required: true, options: ['1st Year', '2nd Year', '3rd Year', '4th Year'] },
-  { id: 'f6', type: 'dropdown', label: 'COLLEGE/UNIVERSITY', required: true, options: ['JSS ACADEMY OF TECHNICAL EDUCATION', 'JSS UNIVERSITY', 'Other'] }
+  { id: 'f6', type: 'dropdown', label: 'COLLEGE/UNIVERSITY', required: true, options: ['JSS Academy of Technical Education Noida', 'JSS UNIVERSITY'] }
 ];
 
 export default function FormBuilderPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
-  
+
   const [event, setEvent] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
-  const [header, setHeader] = useState<{ title: string; description: string; emoji: string; coverUrl?: string }>({ title: "", description: "", emoji: "", coverUrl: "" });
+  const [header, setHeader] = useState<{ title: string; description: string; emoji: string; coverUrl?: string; successMessage?: string }>({ title: "", description: "", emoji: "", coverUrl: "", successMessage: "" });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -33,10 +33,10 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
           const schema = JSON.parse(res.data.formSchema);
           setFields((schema.fields && schema.fields.length > 0) ? schema.fields : defaultFields);
           setHeader(schema.header || { title: "", description: "", emoji: "" });
-        } catch (e) {}
+        } catch (e) { }
       } else {
         setFields(defaultFields);
-        setHeader({ title: res.data.title + " Registration", description: res.data.description || "", emoji: "🎉" });
+        setHeader({ title: res.data.title + " Registration", description: res.data.description || "", emoji: "🎉", successMessage: "" });
       }
     });
   }, [resolvedParams.slug]);
@@ -86,20 +86,24 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
           <div className="bg-white/70 backdrop-blur-xl p-6 rounded-[2rem] border border-white shadow-sm">
             <h2 className="text-lg font-black mb-4">Header Configuration</h2>
             <div className="space-y-4">
-              
-              
+
+
               <div>
                 <label className="block text-sm font-bold mb-1 flex justify-between">Cover Image URL <span className="text-neutral-400 font-normal">(optional)</span></label>
-                <input type="text" value={header.coverUrl || ''} onChange={e => setHeader({...header, coverUrl: e.target.value})} placeholder="https://..." className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl" />
+                <input type="text" value={header.coverUrl || ''} onChange={e => setHeader({ ...header, coverUrl: e.target.value })} placeholder="https://..." className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl" />
               </div>
 
               <div>
                 <label className="block text-sm font-bold mb-1">Title</label>
-                <input type="text" value={header.title} onChange={e => setHeader({...header, title: e.target.value})} placeholder="e.g. Register for Workshop!" className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl" />
+                <input type="text" value={header.title} onChange={e => setHeader({ ...header, title: e.target.value })} placeholder="e.g. Register for Workshop!" className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl" />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-1">Description</label>
-                <textarea value={header.description} onChange={e => setHeader({...header, description: e.target.value})} placeholder="e.g. Join us for an amazing session..." className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl min-h-[100px]" />
+                <textarea value={header.description} onChange={e => setHeader({ ...header, description: e.target.value })} placeholder="e.g. Join us for an amazing session..." className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl min-h-[100px]" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1 flex justify-between">Success Message <span className="text-neutral-400 font-normal">(optional)</span></label>
+                <textarea value={header.successMessage || ""} onChange={e => setHeader({ ...header, successMessage: e.target.value })} placeholder="e.g. You have successfully registered for this event!" className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl min-h-[100px]" />
               </div>
             </div>
           </div>
@@ -136,7 +140,7 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
                   {(f.type === 'dropdown' || f.type === 'checkbox') && (
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-neutral-500">OPTIONS (Comma separated)</label>
-                      <input type="text" value={f.options?.join(', ')} onChange={e => updateField(f.id, { options: e.target.value.split(',').map(s=>s.trim()) })} className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl text-sm" />
+                      <input type="text" value={f.options?.join(', ')} onChange={e => updateField(f.id, { options: e.target.value.split(',').map(s => s.trim()) })} className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl text-sm" />
                     </div>
                   )}
                 </div>
@@ -156,17 +160,17 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
               <button onClick={() => addField('dropdown')} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-black/5 border border-black/5 rounded-xl font-medium transition-colors text-left"><FileText className="w-4 h-4" /> Dropdown</button>
               <button onClick={() => addField('checkbox')} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-black/5 border border-black/5 rounded-xl font-medium transition-colors text-left"><FileText className="w-4 h-4" /> Checkboxes</button>
             </div>
-            
+
             <div className="mt-8 p-5 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl text-sm font-medium shadow-sm">
               <p className="mb-3 font-bold">Public Registration Link</p>
               <div className="flex items-center gap-2 bg-white rounded-xl p-2 border border-blue-200">
-                <input 
-                  type="text" 
-                  readOnly 
-                  value={typeof window !== "undefined" ? `${window.location.origin}/events/${resolvedParams.slug}/register` : `/events/${resolvedParams.slug}/register`} 
+                <input
+                  type="text"
+                  readOnly
+                  value={typeof window !== "undefined" ? `${window.location.origin}/events/${resolvedParams.slug}/register` : `/events/${resolvedParams.slug}/register`}
                   className="flex-1 bg-transparent border-none outline-none text-xs px-2 truncate font-mono text-neutral-600"
                 />
-                <button 
+                <button
                   onClick={() => {
                     navigator.clipboard.writeText(`${window.location.origin}/events/${resolvedParams.slug}/register`);
                     alert("Link copied!");
