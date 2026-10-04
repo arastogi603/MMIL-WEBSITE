@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use, useMemo } from "react";
-import { ArrowLeft, Download, Search, Eye, X, AlertCircle, RefreshCw, Users, AlertTriangle, GraduationCap, Copy, Filter, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Download, Search, Eye, X, AlertCircle, RefreshCw, Users, AlertTriangle, GraduationCap, Copy, Filter, CheckCircle2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/lib/api/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,6 +25,16 @@ export default function ApplicationsPage({ params }: { params: Promise<{ slug: s
       setError(err.response?.data?.message || err.message || "Failed to load registrations");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const deleteApplication = async (registrationId: string) => {
+    if (!confirm("Are you sure you want to remove this registration?")) return;
+    try {
+      await apiClient.delete(`/events/${resolvedParams.slug}/applications/${registrationId}`);
+      setApps(apps.filter(app => app.id !== registrationId));
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to delete registration");
     }
   };
 
@@ -533,13 +543,21 @@ export default function ApplicationsPage({ params }: { params: Promise<{ slug: s
                             })
                           : "—"}
                       </td>
-                      <td className="p-4 text-right">
+                      <td className="p-4 text-right flex items-center justify-end gap-2">
                         <button
                           onClick={() => setSelectedApp(app)}
                           className="px-3.5 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-bold rounded-xl transition-colors inline-flex items-center gap-1.5"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           View
+                        </button>
+                        <button
+                          onClick={() => deleteApplication(app.id)}
+                          className="px-3.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold rounded-xl transition-colors inline-flex items-center gap-1.5"
+                          title="Remove Registration"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Remove
                         </button>
                       </td>
                     </tr>

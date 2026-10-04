@@ -12,7 +12,69 @@ import dynamic from 'next/dynamic';
 const JellyRadio = dynamic<any>(() => import('@/components/JellyRadio'), { ssr: false });
 const FolderFloat = dynamic<any>(() => import('@/components/FolderFloat'), { ssr: false });
 const CodeSlots = dynamic<any>(() => import('@/components/CodeSlots'), { ssr: false });
+import ArrowRevealButton from "@/components/ArrowRevealButton";
 import toast from "react-hot-toast";
+
+function AnimatedListbox({ options, value, onChange, placeholder }: { options: string[], value: string, onChange: (v: string) => void, placeholder: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <div className="relative z-50">
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative w-full px-7 py-5 rounded-[1.8rem] bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-sm border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white cursor-pointer transition-all duration-300 font-semibold text-lg shadow-inner flex items-center justify-between group"
+      >
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 rounded-[2rem] blur-md opacity-0 group-hover:opacity-30 transition duration-500 pointer-events-none" />
+        <span className="relative z-10">{value || <span className="text-neutral-400">{placeholder}</span>}</span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="relative z-10 text-neutral-400 pointer-events-none">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+          </svg>
+        </motion.div>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 8, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="absolute left-0 right-0 top-full p-2 rounded-2xl bg-white/90 dark:bg-[#0c1820]/90 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-2xl overflow-hidden z-[100]"
+          >
+            {options.map((opt) => (
+              <motion.button
+                key={opt}
+                type="button"
+                whileHover={{ scale: 0.98, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { onChange(opt); setIsOpen(false); }}
+                className={`w-full text-left px-5 py-3 rounded-xl flex items-center justify-between transition-colors ${value === opt ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' : 'text-neutral-700 dark:text-neutral-300'}`}
+              >
+                <span className="font-medium text-base">{opt}</span>
+                <AnimatePresence>
+                  {value === opt && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0, rotate: -45 }}
+                      animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                      exit={{ scale: 0, opacity: 0, rotate: 45 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className="text-blue-600 dark:text-blue-400"
+                    >
+                      <CheckCircle2 className="w-5 h-5" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function RegisterFormPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
@@ -97,6 +159,15 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
     e.preventDefault();
     setError(null);
 
+    // Check if form is closed
+    if (schema?.header?.isActive === false) {
+      toast("Registration is full! We're sorry you missed it, but we can't wait to see you at our next event. ✨", { 
+        duration: 5000,
+        icon: "🌟"
+      });
+      return;
+    }
+
     // Validate all required fields
     if (schema?.fields) {
       for (const f of schema.fields) {
@@ -122,7 +193,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => {
         router.push('/');
-      }, 10000);
+      }, 15000);
     } catch (err: any) {
       console.error("Registration error:", err);
       const errorMsg = err.response?.data?.message || err.response?.data || "Registration failed. Please check your answers and try again.";
@@ -181,8 +252,6 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                 transition={{ delay: 0.1 }}
                 className="rounded-[2.5rem] p-7 sm:p-10 relative overflow-hidden bg-white/70 dark:bg-[#0c1820]/75 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)]"
               >
-                {/* Gradient Accent Bar */}
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
                 
                 {/* Event meta tags */}
                 <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -210,10 +279,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                 )}
 
                 <div className="mt-6 pt-5 border-t border-black/5 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-red-500 bg-red-500/10 border border-red-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                    Required fields marked with *
-                  </div>
+
 
                   {user && (
                     <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
@@ -254,13 +320,14 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
               {/* Form Fields Container */}
               <form onSubmit={handleSubmit} noValidate className="space-y-6 sm:space-y-7">
                 {schema.fields?.map((f: any, idx: number) => (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 + (idx * 0.04) }}
-                    key={f.id || idx} 
-                    className="rounded-[2.5rem] p-7 sm:p-9 bg-white/70 dark:bg-[#0c1820]/75 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)] transition-all duration-300 hover:border-black/20 dark:hover:border-white/20"
-                  >
+                    <motion.div 
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + (idx * 0.04) }}
+                      key={f.id || idx} 
+                      style={{ zIndex: 100 - idx, position: "relative" }}
+                      className="rounded-[2.5rem] p-7 sm:p-9 bg-white/70 dark:bg-[#0c1820]/75 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_35px_rgba(0,0,0,0.4)] transition-all duration-300 hover:border-black/20 dark:hover:border-white/20"
+                    >
                     <label className="block font-bold text-lg sm:text-xl text-neutral-900 dark:text-white mb-2 leading-snug">
                       {f.label} {f.required && <span className="text-red-500 ml-1 font-black">*</span>}
                     </label>
@@ -379,6 +446,16 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                             />
                           </div>
                         )}
+
+                        {/* 6. Custom Animated ListBox */}
+                        {f.type === 'listbox' && (
+                          <AnimatedListbox 
+                            options={f.options || []}
+                            value={answers[f.label] || ""}
+                            onChange={(val) => setAnswers({...answers, [f.label]: val})}
+                            placeholder="Select an option..."
+                          />
+                        )}
                       </div>
                     )}
                   </motion.div>
@@ -391,26 +468,29 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
                   transition={{ delay: 0.35 }}
                   className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4"
                 >
-                  <button 
-                    disabled={isSubmitting} 
-                    type="submit" 
-                    className="relative group w-full sm:w-auto transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  >
-                    <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 opacity-60 blur-lg group-hover:opacity-100 transition duration-300 group-hover:duration-200" />
-                    <div className="relative w-full px-10 py-4 sm:py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 rounded-[2rem] font-black text-lg text-white shadow-xl flex items-center justify-center gap-3 transform group-hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-                      {isSubmitting ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Submitting...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Submit Registration</span>
-                          <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                        </>
-                      )}
-                    </div>
-                  </button>
+                  <ArrowRevealButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    label={isSubmitting ? "Submitting..." : "Submit Registration"}
+                    padding="14px 28px 14px 20px"
+                    rounded={30}
+                    font={{ fontSize: "16px", fontWeight: "700" }}
+                    gap={16}
+                    colors={{ 
+                      fill: isDark ? "#FFFFFF" : "#0f172a", 
+                      textColor: isDark ? "#000000" : "#FFFFFF" 
+                    }}
+                    icon={{ 
+                      type: "icon", 
+                      icon: "arrow", 
+                      background: isDark ? "#f1f5f9" : "#1e293b", 
+                      color: isDark ? "#000000" : "#FFFFFF",
+                      size: 18,
+                      padding: 16
+                    }}
+                    border={null}
+                    className="w-full sm:w-auto"
+                  />
 
                   <button 
                     type="button" 
@@ -461,7 +541,7 @@ export default function RegisterFormPage({ params }: { params: Promise<{ slug: s
 
               <div className="mt-8 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/5 dark:border-white/5 inline-block">
                 <p className="text-xs font-bold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 animate-pulse">
-                  Redirecting to homepage in a moment...
+                  Redirecting to homepage in 15 seconds...
                 </p>
               </div>
             </motion.div>

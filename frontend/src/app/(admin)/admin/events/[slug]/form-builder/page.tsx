@@ -13,7 +13,8 @@ const defaultFields = [
   { id: 'f3', type: 'text', label: 'Email', required: true },
   { id: 'f4', type: 'text', label: 'Roll No', required: true },
   { id: 'f5', type: 'checkbox', label: 'YEAR OF STUDY', required: true, options: ['1st Year', '2nd Year', '3rd Year', '4th Year'] },
-  { id: 'f6', type: 'dropdown', label: 'COLLEGE/UNIVERSITY', required: true, options: ['JSS Academy of Technical Education Noida', 'JSS UNIVERSITY'] }
+  { id: 'f6', type: 'dropdown', label: 'COLLEGE/UNIVERSITY', required: true, options: ['JSS Academy of Technical Education Noida', 'JSS UNIVERSITY'] },
+  { id: 'f7', type: 'listbox', label: 'BRANCH', required: true, options: ['CSE', 'AIML', 'DS', 'IT', 'ECE', 'EEE', 'EE', 'ME', 'CE'] }
 ];
 
 export default function FormBuilderPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -22,7 +23,7 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
 
   const [event, setEvent] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
-  const [header, setHeader] = useState<{ title: string; description: string; emoji: string; coverUrl?: string; successMessage?: string }>({ title: "", description: "", emoji: "", coverUrl: "", successMessage: "" });
+  const [header, setHeader] = useState<{ title: string; description: string; emoji: string; coverUrl?: string; successMessage?: string; isActive?: boolean }>({ title: "", description: "", emoji: "", coverUrl: "", successMessage: "", isActive: true });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -32,11 +33,11 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
         try {
           const schema = JSON.parse(res.data.formSchema);
           setFields((schema.fields && schema.fields.length > 0) ? schema.fields : defaultFields);
-          setHeader(schema.header || { title: "", description: "", emoji: "" });
+          setHeader(schema.header ? { ...schema.header, isActive: schema.header.isActive ?? true } : { title: "", description: "", emoji: "", isActive: true });
         } catch (e) { }
       } else {
         setFields(defaultFields);
-        setHeader({ title: res.data.title + " Registration", description: res.data.description || "", emoji: "🎉", successMessage: "" });
+        setHeader({ title: res.data.title + " Registration", description: res.data.description || "", emoji: "🎉", successMessage: "", isActive: true });
       }
     });
   }, [resolvedParams.slug]);
@@ -88,6 +89,17 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
             <div className="space-y-4">
 
 
+              <div className="flex items-center justify-between bg-neutral-50 p-4 rounded-xl border border-black/5 mb-2">
+                <div>
+                  <h3 className="font-bold text-sm">Accepting Responses</h3>
+                  <p className="text-xs text-neutral-500">Enable or disable form submissions</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" className="sr-only peer" checked={header.isActive !== false} onChange={(e) => setHeader({ ...header, isActive: e.target.checked })} />
+                  <div className="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
               <div>
                 <label className="block text-sm font-bold mb-1 flex justify-between">Cover Image URL <span className="text-neutral-400 font-normal">(optional)</span></label>
                 <input type="text" value={header.coverUrl || ''} onChange={e => setHeader({ ...header, coverUrl: e.target.value })} placeholder="https://..." className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl" />
@@ -137,7 +149,7 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
                     </div>
                   )}
 
-                  {(f.type === 'dropdown' || f.type === 'checkbox') && (
+                  {(f.type === 'dropdown' || f.type === 'checkbox' || f.type === 'listbox') && (
                     <div className="space-y-2">
                       <label className="text-xs font-bold text-neutral-500">OPTIONS (Comma separated)</label>
                       <input type="text" value={f.options?.join(', ')} onChange={e => updateField(f.id, { options: e.target.value.split(',').map(s => s.trim()) })} className="w-full px-4 py-2 bg-white/50 border border-black/5 rounded-xl text-sm" />
@@ -159,6 +171,7 @@ export default function FormBuilderPage({ params }: { params: Promise<{ slug: st
               <button onClick={() => addField('number')} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-black/5 border border-black/5 rounded-xl font-medium transition-colors text-left"><FileText className="w-4 h-4" /> Number</button>
               <button onClick={() => addField('dropdown')} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-black/5 border border-black/5 rounded-xl font-medium transition-colors text-left"><FileText className="w-4 h-4" /> Dropdown</button>
               <button onClick={() => addField('checkbox')} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-black/5 border border-black/5 rounded-xl font-medium transition-colors text-left"><FileText className="w-4 h-4" /> Checkboxes</button>
+              <button onClick={() => addField('listbox')} className="flex items-center gap-3 px-4 py-3 bg-white hover:bg-black/5 border border-black/5 rounded-xl font-medium transition-colors text-left"><FileText className="w-4 h-4" /> ListBox</button>
             </div>
 
             <div className="mt-8 p-5 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl text-sm font-medium shadow-sm">

@@ -122,4 +122,11 @@ public class EventController {
         eventService.deleteEvent(slug);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{slug}/applications/{registrationId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CORE-TEAM')")
+    public ResponseEntity<?> deleteRegistration(@PathVariable String slug, @PathVariable UUID registrationId) {
+        eventService.deleteRegistration(slug, registrationId);
+        return ResponseEntity.ok().build();
+    }
 }

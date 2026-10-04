@@ -144,6 +144,15 @@ public class EventService {
     public void registerForEvent(String slug, UUID userId, String formAnswers) {
         Event event = getEventBySlug(slug);
 
+        if (event.getFormSchema() != null) {
+            try {
+                com.fasterxml.jackson.databind.JsonNode schemaNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(event.getFormSchema());
+                if (schemaNode.has("header") && schemaNode.get("header").has("isActive") && !schemaNode.get("header").get("isActive").asBoolean(true)) {
+                    throw new RuntimeException("Event is full! Let's meet at the next event.");
+                }
+            } catch (Exception e) {}
+        }
+
         int currentSeats = event.getSeatsTaken() != null ? event.getSeatsTaken() : 0;
         if (event.getCapacity() != null && currentSeats >= event.getCapacity()) {
             throw new RuntimeException("Event is full");
@@ -176,6 +185,25 @@ public class EventService {
 
     public Optional<EventRegistration> getRegistration(UUID eventId, UUID userId) {
         return registrationRepository.findByEventIdAndUserId(eventId, userId);
+    }
+
+    @Transactional
+    public void deleteRegistration(String slug, UUID registrationId) {
+        Event event = getEventBySlug(slug);
+        EventRegistration registration = registrationRepository.findById(registrationId)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+        
+        if (!registration.getEvent().getId().equals(event.getId())) {
+            throw new RuntimeException("Registration does not belong to this event");
+        }
+        
+        registrationRepository.delete(registration);
+        
+        int currentSeats = event.getSeatsTaken() != null ? event.getSeatsTaken() : 0;
+        if (currentSeats > 0) {
+            event.setSeatsTaken(currentSeats - 1);
+            eventRepository.save(event);
+        }
     }
 
     @Transactional
